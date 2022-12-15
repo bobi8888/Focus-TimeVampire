@@ -81,7 +81,6 @@ int main() {
 	GameScreen remember("REMEMBER!");
 	remember.addSprite(fullBubble.getSprite());
 	remember.addSprite(emptyBubble.getSprite());
-	remember.addSprite(backButton.getSprite());
 	GameScreen count("COUNT!");
 	GameScreen assemble("ASSEMBLE!");
 	GameScreen discuss("DISCUSS!");
@@ -129,22 +128,25 @@ int main() {
 							tooltip.setString("::Paused::");
 							mainScreenENUM = resumeMAIN;
 						}
-					}					
-					if (event.type == sf::Event::EventType::MouseButtonPressed) {
-						if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && backButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-							gameScreenENUM = mainENUM;
+					}		
+
+					if(gameScreenENUM != mainENUM){//BACK BUTTON
+						window.draw(backButton.getSprite());
+						if (event.type == sf::Event::EventType::MouseButtonPressed) {
+							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && backButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+								gameScreenENUM = mainENUM;
+							}
 						}
 					}
-
 
 					switch(gameScreenENUM){
 						case mainENUM:
 							gameScreen.drawScreen(window, tooltip.getText());
-							drawIdenticalSpriteVector(minigameTexture, vectorOfRooms);//constantly setting textures?
+							drawIdenticalSpriteVector(minigameTexture, minigameVector);//constantly setting textures?
 							//SWITCH FOR WHICH MINIGAME IS SELECTED
 							if (event.type == sf::Event::EventType::MouseButtonPressed) {
-								for (int i = 0; i < vectorOfRooms.size(); i++) {
-									if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && vectorOfRooms[i].getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+								for (int i = 0; i < minigameVector.size(); i++) {
+									if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && minigameVector[i].getSprite().getGlobalBounds().contains(translatedMousePosition)) {
 										gameScreenENUM = static_cast<gameScreens>(i);
 									}
 								}
@@ -163,18 +165,25 @@ int main() {
 							count.drawScreen(window, tooltip.getText());
 						break;
 						case assembleENUM://ASSEMBLE
+							assemble.drawScreen(window, tooltip.getText());
 						break;
 						case discussENUM://DISCUSS
+							discuss.drawScreen(window, tooltip.getText());
 						break;
 						case ignoreENUM://IGNORE
+							ignore.drawScreen(window, tooltip.getText());
 						break;
 						case driveENUM://DRIVE
+							drive.drawScreen(window, tooltip.getText());
 						break;
 						case retainENUM://RETAIN
+							retain.drawScreen(window, tooltip.getText());
 						break;
 						case pushENUM://PUSH
+							push.drawScreen(window, tooltip.getText());
 						break;
 						case bonusENUM://BONUS
+							bonus.drawScreen(window, tooltip.getText());
 						break;
 					}
 				}else{//TIME IS UP
