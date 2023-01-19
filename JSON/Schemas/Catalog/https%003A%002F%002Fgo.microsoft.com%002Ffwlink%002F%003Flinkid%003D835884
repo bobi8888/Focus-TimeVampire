@@ -42,8 +42,7 @@
       "versions": {
         "1.2": "https://json.schemastore.org/agripparc-1.2.json",
         "1.3": "https://json.schemastore.org/agripparc-1.3.json",
-        "1.4": "https://json.schemastore.org/agripparc-1.4.json",
-        "2.0": "https://json.schemastore.org/agripparc-2.0.json"
+        "1.4": "https://json.schemastore.org/agripparc-1.4.json"
       }
     },
     {
@@ -273,6 +272,12 @@
         "*asyncapi.yaml"
       ],
       "url": "https://www.asyncapi.com/schema-store/all.schema-store.json"
+    },
+    {
+      "name": "AsyncAPI Tool File",
+      "description": "A JSON Schema for validating AsyncAPI tool files",
+      "fileMatch": [".asyncapi-tool"],
+      "url": "https://raw.githubusercontent.com/asyncapi/website/master/scripts/tools/tools-schema.json"
     },
     {
       "name": "Avro Avsc",
@@ -678,17 +683,10 @@
       "url": "https://raw.githubusercontent.com/Ortus-Solutions/vscode-commandbox/master/resources/schemas/server.schema.json"
     },
     {
-      "name": "CSR Framework",
-      "description": "Schema for configuration of CSR Framework",
-      "fileMatch": [
-        "csr.json",
-        "csr.yaml",
-        "csr.yml",
-        "*.csr.json",
-        "*.csr.yaml",
-        "*.csr.yml"
-      ],
-      "url": "https://json.schemastore.org/csr.json"
+      "name": "dbt Project",
+      "description": "Schema for dbt project configurations",
+      "fileMatch": ["dbt_project.yml"],
+      "url": "https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/dbt_project.json"
     },
     {
       "name": "Deadpendency Config Schema",
@@ -820,6 +818,12 @@
       "url": "https://json.schemastore.org/clasp.json"
     },
     {
+      "name": "clangd",
+      "description": "Clang language server daemon",
+      "fileMatch": [".clangd", ".clangd.yml", ".clangd.yaml"],
+      "url": "https://json.schemastore.org/clangd.json"
+    },
+    {
       "name": "cloudify",
       "description": "Cloudify Blueprint",
       "fileMatch": ["*.cfy.yaml"],
@@ -840,7 +844,7 @@
       "name": "codemagic",
       "description": "JSON schema for Codemagic CI/CD file configuration",
       "fileMatch": ["codemagic.yaml", "codemagic.yml"],
-      "url": "https://static.codemagic.io/codemagic-schema.json"
+      "url": "https://codemagic.io/codemagic-schema.json"
     },
     {
       "name": "Codux",
@@ -1258,6 +1262,15 @@
       "name": "dss-2.0.0.json",
       "description": "Digital Signature Service Core Protocols, Elements, and Bindings Version 2.0",
       "url": "https://json.schemastore.org/dss-2.0.0.json"
+    },
+    {
+      "name": "dstack Workflows",
+      "description": "YAML schema for dstack Workflows",
+      "fileMatch": [
+        "**/.dstack/workflows/*.yml",
+        "**/.dstack/workflows/*.yaml"
+      ],
+      "url": "https://raw.githubusercontent.com/dstackai/dstack/master/cli/dstack/schemas/workflows.json"
     },
     {
       "name": "dvc.yaml",
@@ -2015,6 +2028,12 @@
       "url": "https://json.schemastore.org/lsdlschema.json"
     },
     {
+      "name": "A micro editor config schema",
+      "description": "A micro editor config schema",
+      "fileMatch": ["*.settings.json"],
+      "url": "https://json.schemastore.org/micro.json"
+    },
+    {
       "name": "MegaLinter configuration",
       "description": "JSON schema for Mega-Linter configuration file (for Mega-Linter users)",
       "fileMatch": [
@@ -2113,6 +2132,12 @@
       "description": "Configuration file defining a recipe for a data pack for Minecraft.",
       "fileMatch": ["**/data/*/recipes/*.json"],
       "url": "https://json.schemastore.org/minecraft-recipe.json"
+    },
+    {
+      "name": "Minecraft Data Pack Tag",
+      "description": "Configuration file defining a tag for a data pack for Minecraft.",
+      "fileMatch": ["**/data/*/tags/**/*.json"],
+      "url": "https://json.schemastore.org/minecraft-tag.json"
     },
     {
       "name": "Minecraft Data Pack Template Pool",
@@ -2214,6 +2239,12 @@
       "description": "JSON schema for nodemon.json configuration files.",
       "url": "https://json.schemastore.org/nodemon.json",
       "fileMatch": ["nodemon.json"]
+    },
+    {
+      "name": "NOX Framework (Service)",
+      "description": "Schema for NOX service definition",
+      "url": "https://noxorg.dev/schemas/NoxConfiguration.json",
+      "fileMatch": ["service.nox.yaml", "service.nox.yml", "service.nox.json"]
     },
     {
       "name": ".npmpackagejsonlintrc",
@@ -2616,6 +2647,12 @@
       "url": "https://raw.githubusercontent.com/readthedocs/readthedocs.org/master/readthedocs/rtd_tests/fixtures/spec/v2/schema.json"
     },
     {
+      "name": "Pulumi",
+      "description": "JSON schema for Pulumi project metadata and configuration",
+      "fileMatch": ["Pulumi.yaml", "pulumi.yaml"],
+      "url": "https://json.schemastore.org/pulumi.json"
+    },
+    {
       "name": "PyProject",
       "description": "JSON schema for Python project metadata and configuration",
       "fileMatch": ["pyproject.toml"],
@@ -2666,6 +2703,12 @@
       "description": "Windows App localization file",
       "fileMatch": ["*.resjson"],
       "url": "https://json.schemastore.org/resjson.json"
+    },
+    {
+      "name": "Ruff",
+      "description": "JSON schema for Ruff, a fast Python linter",
+      "fileMatch": ["ruff.toml"],
+      "url": "https://json.schemastore.org/ruff.json"
     },
     {
       "name": "Rust Project",
@@ -3996,6 +4039,12 @@
       "url": "https://raw.githubusercontent.com/lalcebo/json-schema/master/serverless/reference.json"
     },
     {
+      "name": "Alacritty Configuration Schema",
+      "description": "Schema for Alacritty configuration yaml file",
+      "fileMatch": [".alacritty.yml", "alacritty.yml"],
+      "url": "https://raw.githubusercontent.com/distinction-dev/alacritty-schema/main/alacritty/reference.json"
+    },
+    {
       "name": "Serverless Workflow Schema",
       "description": "Schema for serverless workflows",
       "fileMatch": ["*.sw.json", "*.sw.yml"],
@@ -4138,7 +4187,7 @@
       "name": "CICS TS resource import",
       "description": "JSON schema for resource import in IBM CICS Transaction Server for z/OS",
       "fileMatch": ["*.cicsresourceimport.yaml", "*.cicsresourceimport.yml"],
-      "url": "https://public.dhe.ibm.com/ibmdl/export/pub/software/htp/cics/schemas/json/resourceimport.json"
+      "url": "https://public.dhe.ibm.com/ibmdl/export/pub/software/htp/cics/schemas/json/cicsts-resourceimport.json"
     },
     {
       "name": "CICS TS resource model",
@@ -4149,7 +4198,7 @@
         "*.cicsappconstraints.yaml",
         "*.cicsappconstraints.yml"
       ],
-      "url": "https://public.dhe.ibm.com/ibmdl/export/pub/software/htp/cics/schemas/json/resourcemodel.json"
+      "url": "https://public.dhe.ibm.com/ibmdl/export/pub/software/htp/cics/schemas/json/cicsts-resourcemodel.json"
     },
     {
       "name": "CICS TS resource overrides",
