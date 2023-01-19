@@ -139,14 +139,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dataSprite.cpp" />
     <ClCompile Include="Focus TimeVampire.cpp" />
+    <ClCompile Include="gameSprite.cpp" />
+    <ClCompile Include="gameTimer.cpp" />
+    <ClCompile Include="randomizedData.cpp" />
+    <ClCompile Include="gameText.cpp" />
+    <ClCompile Include="dataSpriteVector.cpp" />
+    <ClCompile Include="transformableSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="font_and_text.h" />
+    <ClInclude Include="randomizedData.h" />
+    <ClInclude Include="dataSprite.h" />
+    <ClInclude Include="dataSpriteVector.h" />
+    <ClInclude Include="gameText.h" />
     <ClInclude Include="mouse.h" />
     <ClInclude Include="gameScreen.h" />
     <ClInclude Include="gameSprite.h" />
-    <ClInclude Include="timer.h" />
+    <ClInclude Include="gameTimer.h" />
     <ClInclude Include="transformableSprite.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="window.h" />
