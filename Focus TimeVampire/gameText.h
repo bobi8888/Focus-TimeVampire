@@ -1,8 +1,10 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 
 using std::string;
 void loadFont(sf::Font& font);
+
+class DataSpriteVector;
+class TransformableSprite;
 
 class GameText{
 	private:

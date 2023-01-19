@@ -1,7 +1,7 @@
-#include <SFML/Graphics.hpp>
+#include "utils.h"
+
 #include "gameSprite.h"
 #include "dataSprite.h"
-using std::string;
 
 string DataSprite::getLetter() {
 	return letter;

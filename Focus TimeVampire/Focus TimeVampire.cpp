@@ -45,7 +45,7 @@ int main() {
 
 	//can playerInput be GameText obj?
 	sf::String playerInput;
-	GameText playerInput;
+	//GameText playerInput;
 
 	GameText timerText(generalFont, 20, "", 20, window);
 	timerText.setPosition(sf::Vector2f(5,30));

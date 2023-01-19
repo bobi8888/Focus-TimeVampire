@@ -1,13 +1,15 @@
 #pragma once
 using std::vector;
 
+class DataSprite;
+class TransformableSprite;
 class DataSpriteVector {
 	private:
 		vector <DataSprite> dataSpriteVector;
 		bool vectorComplete = false;
-		friend class GameSprite;
-		friend class DataSprite;		
-		friend class TransformableSprite;
+		//friend class GameSprite;
+		//friend class DataSprite;		
+		//friend class TransformableSprite;
 	public:
 		DataSpriteVector(){};
 		vector <DataSprite> getDataSpriteVector();
@@ -28,11 +30,9 @@ class DataSpriteVector {
 		long getLongValues(int index, int itr);
 		void setLongValues(int numberNeeeded);
 
-		//string getStringValues(int index, int itr);
 		void setStringValues(std::stringstream &out);
 
 		string getFullDataStrings(int index, int itr);
 		void setFullDataStrings(std::ostringstream& out);
 
-		//void updateIndividualComplete(int indextPostition);
 };

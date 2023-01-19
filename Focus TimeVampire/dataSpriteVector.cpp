@@ -1,17 +1,10 @@
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <iomanip>
-#include <sstream>
+#include "utils.h";
 
 #include "gameSprite.h"
 #include "dataSprite.h"
-#include "TransformableSprite.h"
+#include "transformableSprite.h"
 #include "randomizedData.h"
-
 #include "dataSpriteVector.h"
-
-using std::string;
-using std::vector;
 
 vector <DataSprite> DataSpriteVector::getDataSpriteVector() {
 	return dataSpriteVector;
@@ -82,10 +75,6 @@ void DataSpriteVector::setSpriteToComplete(int index){
 	dataSpriteVector[index].setIsComplete(true);
 }
 
-//void DataSpriteVector::updateIndividualComplete(int indextPostition)
-//{
-//}
-
 bool DataSpriteVector::isSpriteComplete(TransformableSprite player){
 	if (player.getSpriteContactIndex() < 0){
 		return false;
@@ -117,9 +106,6 @@ void DataSpriteVector::setLongValues(int index) {
 	}
 }
 
-//string DataSpriteVector::getStringValues(int index, int itr) {
-//	return dataSpriteVector.at(itr).getStringValue();
-//}
 void DataSpriteVector::setStringValues(std::stringstream& stream) {//this is adding a comma to the string value from the long int 
 	string outString;
 	for (int i = 0; i < dataSpriteVector.size(); i++) {

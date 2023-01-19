@@ -1,9 +1,9 @@
 #include "utils.h"
+
 #include "gameSprite.h"
 #include "dataSprite.h"
 #include "dataSpriteVector.h"
 #include "transformableSprite.h"
-using std::vector;
 
 TransformableSprite::TransformableSprite(float buildSpeed, float buildRadius) {
 	movementSpeed = buildSpeed;
@@ -54,7 +54,7 @@ sf::Sprite TransformableSprite::setMovement(sf::RenderWindow &window) {
 		return getSprite();
 	}
 }
-bool TransformableSprite::hasCircleContact(const sf::Sprite& sprite) {
+bool TransformableSprite::hasCircleContact(sf::Sprite sprite) {
 	float a, b, c, minDist;
 
 	minDist = getRadius() + sprite.getGlobalBounds().height / 2;

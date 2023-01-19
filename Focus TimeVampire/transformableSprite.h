@@ -5,8 +5,6 @@ class TransformableSprite : public GameSprite {
 		int spriteContactIndex = -1;
 		float movementSpeed, radius;
 		bool hasContact = false;
-		//friend class GameSprite;
-		friend class DataSpriteVector;
 	public:
 		using GameSprite::GameSprite;
 		TransformableSprite(float buildSpeed, float buildRadius);
@@ -15,8 +13,8 @@ class TransformableSprite : public GameSprite {
 		float getRadius();
 		void setRadius(float newRadius);
 		sf::Sprite setMovement(sf::RenderWindow &window);
-		bool hasCircleContact(const sf::Sprite &sprite);
+		bool hasCircleContact(sf::Sprite sprite);
 		int getSpriteContactIndex();
 		void setSpriteContactIndex(int itr);
-		void handleSpriteContactIndex(DataSpriteVector dataSprite);
+		void handleSpriteContactIndex(DataSpriteVector dataSpriteVector);
 };
