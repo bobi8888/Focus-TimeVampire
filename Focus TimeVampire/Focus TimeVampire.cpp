@@ -114,20 +114,20 @@ int main() {
 	resumeScreen.addSprite(resumeButton.getSprite());
 
 	//MINIGAMES
-	GameScreen remember("REMEMBER!");
-	remember.addSprite(fullBubble.getSprite());
-	remember.addSprite(emptyBubble.getSprite());
-	GameScreen count("COUNT!");
-	GameScreen assemble("ASSEMBLE!");
-	GameScreen discuss("DISCUSS!");
-	GameScreen ignore("IGNORE!");
-	GameScreen drive("DRIVE!");
-	GameScreen retain("RETAIN!");
-	GameScreen push("PUSH!");
-	GameScreen bonus("BON test US!");
+	//GameScreen remember("REMEMBER!");
+
+	////GameScreen count("COUNT!");
+	//GameScreen assemble("ASSEMBLE!");
+	//GameScreen discuss("DISCUSS!");
+	//GameScreen ignore("IGNORE!");
+	//GameScreen drive("DRIVE!");
+	//GameScreen retain("RETAIN!");
+	//GameScreen push("PUSH!");
+	//GameScreen bonus("BONUS!");
 	GameScreen remember("REMEMBER!", generalFont, 25, 25);
 	bannerText.setStringAndCenterOrigin("Enter #", 0, 0);
-
+	remember.addSprite(fullBubble.getSprite());
+	remember.addSprite(emptyBubble.getSprite());
 	GameScreen count("COUNT!", generalFont, 25, 25);
 	GameScreen assemble("ASSEMBLE!", generalFont, 25, 25);
 	GameScreen discuss("DISCUSS!", generalFont, 25, 25);
