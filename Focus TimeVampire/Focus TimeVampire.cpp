@@ -88,7 +88,7 @@ int main() {
 	GameScreen drive("DRIVE!");
 	GameScreen retain("RETAIN!");
 	GameScreen push("PUSH!");
-	GameScreen bonus("BONUS!");
+	GameScreen bonus("BON test US!");
 
 	//GAME LOOP: mainScreenENUM
 	sf::Event event;
