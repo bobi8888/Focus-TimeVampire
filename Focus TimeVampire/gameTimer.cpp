@@ -1,6 +1,6 @@
+#include"utils.h"
+
 # include "gameTimer.h"
-#include <sstream>
-#include <iomanip>
 
 int GameTimer::getPrecision() {
 	return precision;

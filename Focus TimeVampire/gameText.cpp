@@ -1,9 +1,6 @@
-#include <iostream>
-#include <sstream>
-#include <iomanip>
+#include "utils.h"
 
-#include "dataSpriteVector.h"
-#include "transformableSprite.h"
+#include "gameSprite.h"
 #include "gameText.h"
 
 void loadFont(sf::Font& font) {
@@ -83,8 +80,7 @@ void GameText::deleteLastChar(sf::String &playerInput, std::ostringstream &out){
 	}
 }
 
-void GameText::enterLetterPrompt(int charSize, DataSpriteVector dataSpriteVector, TransformableSprite player){
+void GameText::enterLetterPrompt(int charSize, string letter){
 	setCharSize(23);
-	//letter = dataSpriteVector.getLetter(0, player.getSpriteContactIndex());
-	setStringAndCenterOrigin("Enter " + dataSpriteVector.getLetter(0, player.getSpriteContactIndex()), 0, 0);
+	setStringAndCenterOrigin("Enter " + letter, 0, 0);
 }

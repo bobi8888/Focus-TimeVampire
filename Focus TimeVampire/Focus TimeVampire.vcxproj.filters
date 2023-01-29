@@ -21,22 +21,22 @@
     <ClCompile Include="randomizedData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="transformableSprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="gameSprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="gameText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="gameTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dataSprite.cpp">
+    <ClCompile Include="dataSpriteVector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="dataSpriteVector.cpp">
+    <ClCompile Include="playerSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gameSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dataSprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,22 +56,13 @@
     <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gameSprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="gameScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="transformableSprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dataSpriteVector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dataSprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="randomizedData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gameSprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

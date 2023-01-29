@@ -1,10 +1,4 @@
-//#include <iostream>
-#include <vector>
-#include <sstream>
-#include <iomanip>
-#include <iostream>
-#include <algorithm>
-#include <random>
+#include"utils.h"
 
 #include "randomizedData.h"
 
@@ -33,18 +27,3 @@ string randomizeStart_Alpha(int num) {
 	}
 	return letters;
 }
-
-//vector <string> setBubbleValues(std::ostringstream& out, vector <string> bubvec) {
-//	string letters, value;
-//	letters = randomABC();
-//
-//	for (int i = 0; i < bubvec.size(); i++) {
-//		long randomNum = rand() * (RAND_MAX * 0.001);//more decimals, more smaller
-//		out.imbue(std::locale(""));
-//		out << letters[i] << ":   " << std::put_money(randomNum);
-//		value = out.str();
-//		bubvec.at(i) = value;
-//		out.str("");
-//	}
-//	return bubvec;
-//}

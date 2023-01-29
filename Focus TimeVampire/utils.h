@@ -27,8 +27,3 @@ using std::srand;
 using std::rand;
 using std::time;
 using std::random_device;
-
-enum mainScreens { startMAIN, gameMAIN, resumeMAIN };
-enum gameScreens { rememberENUM, countENUM, assembleENUM, discussENUM, ignoreENUM, driveENUM, retainENUM, pushENUM, bonusENUM, mainENUM };
-mainScreens mainScreenENUM = startMAIN;
-gameScreens gameScreenENUM = mainENUM;

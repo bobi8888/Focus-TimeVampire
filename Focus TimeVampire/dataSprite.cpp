@@ -1,7 +1,6 @@
-#include <SFML/Graphics.hpp>
+#include"utils.h"
+
 #include "gameSprite.h"
-#include "dataSprite.h"
-using std::string;
 
 string DataSprite::getLetter() {
 	return letter;
@@ -34,6 +33,6 @@ void DataSprite::setFullDataString(string string) {
 bool DataSprite::getIsComplete(){
 	return isComplete;
 }
-void DataSprite::setIsComplete(bool complete){
-	isComplete = complete;
+void DataSprite::setToComplete(){
+	isComplete = true;
 }

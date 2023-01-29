@@ -1,27 +1,20 @@
 #include "utils.h"
-#include "gameSprite.h"
-#include "dataSprite.h"
-#include "dataSpriteVector.h"
-#include "transformableSprite.h"
-using std::vector;
 
-TransformableSprite::TransformableSprite(float buildSpeed, float buildRadius) {
-	movementSpeed = buildSpeed;
-	radius = buildRadius;
-}
-float TransformableSprite::getMovementSpeed() {
+#include "gameSprite.h"
+
+float PlayerSprite::getMovementSpeed() {
 	return movementSpeed;
 }
-void TransformableSprite::setMovementSpeed(float speed) {
+void PlayerSprite::setMovementSpeed(float speed) {
 	movementSpeed = speed;
 }
-float TransformableSprite::getRadius() {
+float PlayerSprite::getRadius() {
 	return radius;
 }
-void TransformableSprite::setRadius(float newRadius) {
+void PlayerSprite::setRadius(float newRadius) {
 	radius = newRadius;
 }
-sf::Sprite TransformableSprite::setMovement(sf::RenderWindow &window) {
+sf::Sprite PlayerSprite::setMovement(sf::RenderWindow &window) {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 
@@ -54,7 +47,7 @@ sf::Sprite TransformableSprite::setMovement(sf::RenderWindow &window) {
 		return getSprite();
 	}
 }
-bool TransformableSprite::hasCircleContact(const sf::Sprite& sprite) {
+bool PlayerSprite::hasCircleContact(const sf::Sprite& sprite) {
 	float a, b, c, minDist;
 
 	minDist = getRadius() + sprite.getGlobalBounds().height / 2;
@@ -70,15 +63,13 @@ bool TransformableSprite::hasCircleContact(const sf::Sprite& sprite) {
 		return hasContact = false;
 	}
 }
-
-int TransformableSprite::getSpriteContactIndex(){
+int PlayerSprite::getSpriteContactIndex(){
 	return spriteContactIndex;
 }
-void TransformableSprite::setSpriteContactIndex(int itr) {
+void PlayerSprite::setSpriteContactIndex(int itr) {
 	spriteContactIndex = itr;
 }
-
-void TransformableSprite::handleSpriteContactIndex(DataSpriteVector dataSpriteVector) {
+void PlayerSprite::handleSpriteContactIndex(DataSpriteVector dataSpriteVector) {
 	if (getSpriteContactIndex() == -1) {
 		for (int i = 0; i < dataSpriteVector.getDataSpriteVector().size(); i++) {
 			if (hasCircleContact(dataSpriteVector.getDataSpriteVector()[i].getSprite())) {

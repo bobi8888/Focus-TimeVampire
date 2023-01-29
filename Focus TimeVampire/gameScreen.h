@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef gameScreen_H
-#define gameScreen_H
+//#ifndef gameScreen_H
+//#define gameScreen_H
 
 class GameScreen{
 	private:
@@ -20,7 +20,7 @@ class GameScreen{
 GameScreen::GameScreen(string string, sf::Font &font, int charSize, float titleSpaceFromTop) {
 	screenText.setFont(font);
 	screenText.getText().setFont(font);
-	screenText.setCharSize(charSize);//pass titleCHarSize as arg
+	screenText.setCharSize(charSize);
 	screenText.setString(string);
 	screenText.setOrigin(sf::Vector2f(screenText.getText().getGlobalBounds().width / 2, screenText.getText().getCharacterSize() / 2
 		+ ((screenText.getText().getCharacterSize() - screenText.getText().getGlobalBounds().height) / 2)));
@@ -46,4 +46,4 @@ void GameScreen::drawScreen(sf::RenderWindow& window, const sf::Text& timerTextT
 		window.draw(vectorOfSprites[i]);
 	}
 }
-#endif
+//#endif

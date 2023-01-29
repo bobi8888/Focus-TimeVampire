@@ -1,17 +1,8 @@
-//#include <iostream>
-
-//BUSTED
-
 #include "utils.h"
 #include "window.h"
 #include "gameText.h"
 #include "mouse.h"
-
 #include "gameSprite.h"
-#include "dataSprite.h"
-#include "dataSpriteVector.h"
-#include "transformableSprite.h"
-
 #include "gameScreen.h"
 #include "gameTimer.h"
 #include "randomizedData.h"
@@ -42,10 +33,8 @@ int main() {
 	//FONT & TEXT
 	sf::Font generalFont;
 	loadFont(generalFont);
-
 	//can playerInput be GameText obj?
 	sf::String playerInput;
-	GameText playerInput;
 
 	GameText timerText(generalFont, 20, "", 20, window);
 	timerText.setPosition(sf::Vector2f(5,30));
@@ -59,51 +48,40 @@ int main() {
 	//GAME SPRITES
 	GameSprite startButton("startSprite.png", 0.5, 0.5);
 	startButton.setSpritePosition(getCenterOfWindow(window));
-
 	GameSprite pauseButton("pauseSprite.png", 0.25, 0.25);
 	pauseButton.setSpritePosition(sf::Vector2f(window.getSize().x - 35, 40));
-
 	GameSprite resumeButton("resumeSprite.png", 0.5, 0.5);
 	resumeButton.setSpritePosition(getCenterOfWindow(window));
-
 	GameSprite bannerSprite("bannerSprite.png", 1, 1);
 	bannerSprite.setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y - 50));
 	bannerText.setPosition(sf::Vector2f(bannerSprite.getSprite().getPosition().x, bannerSprite.getSprite().getPosition().y - 20));
-
 	GameSprite x_outButton("x_outSprite.png", 0.25, 0.25);
 	x_outButton.setPosition(sf::Vector2f(bannerSprite.getSprite().getPosition().x + bannerSprite.getSprite().getGlobalBounds().width/2 - 15
-	, bannerSprite.getSprite().getPosition().y - bannerSprite.getSprite().getGlobalBounds().height / 2 + 30));
-	
+	, bannerSprite.getSprite().getPosition().y - bannerSprite.getSprite().getGlobalBounds().height / 2 + 30));	
 	GameSprite backButton("backSprite.png", 0.18, 0.18);
 	backButton.setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
-
+	 
 	//TRANSFORMABLE SPRITES
-	TransformableSprite player("playerSprite.png", 0.4, 0.4);
+	PlayerSprite player("playerSprite.png", 0.4, 0.4);
 	player.setSpritePosition(getCenterOfWindow(window));
 	player.setMovementSpeed(4);
 	player.setRadius(player.getSprite().getGlobalBounds().height/2);
 
 	//DATA SPRITES
-	DataSprite minigameSprite("minigameSprite.png", 0.2, 0.2);
+	DataSprite minigameSprite("minigameSprite.png", 0.3, 0.3);
 	DataSprite fullBubble("fullBubbleSprite.png", 1, 1);
 	DataSprite emptyBubble("emptyBubbleSprite.png", 1, 1);
 
 	//SPRITE VECTORS
-	DataSpriteVector rememberFullBubbles;
-	DataSpriteVector rememberEmptyBubbles;
-	rememberFullBubbles.addSprite(fullBubble, 3);
-	rememberEmptyBubbles.addSprite(emptyBubble, 3);
-
+	DataSpriteVector rememberFullBubbles(3,fullBubble);
+	DataSpriteVector rememberEmptyBubbles(3, emptyBubble);
 	rememberFullBubbles.setSpritePositions(3, 1, 1, 35, 100, 125);
 	rememberEmptyBubbles.setSpritePositions(3, 1, 1, 35, 400, 125);
-
 	rememberFullBubbles.setLetter(0);
 	rememberFullBubbles.setLongValues(0);
 	rememberFullBubbles.setStringValues(stream);
 	rememberFullBubbles.setFullDataStrings(out);
-
-	DataSpriteVector minigameSprites;
-	minigameSprites.addSprite(minigameSprite, 9);
+	DataSpriteVector minigameSprites(9, minigameSprite);
 	minigameSprites.setAndCenterSpritePositions(0, 3, 3, 1, 1, window);
 
 	//MAIN GAME SCREENS
@@ -114,20 +92,8 @@ int main() {
 	resumeScreen.addSprite(resumeButton.getSprite());
 
 	//MINIGAMES
-	//GameScreen remember("REMEMBER!");
-
-	////GameScreen count("COUNT!");
-	//GameScreen assemble("ASSEMBLE!");
-	//GameScreen discuss("DISCUSS!");
-	//GameScreen ignore("IGNORE!");
-	//GameScreen drive("DRIVE!");
-	//GameScreen retain("RETAIN!");
-	//GameScreen push("PUSH!");
-	//GameScreen bonus("BONUS!");
 	GameScreen remember("REMEMBER!", generalFont, 25, 25);
 	bannerText.setStringAndCenterOrigin("Enter #", 0, 0);
-	remember.addSprite(fullBubble.getSprite());
-	remember.addSprite(emptyBubble.getSprite());
 	GameScreen count("COUNT!", generalFont, 25, 25);
 	GameScreen assemble("ASSEMBLE!", generalFont, 25, 25);
 	GameScreen discuss("DISCUSS!", generalFont, 25, 25);
@@ -139,6 +105,11 @@ int main() {
 
 	bool deleteKeyWorkaround = false;//both needed for delete workaround
 	bool acceptText = false;
+
+	enum mainScreens { startMAIN, gameMAIN, resumeMAIN };
+	enum gameScreens { rememberENUM, countENUM, assembleENUM, discussENUM, ignoreENUM, driveENUM, retainENUM, pushENUM, bonusENUM, mainENUM };
+	mainScreens mainScreenENUM = startMAIN;
+	gameScreens gameScreenENUM = mainENUM;
 
 	//GAME LOOP: mainScreenENUM
 	sf::Event event;
@@ -188,6 +159,8 @@ int main() {
 							playerText.setStringAndCenterOrigin(outString, 0, -55);//playerText is GameText and its size includes put_money
 							out.str("");
 						}
+					} else {
+						playerInput = "";
 					}
 				}
 			}
@@ -239,14 +212,14 @@ int main() {
 							if (event.type == sf::Event::EventType::MouseButtonPressed) {
 								for (int i = 0; i < minigameSprites.getDataSpriteVector().size(); i++) {
 									if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && 
-									minigameSprites.getDataSpriteVector()[i].getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+									minigameSprites.getSingleSprite(i).getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+										if (!minigameSprites.getSingleSprite(i).getIsComplete())
 										gameScreenENUM = static_cast<gameScreens>(i);
 									}
 								}
 							}
 						break;
 						case rememberENUM://REMEMBER
-						// should not be able to input numbers if the playerSprite is not in contact with dataSprite
 						//swapping can be used to randomize vectors to increase difficulty
 							player.setMovement(window);
 							window.draw(tipText.getText());
@@ -255,110 +228,46 @@ int main() {
 							rememberEmptyBubbles.drawSprites(window);
 							remember.drawScreen(window, timerText.getText());
 
-							for (int i = 0; i < rememberFullBubbles.getDataSpriteVector().size(); i++) {//full
+							for (int i = 0; i < rememberFullBubbles.getDataSpriteVector().size(); i++) {//contacting full sprites
 								if (player.hasCircleContact(rememberFullBubbles.getDataSpriteVector()[i].getSprite()) == true){
 									bannerText.setCharSize(25);
 									bannerText.setStringAndCenterOrigin(rememberFullBubbles.getFullDataStrings(0,i), 0, - 15);
 									window.draw(bannerSprite.getSprite());
 									window.draw(bannerText.getText());
 								}
-							}			
+							}		
 							
-							//Correctly handling the contact index
 							player.handleSpriteContactIndex(rememberEmptyBubbles);
-
-							//check if spriteContactIndex is > 0, that means that there has been contact
-							//if (player.getSpriteContactIndex() > 0){
-							//	//yes check if contacted sprite is complete
-							//	std::cout << player.getSpriteContactIndex() << "\n";// used for debug
-							//	if (rememberEmptyBubbles.isSpriteComplete(player)) {//yes
-							//		acceptText = false;
-							//		std::cout << "sprite is complete \n";// used for debug
-							//	} else {//no check if text can be entered
-							//		std::cout << "sprite is NOT complete \n";// used for debug
-							//		acceptText = true;
-
-							//		//func to handle setting the banner?
-							//		bannerText.enterLetterPrompt(23, rememberFullBubbles, player);
-
-							//		//bannerText.setCharSize(23);
-							//		//string letter = rememberFullBubbles.getLetter(0, player.getSpriteContactIndex());
-							//		//bannerText.setStringAndCenterOrigin("Enter " + letter, 0, 0);
-
-							//		window.draw(bannerSprite.getSprite());//need to update the banner for entering text
-							//		window.draw(bannerText.getText());
-							//		window.draw(playerText.getText());
-
-							//		//create bool for if text can be accepted
-							//		if (~playerInput.getSize() > rememberFullBubbles.getDataSpriteVector()[player.getSpriteContactIndex()].getStringValue().size() - 1) {
-							//			//yes text can be entered
-							//		} else {//no check for a match
-							//			acceptText = false;
-							//			if (playerInput.toAnsiString() == rememberFullBubbles.getDataSpriteVector()[player.getSpriteContactIndex()].getStringValue()) {
-							//				//yes a match, increment a value?
-							//				playerInput.clear();
-							//				rememberEmptyBubbles.updateIndividualTexture(player.getSpriteContactIndex(), "okBubbleSprite.png");
-							//				rememberEmptyBubbles.setSpriteToComplete(player.getSpriteContactIndex());
-							//				std::cout << "This should print once... \n";
-							//			} else {//no
-							//			}
-							//		}
-							//	}
-							//	
-							//} else {//no check if in contact with any sprites in vector
-							//	player.setSpriteContactIndex(-1);
-							//	acceptText = false;
-							//	for (int i = 0; i < rememberEmptyBubbles.getDataSpriteVector().size(); i++) {//checking all sprites for contact
-							//		if (player.hasCircleContact(rememberEmptyBubbles.getDataSpriteVector()[i].getSprite())) {
-							//			//yes, set the sprite contact index
-							//			player.handleSpriteContactIndex(rememberEmptyBubbles, i);
-							//		} else {//no set contact index to -1
-							//			player.setSpriteContactIndex(-1);
-							//		}
-							//	}
-							//}
-							
-
-							if (rememberEmptyBubbles.getVectorComplete()) {
-								std::cout << "Minigame complete! ";
-								//update minigame texture to complete
-								// block clicking on completed minigame
-								//return to minigame screen
+							if (player.getSpriteContactIndex() >= 0) {
+								if (rememberEmptyBubbles.getSingleSprite(player.getSpriteContactIndex()).getIsComplete()) {//checking if contacted sprite is complete
+								} else {//sprite incomplete, check if text can be entered
+									bannerText.enterLetterPrompt(23, rememberFullBubbles.getSingleSprite(player.getSpriteContactIndex()).getLetter());
+									window.draw(bannerSprite.getSprite());
+									window.draw(bannerText.getText());
+									window.draw(playerText.getText());
+									if (playerInput.getSize() <= rememberFullBubbles.getSingleSprite(player.getSpriteContactIndex()).getStringValue().size() - 1) {
+										acceptText = true;
+									} else {//no check for a match
+										acceptText = false;
+										if (playerInput.toAnsiString() == rememberFullBubbles.getSingleSprite(player.getSpriteContactIndex()).getStringValue()) {
+											rememberEmptyBubbles.updateIndividualTexture(player.getSpriteContactIndex(), "okBubbleSprite.png");
+											rememberEmptyBubbles.setSpriteToComplete(player.getSpriteContactIndex());
+										} 
+									}
+								}
+							} else {// no contact
+								playerInput.clear();
+								playerText.setString("");
+								acceptText = false;
 							}
-
-							//if (player.getSpriteContactIndex() < 0) {//emptyBubbles 
-							//	acceptText = false;
-							//	for (int i = 0; i < rememberEmptyBubbles.getDataSpriteVector().size(); i++) {//checking all sprites for contact
-							//		if (player.hasCircleContact(rememberEmptyBubbles.getDataSpriteVector()[i].getSprite())){
-							//			player.handleSpriteContactIndex(rememberEmptyBubbles, i);
-							//		}
-							//	}
-							//} else if (!rememberFullBubbles.getDataSpriteVector()[player.getSpriteContactIndex()].getIsComplete()){//checking if the sprite is complete
-							//	//checking if still in contact with its one sprite
-							//	if (player.hasCircleContact(rememberEmptyBubbles.getDataSpriteVector()[player.getSpriteContactIndex()].getSprite())) {
-							//		acceptText = true;
-							//		string letter = rememberFullBubbles.getLetter(0, player.getSpriteContactIndex());
-							//		bannerText.setStringAndCenterOrigin("Enter " + letter, 0, 0);
-							//		bannerText.setCharSize(23);
-							//		window.draw(bannerSprite.getSprite());
-							//		window.draw(bannerText.getText());
-							//		window.draw(playerText.getText());
-							//	}
-							//	//checking if any more characters can be entered
-							//	if (playerInput.getSize() > rememberFullBubbles.getDataSpriteVector()[player.getSpriteContactIndex()].getStringValue().size() - 1) {
-							//		playerText.setIsFull(true);
-							//		//checking if the strings match
-							//		if (playerInput.toAnsiString() == rememberFullBubbles.getDataSpriteVector()[player.getSpriteContactIndex()].getStringValue()) {
-							//			rememberEmptyBubbles.updateIndividualTexture(player.getSpriteContactIndex(),"okBubbleSprite.png");
-							//			rememberEmptyBubbles.setSpriteToComplete(player.getSpriteContactIndex());
-							//			std::cout << "THis should prtint once \n";
-							//			std::cout << player.getSpriteContactIndex();
-							//		}
-							//	}
-							//} else {
-							//	player.setSpriteContactIndex(-1);
-							//}
 							
+							if (!rememberEmptyBubbles.getVectorComplete()) {
+								rememberEmptyBubbles.checkForCompletion();
+							} else {
+								minigameSprites.updateIndividualTexture(rememberENUM, "completedMinigameSprite.png");
+								minigameSprites.setSpriteToComplete(rememberENUM);
+								gameScreenENUM = mainENUM;	
+							}							
 						break;
 						case countENUM://COUNT
 							count.drawScreen(window, timerText.getText());

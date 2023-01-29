@@ -1,26 +1,27 @@
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <iomanip>
-#include <sstream>
+#include"utils.h"
 
-#include "gameSprite.h"
-#include "dataSprite.h"
-#include "TransformableSprite.h"
 #include "randomizedData.h"
+#include "gameSprite.h"
 
-#include "dataSpriteVector.h"
 
-using std::string;
-using std::vector;
+DataSpriteVector::DataSpriteVector(int qty, DataSprite& dataSprite){
+	for (int i = 0; i < qty; i++) {
+		dataSpriteVector.push_back(dataSprite);
+	}
+}
 
 vector <DataSprite> DataSpriteVector::getDataSpriteVector() {
 	return dataSpriteVector;
+}
+DataSprite DataSpriteVector::getSingleSprite(int index){
+	return dataSpriteVector[index];
 }
 void DataSpriteVector::addSprite(DataSprite dataSprite, int qty) {
 	for (int i = 0; i < qty; i++) {
 		dataSpriteVector.push_back(dataSprite);
 	}
 }
+
 void DataSpriteVector::setSpritePositions(int rows, int columns, float xSpriteSpacing, float ySpriteSpacing, float initialX, float initialY) {
 	auto xIncrement = xSpriteSpacing + dataSpriteVector[0].getSprite().getGlobalBounds().width;
 	auto yIncrement = ySpriteSpacing + dataSpriteVector[0].getSprite().getGlobalBounds().height;
@@ -71,27 +72,20 @@ void DataSpriteVector::drawSprites(sf::RenderWindow &window) {
 void DataSpriteVector::updateIndividualTexture(int index, string newTexture){
 	dataSpriteVector[index].setNewTexture(newTexture);
 }
-void DataSpriteVector::updateVectorComplete(){
-vectorComplete = true;
+
+void DataSpriteVector::checkForCompletion() {
+	int numComplete = 0;
+	for (int i = 0; i < dataSpriteVector.size(); i++) {
+		if (dataSpriteVector[i].getIsComplete()){
+			numComplete++;
+		}
+	}
+	if (numComplete == dataSpriteVector.size()){
+		vectorComplete = true;
+	}
 }
 bool DataSpriteVector::getVectorComplete(){
 	return vectorComplete;
-}
-
-void DataSpriteVector::setSpriteToComplete(int index){
-	dataSpriteVector[index].setIsComplete(true);
-}
-
-//void DataSpriteVector::updateIndividualComplete(int indextPostition)
-//{
-//}
-
-bool DataSpriteVector::isSpriteComplete(TransformableSprite player){
-	if (player.getSpriteContactIndex() < 0){
-		return false;
-	}else{
-		return dataSpriteVector[player.getSpriteContactIndex()].getIsComplete();
-	}
 }
 
 string DataSpriteVector::getLetter(int index, int itr) {
@@ -117,13 +111,9 @@ void DataSpriteVector::setLongValues(int index) {
 	}
 }
 
-//string DataSpriteVector::getStringValues(int index, int itr) {
-//	return dataSpriteVector.at(itr).getStringValue();
-//}
 void DataSpriteVector::setStringValues(std::stringstream& stream) {//this is adding a comma to the string value from the long int 
 	string outString;
 	for (int i = 0; i < dataSpriteVector.size(); i++) {
-		//out.imbue(std::locale(""));
 		stream << dataSpriteVector[i].getLongValue();
 		outString = stream.str();
 		dataSpriteVector[i].setStringValue(outString);
@@ -143,4 +133,8 @@ void DataSpriteVector::setFullDataStrings(std::ostringstream& out) {
 		dataSpriteVector[i].setFullDataString(dataSpriteVector[i].getLetter() + ":  $" + outString);
 		out.str("");
 	}
+}
+
+void DataSpriteVector::setSpriteToComplete(int index){
+	dataSpriteVector[index].setToComplete();
 }

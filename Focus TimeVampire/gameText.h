@@ -1,7 +1,5 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 
-using std::string;
 void loadFont(sf::Font& font);
 
 class GameText{
@@ -10,9 +8,8 @@ class GameText{
 		sf::Text text;
 		int charSize = 10;
 		bool isFull = false;
-
 	public:
-		GameText(){};
+		GameText(){};//used in gameScreen
 		GameText(sf::Font &font, int characterSize, string string, float spaceFromTop, sf::RenderWindow &window);
 		void setString(string string);
 		sf::Text& setStringAndCenterOrigin(sf::String string, float x_offset, float y_offset);
@@ -30,5 +27,5 @@ class GameText{
 		bool getIsFull();
 		void setIsFull(bool newBool);
 		void deleteLastChar(sf::String &playerInput, std::ostringstream &out);
-		void enterLetterPrompt(int charSize, DataSpriteVector dataSpriteVector, TransformableSprite player);	
+		void enterLetterPrompt(int charSize, string letter);	
 };

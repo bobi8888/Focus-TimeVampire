@@ -2,7 +2,6 @@
 
 #include "gameSprite.h"
 
-GameSprite::GameSprite(){};
 GameSprite::GameSprite(string spritePNG, float x, float y) {
 	texture.loadFromFile(spritePNG);
 	xScale = x;
@@ -39,9 +38,9 @@ bool GameSprite::getIsVisible() {
 void GameSprite::setVisibilty(bool visibility) {
 	isVisible = visibility;
 }
-float GameSprite::getProgress() {
-	return progression;
+bool GameSprite::getIsComplete() {
+	return isComplete;
 }
-void GameSprite::setProgress(float progress) {
-	progression = progress;
+void GameSprite::setToComplete() {
+	isComplete = true;
 }
