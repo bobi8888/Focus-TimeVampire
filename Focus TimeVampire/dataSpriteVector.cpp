@@ -1,8 +1,7 @@
 #include"utils.h"
 
-#include "randomizedData.h"
 #include "gameSprite.h"
-
+#include "randomizedData.h"
 
 DataSpriteVector::DataSpriteVector(int qty, DataSprite& dataSprite){
 	for (int i = 0; i < qty; i++) {

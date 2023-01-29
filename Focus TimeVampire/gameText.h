@@ -2,6 +2,9 @@
 
 void loadFont(sf::Font& font);
 
+class DataSpriteVector;
+class TransformableSprite;
+
 class GameText{
 	private:
 		sf::Font gameTextFont;

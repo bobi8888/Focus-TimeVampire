@@ -1,8 +1,5 @@
 #pragma once
 
-//#ifndef gameScreen_H
-//#define gameScreen_H
-
 class GameScreen{
 	private:
 		vector <sf::Sprite> vectorOfSprites;
@@ -46,4 +43,3 @@ void GameScreen::drawScreen(sf::RenderWindow& window, const sf::Text& timerTextT
 		window.draw(vectorOfSprites[i]);
 	}
 }
-//#endif

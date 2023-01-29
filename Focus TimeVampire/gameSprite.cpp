@@ -17,7 +17,7 @@ void GameSprite::setNewTexture(string spritePNG) {
 	texture.loadFromFile(spritePNG);
 	sprite.setTexture(texture);
 }
-const sf::Sprite GameSprite::getSprite() {
+ sf::Sprite GameSprite::getSprite() {
 	return sprite;
 }
 void GameSprite::setSprite(sf::Sprite& newSprite) {
