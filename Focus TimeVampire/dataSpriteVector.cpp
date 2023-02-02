@@ -4,8 +4,35 @@
 #include "randomizedData.h"
 
 DataSpriteVector::DataSpriteVector(int qty, DataSprite& dataSprite){
-	for (int i = 0; i < qty; i++) {
+	for (int i = 1; i <= qty; i++) {
 		dataSpriteVector.push_back(dataSprite);
+	}
+}
+void DataSpriteVector::setPositions(sf::Vector2f center, int rows, int columns, float rowSpacing, float colSpacing) {
+	auto xC2C = colSpacing + dataSpriteVector[0].getSprite().getGlobalBounds().width;
+	auto yC2C = rowSpacing + dataSpriteVector[0].getSprite().getGlobalBounds().height;
+
+	auto overallX = (dataSpriteVector[0].getSprite().getGlobalBounds().width * columns) + colSpacing * (columns - 1);
+	auto overallY = (dataSpriteVector[0].getSprite().getGlobalBounds().height * rows) + rowSpacing * (rows - 1);
+
+	float baseX = center.x - (overallX / 2) + (dataSpriteVector[0].getSprite().getGlobalBounds().width / 2);
+	float baseY = center.y - overallY / 2 + dataSpriteVector[0].getSprite().getGlobalBounds().height / 2;
+	sf::Vector2f newPosition(baseX, baseY);
+	int qty = 0;
+	while (qty < rows * columns) {
+		for (int i = 0; i < rows; i++) {//y
+			if (i > 0) {
+				newPosition.y += yC2C;//creates next row
+				newPosition.x = baseX;//restarts x
+			}
+			for (int j = 0; j < columns; j++) {//x
+				if (j > 0) {
+					newPosition.x += xC2C;//increment x
+				}
+				dataSpriteVector.at(qty).setPosition(newPosition);
+				qty++;
+			}
+		}
 	}
 }
 
@@ -16,53 +43,11 @@ DataSprite DataSpriteVector::getSingleSprite(int index){
 	return dataSpriteVector[index];
 }
 void DataSpriteVector::addSprite(DataSprite dataSprite, int qty) {
-	for (int i = 0; i < qty; i++) {
+	for (int i = 1; i <= qty; i++) {
 		dataSpriteVector.push_back(dataSprite);
 	}
 }
 
-void DataSpriteVector::setSpritePositions(int rows, int columns, float xSpriteSpacing, float ySpriteSpacing, float initialX, float initialY) {
-	auto xIncrement = xSpriteSpacing + dataSpriteVector[0].getSprite().getGlobalBounds().width;
-	auto yIncrement = ySpriteSpacing + dataSpriteVector[0].getSprite().getGlobalBounds().height;
-	sf::Vector2f newPosition;
-	for (int i = 0; i < rows; i++) {
-		if (i > 0) {
-			initialY += yIncrement;
-		}
-		for (int j = 1; j <= columns; j++) {
-			if (j > 1) {
-				initialX += xIncrement;
-			}
-			newPosition.x = initialX;
-			newPosition.y = initialY;
-			dataSpriteVector.at(i).setPosition(newPosition);
-		}
-	}
-}
-void DataSpriteVector::setAndCenterSpritePositions(int index, int rows, int columns, float xSpriteSpacing, float ySpriteSpacing, sf::RenderWindow &window) {
-	auto xIncrement = xSpriteSpacing + dataSpriteVector[0].getSprite().getGlobalBounds().width;
-	auto yIncrement = ySpriteSpacing + dataSpriteVector[0].getSprite().getGlobalBounds().height;
-	float xPosition = window.getSize().x / 2 - xIncrement * (rows - 1) / 2;
-	float yPosition = window.getSize().y / 2 - yIncrement * (columns - 1) / 2;
-	sf::Vector2f newPosition;
-	int num = 0;
-
-	for (int i = 0; i < rows; i++) {
-		if (i > 0) {
-			yPosition += yIncrement;
-			xPosition = window.getSize().x / 2 - xIncrement * (rows - 1) / 2;
-		}
-		for (int j = 1; j <= columns; j++) {
-			if (j > 1) {
-				xPosition += xIncrement;
-			}
-			newPosition.x = xPosition;
-			newPosition.y = yPosition;
-			dataSpriteVector.at(num).setPosition(newPosition);
-			num++;
-		}
-	}
-}
 void DataSpriteVector::drawSprites(sf::RenderWindow &window) {
 	for (int i = 0; i < dataSpriteVector.size(); i++) {
 		window.draw(dataSpriteVector[i].getSprite());	
@@ -86,13 +71,15 @@ void DataSpriteVector::checkForCompletion() {
 bool DataSpriteVector::getVectorComplete(){
 	return vectorComplete;
 }
-
-string DataSpriteVector::getLetter(int index, int itr) {
-	return dataSpriteVector.at(itr).getLetter();
+void DataSpriteVector::setSpriteToComplete(int index) {
+	dataSpriteVector[index].setToComplete();
 }
-void DataSpriteVector::setLetter(int index) {
-	string letters = randomizeStart_Alpha(dataSpriteVector.size());
 
+string DataSpriteVector::getLetter(int index) {
+	return dataSpriteVector.at(index).getLetter();
+}
+void DataSpriteVector::setLetters() {
+	string letters = randomizeStart_Alpha(dataSpriteVector.size());
 	for (int i = 0; i < dataSpriteVector.size(); i++) {
 		string tempString = (1, "");
 		tempString = letters[i];
@@ -100,13 +87,27 @@ void DataSpriteVector::setLetter(int index) {
 	}
 }
 
-long DataSpriteVector::getLongValues(int index, int itr) {
-	return dataSpriteVector.at(itr).getLongValue();
+long DataSpriteVector::getLongValues(int index) {
+	return dataSpriteVector.at(index).getLongValue();
 }
-void DataSpriteVector::setLongValues(int index) {
+void DataSpriteVector::setLongValues() {
 	for (int i = 0; i < dataSpriteVector.size(); i++) {
 		long randomNum = rand() * (RAND_MAX * 0.001);//more decimals, more smaller
 		dataSpriteVector.at(i).setLongValue(randomNum);
+	}
+}
+
+string DataSpriteVector::getFullDataStrings(int index) {
+	return dataSpriteVector.at(index).getFullDataString();
+}
+void DataSpriteVector::setFullDataStrings(std::ostringstream& out) { 
+	string outString;
+	for (int i = 0; i <= dataSpriteVector.size() - 1; i++) {
+		out.imbue(std::locale(""));
+		out << std::put_money(dataSpriteVector[i].getLongValue());
+		outString = out.str();
+		dataSpriteVector[i].setFullDataString(dataSpriteVector[i].getLetter() + ":  $" + outString);
+		out.str("");
 	}
 }
 
@@ -118,22 +119,4 @@ void DataSpriteVector::setStringValues(std::stringstream& stream) {//this is add
 		dataSpriteVector[i].setStringValue(outString);
 		stream.str("");
 	}
-}
-
-string DataSpriteVector::getFullDataStrings(int index, int itr) {
-	return dataSpriteVector.at(itr).getFullDataString();
-}
-void DataSpriteVector::setFullDataStrings(std::ostringstream& out) { 
-	string outString;
-	for (int i = 0; i < dataSpriteVector.size(); i++) {
-		out.imbue(std::locale(""));
-		out << std::put_money(dataSpriteVector[i].getLongValue());
-		outString = out.str();
-		dataSpriteVector[i].setFullDataString(dataSpriteVector[i].getLetter() + ":  $" + outString);
-		out.str("");
-	}
-}
-
-void DataSpriteVector::setSpriteToComplete(int index){
-	dataSpriteVector[index].setToComplete();
 }

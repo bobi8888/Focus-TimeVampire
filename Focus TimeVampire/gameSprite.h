@@ -53,29 +53,29 @@ class DataSpriteVector {
 		bool vectorComplete = false;
 	public:
 		DataSpriteVector(int qty, DataSprite& dataSprite);
+		void setPositions(sf::Vector2f center, int rows, int columns, float rowSpacing, float colSpacing);
+
 		vector <DataSprite> getDataSpriteVector();
 		DataSprite getSingleSprite(int index);
 		void addSprite(DataSprite dataSprite, int qty);
 
-		void setSpritePositions(int rows, int columns, float xSpriteSpacing, float ySpriteSpacing, float initialX, float initialY);
-		void setAndCenterSpritePositions(int index, int rows, int columns, float xSpriteSpacing, float ySpriteSpacing, sf::RenderWindow& window);
 		void drawSprites(sf::RenderWindow& window);
 		void updateIndividualTexture(int index, string newTexture);
+
 		void checkForCompletion();
 		bool getVectorComplete();
+		void setSpriteToComplete(int index);
 
-		string getLetter(int index, int itr);
-		void setLetter(int index);
+		string getLetter(int index);
+		void setLetters();
 
-		long getLongValues(int index, int itr);
-		void setLongValues(int index);
+		long getLongValues(int index);
+		void setLongValues();
 
-		void setStringValues(std::stringstream& stream);
-
-		string getFullDataStrings(int index, int itr);
+		string getFullDataStrings(int itr);
 		void setFullDataStrings(std::ostringstream& out);
 
-		void setSpriteToComplete(int index);
+		void setStringValues(std::stringstream& stream);
 };
 
 class PlayerSprite : public GameSprite {

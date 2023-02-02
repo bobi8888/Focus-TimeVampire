@@ -71,18 +71,27 @@ int main() {
 	DataSprite minigameSprite("minigameSprite.png", 0.3, 0.3);
 	DataSprite fullBubble("fullBubbleSprite.png", 1, 1);
 	DataSprite emptyBubble("emptyBubbleSprite.png", 1, 1);
+	DataSprite countingSprite("countingSprite.png", 0.5, 0.5);
 
-	//SPRITE VECTORS
-	DataSpriteVector rememberFullBubbles(3,fullBubble);
-	DataSpriteVector rememberEmptyBubbles(3, emptyBubble);
-	rememberFullBubbles.setSpritePositions(3, 1, 1, 35, 100, 125);
-	rememberEmptyBubbles.setSpritePositions(3, 1, 1, 35, 400, 125);
-	rememberFullBubbles.setLetter(0);
-	rememberFullBubbles.setLongValues(0);
+	//SPRITE VECTORS	
+	int countingQTY = 13;
+	DataSpriteVector countingSprites(countingQTY, countingSprite);
+	countingSprites.setPositions(sf::Vector2f(window.getSize().x/2, window.getSize().y/2), 1, countingQTY, 0, 4);
+
+	DataSpriteVector minigameSprites(9, minigameSprite);
+	minigameSprites.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 3, 3, 1, 1);
+
+	int bubbleQTY = 3;
+	DataSpriteVector rememberFullBubbles(bubbleQTY,fullBubble);
+	rememberFullBubbles.setPositions(sf::Vector2f(80, 250), bubbleQTY, 1, 25, 0);
+
+	DataSpriteVector rememberEmptyBubbles(bubbleQTY, emptyBubble);
+	rememberEmptyBubbles.setPositions(sf::Vector2f(420, 250), bubbleQTY, 1, 25, 0);
+
+	rememberFullBubbles.setLetters();
+	rememberFullBubbles.setLongValues();
 	rememberFullBubbles.setStringValues(stream);
 	rememberFullBubbles.setFullDataStrings(out);
-	DataSpriteVector minigameSprites(9, minigameSprite);
-	minigameSprites.setAndCenterSpritePositions(0, 3, 3, 1, 1, window);
 
 	//MAIN GAME SCREENS
 	GameScreen startScreen("FOCUS! Time Vampire", generalFont, 25, 25);
@@ -95,6 +104,8 @@ int main() {
 	GameScreen remember("REMEMBER!", generalFont, 25, 25);
 	bannerText.setStringAndCenterOrigin("Enter #", 0, 0);
 	GameScreen count("COUNT!", generalFont, 25, 25);
+	stream << countingQTY;
+	string countingString = stream.str();
 	GameScreen assemble("ASSEMBLE!", generalFont, 25, 25);
 	GameScreen discuss("DISCUSS!", generalFont, 25, 25);
 	GameScreen ignore("IGNORE!", generalFont, 25, 25);
@@ -166,6 +177,7 @@ int main() {
 			}
 		
 		}
+
 		switch (mainScreenENUM){
 			case startMAIN://START SCREEN
 				startScreen.drawScreen(window, timerText.getText());
@@ -181,6 +193,7 @@ int main() {
 			break;	 
 
 			case gameMAIN://GAME SCREEN
+
 				window.draw(pauseButton.getSprite());
 				if (gameTimer.getTimeRemaining() > 0) {
 					timerText.setString(gameTimer.getString(out));
@@ -200,6 +213,9 @@ int main() {
 						if (event.type == sf::Event::EventType::MouseButtonPressed) {
 							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && backButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
 								gameScreenENUM = mainENUM;
+								playerInput.clear();
+								playerText.setString("");
+								acceptText = false;
 							}
 						}
 					}
@@ -219,8 +235,7 @@ int main() {
 								}
 							}
 						break;
-						case rememberENUM://REMEMBER
-						//swapping can be used to randomize vectors to increase difficulty
+						case rememberENUM://REMEMBERs swapping can be used to randomize vectors to increase difficulty
 							player.setMovement(window);
 							window.draw(tipText.getText());
 							window.draw(player.getSprite()); 
@@ -231,7 +246,7 @@ int main() {
 							for (int i = 0; i < rememberFullBubbles.getDataSpriteVector().size(); i++) {//contacting full sprites
 								if (player.hasCircleContact(rememberFullBubbles.getDataSpriteVector()[i].getSprite()) == true){
 									bannerText.setCharSize(25);
-									bannerText.setStringAndCenterOrigin(rememberFullBubbles.getFullDataStrings(0,i), 0, - 15);
+									bannerText.setStringAndCenterOrigin(rememberFullBubbles.getFullDataStrings(i), 0, - 15);
 									window.draw(bannerSprite.getSprite());
 									window.draw(bannerText.getText());
 								}
@@ -270,7 +285,19 @@ int main() {
 							}							
 						break;
 						case countENUM://COUNT
+							//go through same steps as remember
+							//do not cast playerInput as monies
+							acceptText = true;
 							count.drawScreen(window, timerText.getText());
+							countingSprites.drawSprites(window);							
+							bannerText.setCharSize(23);
+							bannerText.setStringAndCenterOrigin("How Many?", 0, 0);
+							window.draw(bannerSprite.getSprite());
+							window.draw(bannerText.getText());
+							window.draw(playerText.getText());
+							if (playerInput == countingString) {//success
+								std::cout << "wow!";
+							}
 						break;
 						case assembleENUM://ASSEMBLE
 							assemble.drawScreen(window, timerText.getText());
