@@ -16,51 +16,14 @@ GameText::GameText(sf::Font &font, int characterSize, string string, float space
 	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2, characterSize / 2 + ((characterSize - text.getGlobalBounds().height) / 2)));
 	text.setPosition(sf::Vector2f(window.getSize().x / 2, spaceFromTop));
 }
-sf::String GameText::getString() {
-	return text.getString();
+sf::Text& GameText::getText() {
+	return text;
 }
-void GameText::setString(string string) {
-	text.setString(string);
-}
-sf::Text& GameText::setStringAndCenterOrigin(sf::String string, float x_offset, float y_offset) {
+sf::Text& GameText::setStringAndPosition(sf::String string, float x_offset, float y_offset) {
 	text.setString(string);
 	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2 + x_offset
 		, (text.getCharacterSize() / 2 + ((text.getCharacterSize() - text.getGlobalBounds().height) / 2)) + y_offset));
 	return text;
-}
-
-int GameText::getCharSize() {
-	return text.getCharacterSize();
-}
-void GameText::setCharSize(int charSize) {
-	text.setCharacterSize(charSize);
-}
-
-sf::Vector2f GameText::getOrigin() {
-	return text.getOrigin();
-}
-void GameText::setOrigin(sf::Vector2f origin) {
-	text.setOrigin(origin);
-}
-void GameText::centerOrigin() {
-	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2, text.getCharacterSize() / 2 + ((text.getCharacterSize() - text.getGlobalBounds().height) / 2)));
-}
-
-sf::Vector2f GameText::getPosition() {
-	return text.getPosition();
-}
-void GameText::setPosition(sf::Vector2f position) {
-	text.setPosition(position);
-}
-
-void GameText::setFont(sf::Font& newFont) {
-	gameTextFont = newFont;
-}
-sf::Text& GameText::getText() {
-	return text;
-}
-void GameText::setFillColor(sf::Color color) {
-	text.setFillColor(color);
 }
 bool GameText::getIsFull() {
 	return isFull;
@@ -68,19 +31,15 @@ bool GameText::getIsFull() {
 void GameText::setIsFull(bool newBool) {
 	isFull = newBool;
 }
-
-void GameText::deleteLastChar(sf::String &playerInput, std::ostringstream &out){
+void GameText::deleteLastChar(sf::String &playerInput, std::ostringstream &out){//need to split this in 2, delete character & set new string
 	if (playerInput.getSize() > 0) {
-		playerInput.erase(playerInput.getSize() - 1);
+		playerInput.erase(playerInput.getSize() - 1, 1);
+
 		out.imbue(std::locale(""));
 		out << std::put_money(playerInput);
 		string outString = '$' + out.str();
-		setStringAndCenterOrigin(outString, 0, -55);
+		//setStringAndPosition(outString, 0, -55);
+		text.setString(outString);
 		out.str("");
 	}
-}
-
-void GameText::enterLetterPrompt(int charSize, string letter){
-	setCharSize(23);
-	setStringAndCenterOrigin("Enter " + letter, 0, 0);
 }
