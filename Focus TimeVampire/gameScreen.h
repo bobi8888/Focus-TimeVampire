@@ -32,7 +32,7 @@ sf::Sprite GameScreen::getSpriteFromVector(int vectorPosition) {
 	return getScreenSprites().at(vectorPosition);
 }
 sf::Text GameScreen::setAndCenterTitle(string newTitle) {
-	screenText.setStringAndPosition(newTitle, 0, 0);
+	screenText.setTextString(newTitle);
 	return screenText.getText();
 }
 void GameScreen::drawScreen(sf::RenderWindow& window, const sf::Text& timerTextText) {

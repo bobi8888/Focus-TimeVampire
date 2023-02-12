@@ -13,17 +13,28 @@ GameText::GameText(sf::Font &font, int characterSize, string string, float space
 	text.setFont(font);
 	text.setCharacterSize(characterSize);
 	text.setString(string);
+	textString = string;
 	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2, characterSize / 2 + ((characterSize - text.getGlobalBounds().height) / 2)));
 	text.setPosition(sf::Vector2f(window.getSize().x / 2, spaceFromTop));
 }
 sf::Text& GameText::getText() {
 	return text;
 }
-sf::Text& GameText::setStringAndPosition(sf::String string, float x_offset, float y_offset) {
-	text.setString(string);
-	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2 + x_offset
-		, (text.getCharacterSize() / 2 + ((text.getCharacterSize() - text.getGlobalBounds().height) / 2)) + y_offset));
-	return text;
+string GameText::getTextString(){
+	return textString;
+}
+void GameText::setTextString(sf::String newString) {
+	textString = newString;
+	text.setString(textString);
+}
+void GameText::appendTextString(sf::String newString){
+	textString += newString;
+	text.setString(textString);
+}
+void GameText::centerTextOriginOnSprite(sf::Sprite sprite, float xOffset, float yOffset) {
+	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2
+	, (text.getCharacterSize() / 2 + ((text.getCharacterSize() - text.getGlobalBounds().height) / 2))));
+	text.setPosition(sf::Vector2f(sprite.getPosition().x + xOffset, sprite.getPosition().y + yOffset));
 }
 bool GameText::getIsFull() {
 	return isFull;
@@ -31,15 +42,16 @@ bool GameText::getIsFull() {
 void GameText::setIsFull(bool newBool) {
 	isFull = newBool;
 }
-void GameText::deleteLastChar(sf::String &playerInput, std::ostringstream &out){//need to split this in 2, delete character & set new string
-	if (playerInput.getSize() > 0) {
-		playerInput.erase(playerInput.getSize() - 1, 1);
-
-		out.imbue(std::locale(""));
-		out << std::put_money(playerInput);
-		string outString = '$' + out.str();
-		//setStringAndPosition(outString, 0, -55);
-		text.setString(outString);
-		out.str("");
+void GameText::deleteLastChar(){	
+	if (textString.size() > 0) {
+		textString.erase(textString.size() - 1, 1);
+		text.setString(textString);
 	}
+}
+void GameText::setTextToMoney(std::ostringstream& out) {
+	out.imbue(std::locale(""));
+	out << std::put_money(textString);
+	string outString = '$' + out.str();
+	text.setString(outString);
+	out.str("");
 }
