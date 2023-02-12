@@ -275,7 +275,6 @@ int main() {
 					}							
 					break;
 					case countENUM://COUNT
-						//go through same steps as remember
 						acceptText = true;
 						count.drawScreen(window, timerText.getText());
 						countingSprites.drawSprites(window);							
@@ -285,7 +284,6 @@ int main() {
 						window.draw(bannerSprite.getSprite());
 						window.draw(bannerText.getText());
 						window.draw(playerText.getText());
-
 						if (playerText.getTextString().size() < countingString.size()) {
 							acceptText = true;
 						} else {
@@ -298,8 +296,9 @@ int main() {
 							gameScreenENUM = mainENUM;
 						}
 					break;
-					case assembleENUM://ASSEMBLE
+					case assembleENUM://ASSEMBLE click and drag sprites
 						assemble.drawScreen(window, timerText.getText());
+
 					break;
 					case discussENUM://DISCUSS
 						discuss.drawScreen(window, timerText.getText());
