@@ -44,3 +44,15 @@ bool GameSprite::getIsComplete() {
 void GameSprite::setToComplete() {
 	isComplete = true;
 }
+bool GameSprite::getCanMove(){
+	return canMove;
+}
+void GameSprite::handleCanMove(sf::Event event, sf::Vector2f translatedMousePosition) {
+	if (event.type == sf::Event::EventType::MouseButtonPressed) {
+		if (getSprite().getGlobalBounds().contains(translatedMousePosition) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			canMove = true;
+		}
+	} else if (!sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+		canMove = false;
+	}
+}

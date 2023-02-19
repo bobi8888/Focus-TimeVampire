@@ -6,6 +6,7 @@
 #include "gameScreen.h"
 #include "gameTimer.h"
 #include "randomizedData.h"
+#include "assembleUtils.h"
 
 //ISSUES
 //reset random numbers each playthrough for Remember
@@ -48,7 +49,9 @@ int main() {
 	GameSprite pauseButton("pauseSprite.png", 0.25, 0.25);
 	pauseButton.setSpritePosition(sf::Vector2f(window.getSize().x - 35, 40));
 	GameSprite resumeButton("resumeSprite.png", 0.5, 0.5);
-	resumeButton.setSpritePosition(getCenterOfWindow(window));
+	resumeButton.setSpritePosition(getCenterOfWindow(window));	
+	GameSprite solutionButton("solutionSprite.png", 0.3, 0.3);
+	solutionButton.setSpritePosition(sf::Vector2f(window.getSize().x/2, window.getSize().y - 50));
 	GameSprite bannerSprite("bannerSprite.png", 1, 1);
 	bannerSprite.setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y - 50));
 	bannerText.getText().setPosition(sf::Vector2f(bannerSprite.getSprite().getPosition().x, bannerSprite.getSprite().getPosition().y - 20));
@@ -57,7 +60,9 @@ int main() {
 	, bannerSprite.getSprite().getPosition().y - bannerSprite.getSprite().getGlobalBounds().height / 2 + 30));	
 	GameSprite backButton("backSprite.png", 0.18, 0.18);
 	backButton.setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
-	 
+	GameSprite pcbSolvedSprite("pcbSolvedSprite.png", 0.75, 0.75);
+	pcbSolvedSprite.setPosition(getCenterOfWindow(window));
+		 
 	//TRANSFORMABLE SPRITES
 	PlayerSprite player("playerSprite.png", 0.4, 0.4);
 	player.setSpritePosition(getCenterOfWindow(window));
@@ -69,15 +74,10 @@ int main() {
 	DataSprite fullBubble("fullBubbleSprite.png", 1, 1);
 	DataSprite emptyBubble("emptyBubbleSprite.png", 1, 1);
 	DataSprite countingSprite("countingSprite.png", 0.5, 0.5);
-
+	
 	//SPRITE VECTORS	
-	int countingQTY = 13;
-	DataSpriteVector countingSprites(countingQTY, countingSprite);
-	countingSprites.setPositions(sf::Vector2f(window.getSize().x/2, window.getSize().y/2), 1, countingQTY, 0, 4);
-
 	DataSpriteVector minigameSprites(9, minigameSprite);
 	minigameSprites.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 3, 3, 1, 1);
-
 	int bubbleQTY = 3;
 	DataSpriteVector rememberFullBubbles(bubbleQTY,fullBubble);
 	rememberFullBubbles.setPositions(sf::Vector2f(80, 250), bubbleQTY, 1, 25, 0);
@@ -88,6 +88,12 @@ int main() {
 	rememberFullBubbles.setLongValues();
 	rememberFullBubbles.setStringValues(stream);
 	rememberFullBubbles.setFullDataStrings(out);
+
+	int countingQTY = 13;
+	DataSpriteVector countingSprites(countingQTY, countingSprite);
+	countingSprites.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 1, countingQTY, 0, 4);
+
+
 
 	//MAIN GAME SCREENS
 	GameScreen startScreen("FOCUS! Time Vampire", generalFont, 25, 25);
@@ -100,10 +106,23 @@ int main() {
 	GameScreen remember("REMEMBER!", generalFont, 25, 25);
 	bannerText.setTextString("Enter #");
 	bannerText.centerTextOriginOnSprite(bannerSprite.getSprite(),0,0);
+
 	GameScreen count("COUNT!", generalFont, 25, 25);
 	stream << countingQTY;
 	string countingString = stream.str();
-	GameScreen assemble("ASSEMBLE!", generalFont, 25, 25);
+
+	//Assemble
+	GameScreen assembleGameScreen("ASSEMBLE!", generalFont, 25, 25);
+	assembleGameScreen.addSprite(solutionButton.getSprite());
+	GameScreen assembleSolution("ASSEMBLE Solution", generalFont, 25, 25);
+	assembleSolution.addSprite(pcbSolvedSprite.getSprite());
+
+	for (int i = 0; i < 9; i++)
+		assembleDataSpriteVector.addSprite(assemblePartsSpriteVector[i], 1);
+
+	assembleDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2 - 10), 3, 3, 90, 120);
+
+	//Discuss
 	GameScreen discuss("DISCUSS!", generalFont, 25, 25);
 	GameScreen ignore("IGNORE!", generalFont, 25, 25);
 	GameScreen drive("DRIVE!", generalFont, 25, 25);
@@ -118,6 +137,12 @@ int main() {
 	enum gameScreens { rememberENUM, countENUM, assembleENUM, discussENUM, ignoreENUM, driveENUM, retainENUM, pushENUM, bonusENUM, mainENUM };
 	mainScreens mainScreenENUM = startMAIN;
 	gameScreens gameScreenENUM = mainENUM;
+
+	assembleGoal.setOrigin(sf::Vector2f(assembleGoal.getGlobalBounds().width / 2, assembleGoal.getGlobalBounds().height / 2));
+	for (int i = 0; i < assembleGoalPositions.size(); i++) {
+		assembleGoal.setPosition(assembleGoalPositions[i]);
+		assemblePartsGoals.push_back(assembleGoal);
+	}
 
 	//GAME LOOP: mainScreenENUM
 	sf::Event event;
@@ -162,9 +187,7 @@ int main() {
 					if (event.text.unicode <= 57 && event.text.unicode >= 48) {
 						playerText.appendTextString(event.text.unicode);
 					}
-				} else {
-					playerText.setTextString("");
-				}
+				} else {playerText.setTextString("");}
 			}		
 		}
 
@@ -211,7 +234,7 @@ int main() {
 				switch(gameScreenENUM){
 					case mainENUM:
 					gameScreen.drawScreen(window, timerText.getText());
-					minigameSprites.drawSprites(window);
+					minigameSprites.drawSprites(window, -1);
 					//SWITCH FOR WHICH MINIGAME IS SELECTED
 					if (event.type == sf::Event::EventType::MouseButtonPressed) {
 						for (int i = 0; i < minigameSprites.getDataSpriteVector().size(); i++) {
@@ -227,8 +250,8 @@ int main() {
 					player.setMovement(window);
 					window.draw(tipText.getText());
 					window.draw(player.getSprite()); 
-					rememberFullBubbles.drawSprites(window);
-					rememberEmptyBubbles.drawSprites(window);
+					rememberFullBubbles.drawSprites(window, -1);
+					rememberEmptyBubbles.drawSprites(window, -1);
 					remember.drawScreen(window, timerText.getText());
 
 					for (int i = 0; i < rememberFullBubbles.getDataSpriteVector().size(); i++) {//contacting full sprites
@@ -277,7 +300,7 @@ int main() {
 					case countENUM://COUNT
 						acceptText = true;
 						count.drawScreen(window, timerText.getText());
-						countingSprites.drawSprites(window);							
+						countingSprites.drawSprites(window, -1);							
 						bannerText.setTextString("How Many?");
 						bannerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, -20);
 						playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +11);
@@ -286,9 +309,7 @@ int main() {
 						window.draw(playerText.getText());
 						if (playerText.getTextString().size() < countingString.size()) {
 							acceptText = true;
-						} else {
-							acceptText = false;
-						}
+						} else {acceptText = false;}
 
 						if (playerText.getText().getString() == countingString) {//success
 							minigameSprites.updateIndividualTexture(countENUM, "completedMinigameSprite.png");
@@ -296,8 +317,45 @@ int main() {
 							gameScreenENUM = mainENUM;
 						}
 					break;
-					case assembleENUM://ASSEMBLE click and drag sprites
-						assemble.drawScreen(window, timerText.getText());
+					case assembleENUM://ASSEMBLE dificulty scale should expidite timer and flip pcbSprite
+						//should be able to click and hold and move mouse within button to see solution
+
+						if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+							if (event.type == sf::Event::EventType::MouseButtonPressed) {
+								assembleScreen = 2;
+							} else {assembleScreen = 1;}
+						} else {assembleScreen = 1;}
+
+						switch (assembleScreen) {
+							case 1:
+								assembleGameScreen.drawScreen(window, timerText.getText());
+								for (int i = 0; i < assemblePartsSpriteVector.size(); i++) {
+									if (i != 4) {//checks if sprites can move besides pcb
+										assembleDataSpriteVector.setCanMove(i, event, translatedMousePosition);
+
+										// when mouse enters the goal, it moves the sprite to 0,0?
+										//consider removing the i != 4 workaround
+										//while the part is moving, check if it has collided with the goal, 
+										// if so, setCanMove to false
+
+										if (assemblePartsGoals[i].getGlobalBounds().contains(translatedMousePosition)) {
+											assembleDataSpriteVector.setSpritePosition(i, assemblePartsGoals[i].getOrigin());
+										}
+									}
+									if (assembleDataSpriteVector.getSingleSprite(i).getCanMove()) {
+										assembleDataSpriteVector.setSpritePosition(i, translatedMousePosition);
+									}
+								}
+								assembleDataSpriteVector.drawSprites(window, 4);
+								for (int i = 0; i < assembleGoalPositions.size(); i++) {
+									window.draw(assemblePartsGoals[i]);
+								}
+								window.draw(assembleGoal);
+							break;
+							case 2:
+								assembleSolution.drawScreen(window, timerText.getText());
+							break;
+						}
 
 					break;
 					case discussENUM://DISCUSS

@@ -3,6 +3,7 @@
 #include "gameSprite.h"
 #include "randomizedData.h"
 
+DataSpriteVector::DataSpriteVector(){};
 DataSpriteVector::DataSpriteVector(int qty, DataSprite& dataSprite){
 	for (int i = 1; i <= qty; i++) {
 		dataSpriteVector.push_back(dataSprite);
@@ -48,8 +49,18 @@ void DataSpriteVector::addSprite(DataSprite dataSprite, int qty) {
 	}
 }
 
-void DataSpriteVector::drawSprites(sf::RenderWindow &window) {
+void DataSpriteVector::setCanMove(int index, sf::Event event, sf::Vector2f translatedMousePosition) {
+	dataSpriteVector[index].handleCanMove(event, translatedMousePosition);
+}
+void DataSpriteVector::setSpritePosition(int index, sf::Vector2f newPosition){
+	dataSpriteVector[index].setPosition(newPosition);
+}
+
+void DataSpriteVector::drawSprites(sf::RenderWindow &window, int skipIndex) {
+	if (skipIndex > 0)
+	window.draw(dataSpriteVector[skipIndex].getSprite());
 	for (int i = 0; i < dataSpriteVector.size(); i++) {
+		if (i != skipIndex) 
 		window.draw(dataSpriteVector[i].getSprite());	
 	}
 }

@@ -6,7 +6,7 @@ class GameSprite {
 		sf::Sprite sprite;
 		sf::Texture texture;
 		float xScale = 1, yScale = 1;
-		bool isVisible = true, isComplete = false;
+		bool isVisible = true, isComplete = false, canMove = false;
 		friend class TransformableSprite;
 		friend class DataSpriteVector;
 	public:
@@ -22,6 +22,8 @@ class GameSprite {
 		void setVisibilty(bool visibility);
 		bool getIsComplete();
 		void setToComplete();
+		bool getCanMove();
+		void handleCanMove(sf::Event event,sf::Vector2f translatedMousePosition);
 };
 
 class DataSprite : public GameSprite{
@@ -52,6 +54,7 @@ class DataSpriteVector {
 		vector <DataSprite> dataSpriteVector;
 		bool vectorComplete = false;
 	public:
+		DataSpriteVector();
 		DataSpriteVector(int qty, DataSprite& dataSprite);
 		void setPositions(sf::Vector2f center, int rows, int columns, float rowSpacing, float colSpacing);
 
@@ -59,7 +62,10 @@ class DataSpriteVector {
 		DataSprite getSingleSprite(int index);
 		void addSprite(DataSprite dataSprite, int qty);
 
-		void drawSprites(sf::RenderWindow& window);
+		void setCanMove(int index, sf::Event event, sf::Vector2f translatedMousePosition);
+		void setSpritePosition(int index, sf::Vector2f newPosition);
+
+		void drawSprites(sf::RenderWindow& window, int skipIndex);
 		void updateIndividualTexture(int index, string newTexture);
 
 		void checkForCompletion();
