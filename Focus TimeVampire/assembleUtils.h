@@ -1,12 +1,11 @@
 #pragma once
-
 int assembleScreen = 1;
 
 sf::Vector2f resistorGoal (295, 313);
 sf::Vector2f capacitorGoal (340, 235);
 sf::Vector2f microchipGoal (264, 264);
 sf::Vector2f diodeGoal (256, 313);
-sf::Vector2f pcbGoal (-1,-1);
+sf::Vector2f pcbGoal (-50,-50);
 sf::Vector2f heatsinkGoal (307, 202);
 sf::Vector2f usbPortGoal (194, 321);
 sf::Vector2f relayGoal (240, 196);
@@ -28,3 +27,4 @@ DataSprite jackSprite("jackSprite.png", 0.1, 0.1);
 vector <DataSprite> assemblePartsSpriteVector{ resistorSprite, capacitorSprite, microchipSprite, diodeSprite, pcbSprite, heatsinkSprite, usbPortSprite, relaySprite, jackSprite };
 
 DataSpriteVector assembleDataSpriteVector;
+GameSprite pcbSolvedSprite("pcbSolvedSprite.png", 0.75, 0.75);

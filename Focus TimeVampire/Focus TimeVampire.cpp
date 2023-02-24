@@ -60,8 +60,6 @@ int main() {
 	, bannerSprite.getSprite().getPosition().y - bannerSprite.getSprite().getGlobalBounds().height / 2 + 30));	
 	GameSprite backButton("backSprite.png", 0.18, 0.18);
 	backButton.setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
-	GameSprite pcbSolvedSprite("pcbSolvedSprite.png", 0.75, 0.75);
-	pcbSolvedSprite.setPosition(getCenterOfWindow(window));
 		 
 	//TRANSFORMABLE SPRITES
 	PlayerSprite player("playerSprite.png", 0.4, 0.4);
@@ -93,8 +91,6 @@ int main() {
 	DataSpriteVector countingSprites(countingQTY, countingSprite);
 	countingSprites.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 1, countingQTY, 0, 4);
 
-
-
 	//MAIN GAME SCREENS
 	GameScreen startScreen("FOCUS! Time Vampire", generalFont, 25, 25);
 	startScreen.addSprite(startButton.getSprite());
@@ -115,12 +111,14 @@ int main() {
 	GameScreen assembleGameScreen("ASSEMBLE!", generalFont, 25, 25);
 	assembleGameScreen.addSprite(solutionButton.getSprite());
 	GameScreen assembleSolution("ASSEMBLE Solution", generalFont, 25, 25);
+	pcbSolvedSprite.setPosition(getCenterOfWindow(window));
 	assembleSolution.addSprite(pcbSolvedSprite.getSprite());
 
 	for (int i = 0; i < 9; i++)
 		assembleDataSpriteVector.addSprite(assemblePartsSpriteVector[i], 1);
 
 	assembleDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2 - 10), 3, 3, 90, 120);
+	assembleDataSpriteVector.getSingleSprite(4).setToComplete();
 
 	//Discuss
 	GameScreen discuss("DISCUSS!", generalFont, 25, 25);
@@ -262,7 +260,6 @@ int main() {
 							window.draw(bannerText.getText());
 						}
 					}		
-							// need to set the positon of playerTExt
 					player.handleSpriteContactIndex(rememberEmptyBubbles);
 					if (player.getSpriteContactIndex() >= 0) {
 						if (rememberEmptyBubbles.getSingleSprite(player.getSpriteContactIndex()).getIsComplete()) {//checking if contacted sprite is complete
@@ -298,64 +295,73 @@ int main() {
 					}							
 					break;
 					case countENUM://COUNT
+					acceptText = true;
+					count.drawScreen(window, timerText.getText());
+					countingSprites.drawSprites(window, -1);							
+					bannerText.setTextString("How Many?");
+					bannerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, -20);
+					playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +11);
+					window.draw(bannerSprite.getSprite());
+					window.draw(bannerText.getText());
+					window.draw(playerText.getText());
+					if (playerText.getTextString().size() < countingString.size()) {
 						acceptText = true;
-						count.drawScreen(window, timerText.getText());
-						countingSprites.drawSprites(window, -1);							
-						bannerText.setTextString("How Many?");
-						bannerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, -20);
-						playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +11);
-						window.draw(bannerSprite.getSprite());
-						window.draw(bannerText.getText());
-						window.draw(playerText.getText());
-						if (playerText.getTextString().size() < countingString.size()) {
-							acceptText = true;
-						} else {acceptText = false;}
+					} else {acceptText = false;}
 
-						if (playerText.getText().getString() == countingString) {//success
-							minigameSprites.updateIndividualTexture(countENUM, "completedMinigameSprite.png");
-							minigameSprites.setSpriteToComplete(countENUM);
-							gameScreenENUM = mainENUM;
-						}
+					if (playerText.getText().getString() == countingString) {//success
+						minigameSprites.updateIndividualTexture(countENUM, "completedMinigameSprite.png");
+						minigameSprites.setSpriteToComplete(countENUM);
+						gameScreenENUM = mainENUM;
+					}
 					break;
 					case assembleENUM://ASSEMBLE dificulty scale should expidite timer and flip pcbSprite
 						//should be able to click and hold and move mouse within button to see solution
 
-						if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-							if (event.type == sf::Event::EventType::MouseButtonPressed) {
-								assembleScreen = 2;
-							} else {assembleScreen = 1;}
+					if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+						if (event.type == sf::Event::EventType::MouseButtonPressed) {
+							assembleScreen = 2;
 						} else {assembleScreen = 1;}
+					} else {assembleScreen = 1;}
 
-						switch (assembleScreen) {
-							case 1:
-								assembleGameScreen.drawScreen(window, timerText.getText());
-								for (int i = 0; i < assemblePartsSpriteVector.size(); i++) {
-									if (i != 4) {//checks if sprites can move besides pcb
-										assembleDataSpriteVector.setCanMove(i, event, translatedMousePosition);
-
-										// when mouse enters the goal, it moves the sprite to 0,0?
-										//consider removing the i != 4 workaround
-										//while the part is moving, check if it has collided with the goal, 
-										// if so, setCanMove to false
-
-										if (assemblePartsGoals[i].getGlobalBounds().contains(translatedMousePosition)) {
-											assembleDataSpriteVector.setSpritePosition(i, assemblePartsGoals[i].getOrigin());
-										}
-									}
-									if (assembleDataSpriteVector.getSingleSprite(i).getCanMove()) {
+					switch (assembleScreen) {
+						case 1:
+						assembleGameScreen.drawScreen(window, timerText.getText());
+						//sprites not moveable
+						for (int i = 0; i < assemblePartsSpriteVector.size(); i++) {
+							if (i != 4) {//checks if sprites can move besides pcb
+								if (!assemblePartsSpriteVector[i].getIsComplete()) {
+									assembleDataSpriteVector.setCanMove(i, event, translatedMousePosition);
+									if (assembleDataSpriteVector.getSingleSprite(i).getCanMove()) {//moves the sprite w/ mouse
 										assembleDataSpriteVector.setSpritePosition(i, translatedMousePosition);
+										mouseContactIndex = i;
+										if (assemblePartsGoals[i].getGlobalBounds().contains(translatedMousePosition)) {
+											assembleDataSpriteVector.getSingleSprite(i).setToComplete();
+											assembleDataSpriteVector.setSpritePosition(i,assembleGoalPositions[i]);
+											assembleDataSpriteVector.getSingleSprite(i).setToComplete();
+										}
+									} else {
+										mouseContactIndex = -1;
 									}
-								}
-								assembleDataSpriteVector.drawSprites(window, 4);
-								for (int i = 0; i < assembleGoalPositions.size(); i++) {
-									window.draw(assemblePartsGoals[i]);
-								}
-								window.draw(assembleGoal);
-							break;
-							case 2:
-								assembleSolution.drawScreen(window, timerText.getText());
-							break;
+								}					
+							}
 						}
+						//figure out how to set pcb and sprites to complete
+						//once the sprite jumps to its goal position, it should not be able to move
+						//dSV checks for completion
+						if (!assembleDataSpriteVector.getVectorComplete()) {
+							assembleDataSpriteVector.checkForCompletion();
+						}
+						else {
+							minigameSprites.updateIndividualTexture(assembleENUM, "completedMinigameSprite.png");
+							minigameSprites.setSpriteToComplete(assembleENUM);
+							gameScreenENUM = mainENUM;
+						}
+						assembleDataSpriteVector.drawSprites(window, 4);
+						break;
+						case 2:
+						assembleSolution.drawScreen(window, timerText.getText());
+						break;
+					}
 
 					break;
 					case discussENUM://DISCUSS

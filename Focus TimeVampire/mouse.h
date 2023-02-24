@@ -1,4 +1,4 @@
-
+int mouseContactIndex = -1;
 sf::Vector2i mousePosition;
 sf::Vector2f translatedMousePosition;
 sf::Mouse mouse;
