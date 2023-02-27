@@ -7,6 +7,7 @@
 #include "gameTimer.h"
 #include "randomizedData.h"
 #include "assembleUtils.h"
+#include "discussUtils.h"
 
 //ISSUES
 //reset random numbers each playthrough for Remember
@@ -99,29 +100,42 @@ int main() {
 	resumeScreen.addSprite(resumeButton.getSprite());
 
 	//MINIGAMES
+	//REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER
 	GameScreen remember("REMEMBER!", generalFont, 25, 25);
 	bannerText.setTextString("Enter #");
 	bannerText.centerTextOriginOnSprite(bannerSprite.getSprite(),0,0);
-
+	//COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT 
 	GameScreen count("COUNT!", generalFont, 25, 25);
 	stream << countingQTY;
 	string countingString = stream.str();
-
-	//Assemble
+	//ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE 
 	GameScreen assembleGameScreen("ASSEMBLE!", generalFont, 25, 25);
 	assembleGameScreen.addSprite(solutionButton.getSprite());
 	GameScreen assembleSolution("ASSEMBLE Solution", generalFont, 25, 25);
 	pcbSolvedSprite.setPosition(getCenterOfWindow(window));
 	assembleSolution.addSprite(pcbSolvedSprite.getSprite());
-
-	for (int i = 0; i < 9; i++)
-		assembleDataSpriteVector.addSprite(assemblePartsSpriteVector[i], 1);
-
+	for (int i = 0; i < 9; i++) {assembleDataSpriteVector.addSprite(assemblePartsSpriteVector[i], 1);}
 	assembleDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2 - 10), 3, 3, 90, 120);
-	assembleDataSpriteVector.getSingleSprite(4).setToComplete();
-
-	//Discuss
+	assembleDataSpriteVector.setSpriteToComplete(4);	
+	assembleGoal.setOrigin(sf::Vector2f(assembleGoal.getGlobalBounds().width / 2, assembleGoal.getGlobalBounds().height / 2));
+	for (int i = 0; i < assembleGoalPositions.size(); i++) {
+		assembleGoal.setPosition(assembleGoalPositions[i]);
+		assemblePartsGoals.push_back(assembleGoal);
+	}
+	//DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
 	GameScreen discuss("DISCUSS!", generalFont, 25, 25);
+	GameText npcText(generalFont,30,"How many days are in a week?",100,window);
+	//npcText.getText().getString().getSize()
+	for (int i = 0; i < 1; i++) {
+		sf::RectangleShape textBlocker(sf::Vector2f(npcText.getText().findCharacterPos(i).x, npcText.getText().findCharacterPos(i).y));
+		textBlocker.setOrigin(textBlocker.getSize().x/2, textBlocker.getSize().y/2);
+		textBlocker.setPosition(npcText.getText().findCharacterPos(i));
+		textBlocker.setFillColor(sf::Color::Black);
+		textBlocker.setOutlineColor(sf::Color::Cyan);
+		textBlocker.setOutlineThickness(5);
+		textBlockersVector.push_back(textBlocker);
+	}
+	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 	GameScreen ignore("IGNORE!", generalFont, 25, 25);
 	GameScreen drive("DRIVE!", generalFont, 25, 25);
 	GameScreen retain("RETAIN!", generalFont, 25, 25);
@@ -136,11 +150,7 @@ int main() {
 	mainScreens mainScreenENUM = startMAIN;
 	gameScreens gameScreenENUM = mainENUM;
 
-	assembleGoal.setOrigin(sf::Vector2f(assembleGoal.getGlobalBounds().width / 2, assembleGoal.getGlobalBounds().height / 2));
-	for (int i = 0; i < assembleGoalPositions.size(); i++) {
-		assembleGoal.setPosition(assembleGoalPositions[i]);
-		assemblePartsGoals.push_back(assembleGoal);
-	}
+
 
 	//GAME LOOP: mainScreenENUM
 	sf::Event event;
@@ -159,12 +169,10 @@ int main() {
 					playerText.deleteLastChar();
 					playerText.setIsFull(false);
 					deleteKeyWorkaround = true;
-				}else{
+				}else
 					deleteKeyWorkaround = false;
-				}
 				break;
 			}
-			
 			if (event.type == sf::Event::TextEntered) {
 				string outString;
 				switch (event.text.unicode){
@@ -172,20 +180,17 @@ int main() {
 					playerText.setTextString("");
 					playerText.setIsFull(false);
 					break;
-
 					case 8://BACKSPACE
 					playerText.deleteLastChar();
 					playerText.setIsFull(false);
 					break;					
 				}			
 			}
-
 			if (acceptText) {
 				if(!playerText.getIsFull()) {
-					if (event.text.unicode <= 57 && event.text.unicode >= 48) {
+					if (event.text.unicode < 57 && event.text.unicode >= 48 && event.type != sf::Event::MouseMoved)
 						playerText.appendTextString(event.text.unicode);
-					}
-				} else {playerText.setTextString("");}
+				} else playerText.setTextString("");
 			}		
 		}
 
@@ -244,7 +249,8 @@ int main() {
 						}
 					}
 					break;
-					case rememberENUM://REMEMBER swapping can be used to randomize vectors to increase difficulty
+					case rememberENUM://REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER 
+					//swapping can be used to randomize vectors to increase difficulty
 					player.setMovement(window);
 					window.draw(tipText.getText());
 					window.draw(player.getSprite()); 
@@ -273,7 +279,7 @@ int main() {
 							window.draw(playerText.getText());
 							if (playerText.getTextString().size() <= rememberFullBubbles.getSingleSprite(player.getSpriteContactIndex()).getStringValue().size() - 1) {
 								acceptText = true;
-							} else {//no check for a match
+							} else {
 								acceptText = false;
 								if (playerText.getTextString() == rememberFullBubbles.getSingleSprite(player.getSpriteContactIndex()).getStringValue()) {
 									rememberEmptyBubbles.updateIndividualTexture(player.getSpriteContactIndex(), "okBubbleSprite.png");
@@ -281,21 +287,22 @@ int main() {
 								} 
 							}
 						}
-					} else {// no contact
+					} else {
 						playerText.setTextString("");
 						acceptText = false;
 					}
 							
-					if (!rememberEmptyBubbles.getVectorComplete()) {
+					if (!rememberEmptyBubbles.getVectorComplete())
 						rememberEmptyBubbles.checkForCompletion();
-					} else {
+					else {
+						playerText.setTextString("");
 						minigameSprites.updateIndividualTexture(rememberENUM, "completedMinigameSprite.png");
 						minigameSprites.setSpriteToComplete(rememberENUM);
 						gameScreenENUM = mainENUM;	
 					}							
 					break;
-					case countENUM://COUNT
-					acceptText = true;
+					case countENUM://COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT 
+					//acceptText = true;
 					count.drawScreen(window, timerText.getText());
 					countingSprites.drawSprites(window, -1);							
 					bannerText.setTextString("How Many?");
@@ -306,51 +313,46 @@ int main() {
 					window.draw(playerText.getText());
 					if (playerText.getTextString().size() < countingString.size()) {
 						acceptText = true;
-					} else {acceptText = false;}
+					} else acceptText = false;
 
-					if (playerText.getText().getString() == countingString) {//success
+					if (playerText.getText().getString() == countingString) {
+						playerText.setTextString("");
 						minigameSprites.updateIndividualTexture(countENUM, "completedMinigameSprite.png");
 						minigameSprites.setSpriteToComplete(countENUM);
 						gameScreenENUM = mainENUM;
 					}
 					break;
-					case assembleENUM://ASSEMBLE dificulty scale should expidite timer and flip pcbSprite
-						//should be able to click and hold and move mouse within button to see solution
+					case assembleENUM://ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE 
+					if (event.type == sf::Event::EventType::MouseButtonPressed) {
+						if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) 
+						validMouseClick = true;
+					}
+					if (!solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition) || !sf::Mouse::isButtonPressed(sf::Mouse::Left))
+					validMouseClick = false;
 
-					if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-						if (event.type == sf::Event::EventType::MouseButtonPressed) {
-							assembleScreen = 2;
-						} else {assembleScreen = 1;}
-					} else {assembleScreen = 1;}
+					if (validMouseClick)
+					assembleScreen = 2;
+					else assembleScreen = 1;
 
 					switch (assembleScreen) {
 						case 1:
 						assembleGameScreen.drawScreen(window, timerText.getText());
-						//sprites not moveable
 						for (int i = 0; i < assemblePartsSpriteVector.size(); i++) {
-							if (i != 4) {//checks if sprites can move besides pcb
-								if (!assemblePartsSpriteVector[i].getIsComplete()) {
-									assembleDataSpriteVector.setCanMove(i, event, translatedMousePosition);
-									if (assembleDataSpriteVector.getSingleSprite(i).getCanMove()) {//moves the sprite w/ mouse
-										assembleDataSpriteVector.setSpritePosition(i, translatedMousePosition);
-										mouseContactIndex = i;
-										if (assemblePartsGoals[i].getGlobalBounds().contains(translatedMousePosition)) {
-											assembleDataSpriteVector.getSingleSprite(i).setToComplete();
-											assembleDataSpriteVector.setSpritePosition(i,assembleGoalPositions[i]);
-											assembleDataSpriteVector.getSingleSprite(i).setToComplete();
-										}
-									} else {
-										mouseContactIndex = -1;
+							if (i != 4 && !assembleDataSpriteVector.getSingleSprite(i).getIsComplete()) {
+								assembleDataSpriteVector.setCanMove(i, event, translatedMousePosition);
+								if (assembleDataSpriteVector.getSingleSprite(i).getCanMove()) {
+									assembleDataSpriteVector.setSpritePosition(i, translatedMousePosition);
+									mouseContactIndex = i;
+									if (assemblePartsGoals[i].getGlobalBounds().contains(translatedMousePosition)) {
+										assembleDataSpriteVector.getSingleSprite(i).setToComplete();
+										assembleDataSpriteVector.setSpritePosition(i,assembleGoalPositions[i]);
+										assembleDataSpriteVector.setSpriteToComplete(i);
 									}
-								}					
+								} else mouseContactIndex = -1;																				
 							}
 						}
-						//figure out how to set pcb and sprites to complete
-						//once the sprite jumps to its goal position, it should not be able to move
-						//dSV checks for completion
-						if (!assembleDataSpriteVector.getVectorComplete()) {
+						if (!assembleDataSpriteVector.getVectorComplete())
 							assembleDataSpriteVector.checkForCompletion();
-						}
 						else {
 							minigameSprites.updateIndividualTexture(assembleENUM, "completedMinigameSprite.png");
 							minigameSprites.setSpriteToComplete(assembleENUM);
@@ -364,26 +366,33 @@ int main() {
 					}
 
 					break;
-					case discussENUM://DISCUSS
+					case discussENUM://DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
 						discuss.drawScreen(window, timerText.getText());
+						//only 2 chars are visible at one
+						//a timer that is changing the color of the text from black to white
+						//go throught the string and draw a black rectangle over the size of each char?
+						//need func to reset the textBlockers once the string changes
+						window.draw(npcText.getText());
+						for (int i = 0; i < textBlockersVector.size(); i++) 
+							window.draw(textBlockersVector[i]);
+
 					break;
-					case ignoreENUM://IGNORE
+					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 						ignore.drawScreen(window, timerText.getText());
 					break;
-					case driveENUM://DRIVE
+					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 
 						drive.drawScreen(window, timerText.getText());
 					break;
-					case retainENUM://RETAIN
+					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 						retain.drawScreen(window, timerText.getText());
 					break;
-					case pushENUM://PUSH
+					case pushENUM://PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH 
 						push.drawScreen(window, timerText.getText());
 					break;
-					case bonusENUM://BONUS
+					case bonusENUM://BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS 
 						bonus.drawScreen(window, timerText.getText());
 					break;
 				}
-
 			}else{//TIME IS UP
 				gameTimer = gameTimer.timeUp(gameTimer);
 				timerText.getText().setString("Time Up!");

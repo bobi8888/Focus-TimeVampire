@@ -68,5 +68,8 @@
     <ClInclude Include="assembleUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="discussUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 int mouseContactIndex = -1;
+bool validMouseClick = false;
 sf::Vector2i mousePosition;
 sf::Vector2f translatedMousePosition;
 sf::Mouse mouse;

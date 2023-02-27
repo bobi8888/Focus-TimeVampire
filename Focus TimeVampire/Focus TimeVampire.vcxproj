@@ -149,6 +149,7 @@
     <ClCompile Include="playerSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="discussUtils.h" />
     <ClInclude Include="gameSprite.h" />
     <ClInclude Include="assembleUtils.h" />
     <ClInclude Include="randomizedData.h" />
