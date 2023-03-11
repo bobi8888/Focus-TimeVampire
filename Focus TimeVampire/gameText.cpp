@@ -55,3 +55,18 @@ void GameText::setTextToMoney(std::ostringstream& out) {
 	text.setString(outString);
 	out.str("");
 }
+vector <float> GameText::getCharWidthsVector(){
+	return charWidths;
+}
+void GameText::setCharWidthsVector(string newString){
+	float prev = 0, next = 0;
+	text.setString(newString);
+	for (int i = 1; i <= newString.size(); i++){
+		prev = text.getGlobalBounds().width;
+		text.setString(newString.substr(i));
+		next = text.getGlobalBounds().width;
+		charWidths.push_back(prev - next);
+		//std::cout << charWidths[i-1] << "\n";
+	}
+	text.setString(newString);
+}

@@ -6,6 +6,8 @@
 #include "gameScreen.h"
 #include "gameTimer.h"
 #include "randomizedData.h"
+#include "assembleUtils.h"
+#include "discussUtils.h"
 
 //ISSUES
 //reset random numbers each playthrough for Remember
@@ -48,7 +50,9 @@ int main() {
 	GameSprite pauseButton("pauseSprite.png", 0.25, 0.25);
 	pauseButton.setSpritePosition(sf::Vector2f(window.getSize().x - 35, 40));
 	GameSprite resumeButton("resumeSprite.png", 0.5, 0.5);
-	resumeButton.setSpritePosition(getCenterOfWindow(window));
+	resumeButton.setSpritePosition(getCenterOfWindow(window));	
+	GameSprite solutionButton("solutionSprite.png", 0.3, 0.3);
+	solutionButton.setSpritePosition(sf::Vector2f(window.getSize().x/2, window.getSize().y - 50));
 	GameSprite bannerSprite("bannerSprite.png", 1, 1);
 	bannerSprite.setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y - 50));
 	bannerText.getText().setPosition(sf::Vector2f(bannerSprite.getSprite().getPosition().x, bannerSprite.getSprite().getPosition().y - 20));
@@ -57,7 +61,7 @@ int main() {
 	, bannerSprite.getSprite().getPosition().y - bannerSprite.getSprite().getGlobalBounds().height / 2 + 30));	
 	GameSprite backButton("backSprite.png", 0.18, 0.18);
 	backButton.setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
-	 
+		 
 	//TRANSFORMABLE SPRITES
 	PlayerSprite player("playerSprite.png", 0.4, 0.4);
 	player.setSpritePosition(getCenterOfWindow(window));
@@ -69,15 +73,10 @@ int main() {
 	DataSprite fullBubble("fullBubbleSprite.png", 1, 1);
 	DataSprite emptyBubble("emptyBubbleSprite.png", 1, 1);
 	DataSprite countingSprite("countingSprite.png", 0.5, 0.5);
-
+	
 	//SPRITE VECTORS	
-	int countingQTY = 13;
-	DataSpriteVector countingSprites(countingQTY, countingSprite);
-	countingSprites.setPositions(sf::Vector2f(window.getSize().x/2, window.getSize().y/2), 1, countingQTY, 0, 4);
-
 	DataSpriteVector minigameSprites(9, minigameSprite);
 	minigameSprites.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 3, 3, 1, 1);
-
 	int bubbleQTY = 3;
 	DataSpriteVector rememberFullBubbles(bubbleQTY,fullBubble);
 	rememberFullBubbles.setPositions(sf::Vector2f(80, 250), bubbleQTY, 1, 25, 0);
@@ -89,6 +88,10 @@ int main() {
 	rememberFullBubbles.setStringValues(stream);
 	rememberFullBubbles.setFullDataStrings(out);
 
+	int countingQTY = 13;
+	DataSpriteVector countingSprites(countingQTY, countingSprite);
+	countingSprites.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 1, countingQTY, 0, 4);
+
 	//MAIN GAME SCREENS
 	GameScreen startScreen("FOCUS! Time Vampire", generalFont, 25, 25);
 	startScreen.addSprite(startButton.getSprite());
@@ -97,14 +100,42 @@ int main() {
 	resumeScreen.addSprite(resumeButton.getSprite());
 
 	//MINIGAMES
+	//REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER
 	GameScreen remember("REMEMBER!", generalFont, 25, 25);
 	bannerText.setTextString("Enter #");
 	bannerText.centerTextOriginOnSprite(bannerSprite.getSprite(),0,0);
+	//COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT 
 	GameScreen count("COUNT!", generalFont, 25, 25);
 	stream << countingQTY;
 	string countingString = stream.str();
-	GameScreen assemble("ASSEMBLE!", generalFont, 25, 25);
+	//ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE 
+	GameScreen assembleGameScreen("ASSEMBLE!", generalFont, 25, 25);
+	assembleGameScreen.addSprite(solutionButton.getSprite());
+	GameScreen assembleSolution("ASSEMBLE Solution", generalFont, 25, 25);
+	pcbSolvedSprite.setPosition(getCenterOfWindow(window));
+	assembleSolution.addSprite(pcbSolvedSprite.getSprite());
+	for (int i = 0; i < 9; i++) {assembleDataSpriteVector.addSprite(assemblePartsSpriteVector[i], 1);}
+	assembleDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2 - 10), 3, 3, 90, 120);
+	assembleDataSpriteVector.setSpriteToComplete(4);	
+	assembleGoal.setOrigin(sf::Vector2f(assembleGoal.getGlobalBounds().width / 2, assembleGoal.getGlobalBounds().height / 2));
+	for (int i = 0; i < assembleGoalPositions.size(); i++) {
+		assembleGoal.setPosition(assembleGoalPositions[i]);
+		assemblePartsGoals.push_back(assembleGoal);
+	}
+	//DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
 	GameScreen discuss("DISCUSS!", generalFont, 25, 25);
+	GameText npcText(generalFont,30,"What month is it?",200,window);
+	npcText.setCharWidthsVector("What month is it?");
+	for (int i = 0; i < npcText.getTextString().size(); i++) {
+		sf::RectangleShape textBlocker(sf::Vector2f(npcText.getCharWidthsVector()[i], npcText.getText().getCharacterSize()));
+		textBlocker.setOrigin(textBlocker.getSize().x/2, textBlocker.getSize().y/2);
+		textBlocker.setPosition(sf::Vector2f(npcText.getText().findCharacterPos(i).x + textBlocker.getSize().x / 2, npcText.getText().findCharacterPos(i).y + textBlocker.getSize().y / 2));
+		textBlocker.setFillColor(sf::Color::Black);
+		textBlocker.setOutlineColor(sf::Color::Cyan);
+		textBlocker.setOutlineThickness(1);
+		textBlockersVector.push_back(textBlocker);
+	}
+	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 	GameScreen ignore("IGNORE!", generalFont, 25, 25);
 	GameScreen drive("DRIVE!", generalFont, 25, 25);
 	GameScreen retain("RETAIN!", generalFont, 25, 25);
@@ -118,6 +149,8 @@ int main() {
 	enum gameScreens { rememberENUM, countENUM, assembleENUM, discussENUM, ignoreENUM, driveENUM, retainENUM, pushENUM, bonusENUM, mainENUM };
 	mainScreens mainScreenENUM = startMAIN;
 	gameScreens gameScreenENUM = mainENUM;
+
+
 
 	//GAME LOOP: mainScreenENUM
 	sf::Event event;
@@ -136,12 +169,10 @@ int main() {
 					playerText.deleteLastChar();
 					playerText.setIsFull(false);
 					deleteKeyWorkaround = true;
-				}else{
+				}else
 					deleteKeyWorkaround = false;
-				}
 				break;
 			}
-			
 			if (event.type == sf::Event::TextEntered) {
 				string outString;
 				switch (event.text.unicode){
@@ -149,22 +180,17 @@ int main() {
 					playerText.setTextString("");
 					playerText.setIsFull(false);
 					break;
-
 					case 8://BACKSPACE
 					playerText.deleteLastChar();
 					playerText.setIsFull(false);
 					break;					
 				}			
 			}
-
 			if (acceptText) {
 				if(!playerText.getIsFull()) {
-					if (event.text.unicode <= 57 && event.text.unicode >= 48) {
+					if (event.text.unicode < 57 && event.text.unicode >= 48 && event.type != sf::Event::MouseMoved)
 						playerText.appendTextString(event.text.unicode);
-					}
-				} else {
-					playerText.setTextString("");
-				}
+				} else playerText.setTextString("");
 			}		
 		}
 
@@ -211,7 +237,7 @@ int main() {
 				switch(gameScreenENUM){
 					case mainENUM:
 					gameScreen.drawScreen(window, timerText.getText());
-					minigameSprites.drawSprites(window);
+					minigameSprites.drawSprites(window, -1);
 					//SWITCH FOR WHICH MINIGAME IS SELECTED
 					if (event.type == sf::Event::EventType::MouseButtonPressed) {
 						for (int i = 0; i < minigameSprites.getDataSpriteVector().size(); i++) {
@@ -223,12 +249,13 @@ int main() {
 						}
 					}
 					break;
-					case rememberENUM://REMEMBER swapping can be used to randomize vectors to increase difficulty
+					case rememberENUM://REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER 
+					//swapping can be used to randomize vectors to increase difficulty
 					player.setMovement(window);
 					window.draw(tipText.getText());
 					window.draw(player.getSprite()); 
-					rememberFullBubbles.drawSprites(window);
-					rememberEmptyBubbles.drawSprites(window);
+					rememberFullBubbles.drawSprites(window, -1);
+					rememberEmptyBubbles.drawSprites(window, -1);
 					remember.drawScreen(window, timerText.getText());
 
 					for (int i = 0; i < rememberFullBubbles.getDataSpriteVector().size(); i++) {//contacting full sprites
@@ -239,7 +266,6 @@ int main() {
 							window.draw(bannerText.getText());
 						}
 					}		
-							// need to set the positon of playerTExt
 					player.handleSpriteContactIndex(rememberEmptyBubbles);
 					if (player.getSpriteContactIndex() >= 0) {
 						if (rememberEmptyBubbles.getSingleSprite(player.getSpriteContactIndex()).getIsComplete()) {//checking if contacted sprite is complete
@@ -253,7 +279,7 @@ int main() {
 							window.draw(playerText.getText());
 							if (playerText.getTextString().size() <= rememberFullBubbles.getSingleSprite(player.getSpriteContactIndex()).getStringValue().size() - 1) {
 								acceptText = true;
-							} else {//no check for a match
+							} else {
 								acceptText = false;
 								if (playerText.getTextString() == rememberFullBubbles.getSingleSprite(player.getSpriteContactIndex()).getStringValue()) {
 									rememberEmptyBubbles.updateIndividualTexture(player.getSpriteContactIndex(), "okBubbleSprite.png");
@@ -261,65 +287,120 @@ int main() {
 								} 
 							}
 						}
-					} else {// no contact
+					} else {
 						playerText.setTextString("");
 						acceptText = false;
 					}
 							
-					if (!rememberEmptyBubbles.getVectorComplete()) {
+					if (!rememberEmptyBubbles.getVectorComplete())
 						rememberEmptyBubbles.checkForCompletion();
-					} else {
+					else {
+						playerText.setTextString("");
 						minigameSprites.updateIndividualTexture(rememberENUM, "completedMinigameSprite.png");
 						minigameSprites.setSpriteToComplete(rememberENUM);
 						gameScreenENUM = mainENUM;	
 					}							
 					break;
-					case countENUM://COUNT
+					case countENUM://COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT 
+					//acceptText = true;
+					count.drawScreen(window, timerText.getText());
+					countingSprites.drawSprites(window, -1);							
+					bannerText.setTextString("How Many?");
+					bannerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, -20);
+					playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +11);
+					window.draw(bannerSprite.getSprite());
+					window.draw(bannerText.getText());
+					window.draw(playerText.getText());
+					if (playerText.getTextString().size() < countingString.size()) {
 						acceptText = true;
-						count.drawScreen(window, timerText.getText());
-						countingSprites.drawSprites(window);							
-						bannerText.setTextString("How Many?");
-						bannerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, -20);
-						playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +11);
-						window.draw(bannerSprite.getSprite());
-						window.draw(bannerText.getText());
-						window.draw(playerText.getText());
-						if (playerText.getTextString().size() < countingString.size()) {
-							acceptText = true;
-						} else {
-							acceptText = false;
-						}
+					} else acceptText = false;
 
-						if (playerText.getText().getString() == countingString) {//success
-							minigameSprites.updateIndividualTexture(countENUM, "completedMinigameSprite.png");
-							minigameSprites.setSpriteToComplete(countENUM);
+					if (playerText.getText().getString() == countingString) {
+						playerText.setTextString("");
+						minigameSprites.updateIndividualTexture(countENUM, "completedMinigameSprite.png");
+						minigameSprites.setSpriteToComplete(countENUM);
+						gameScreenENUM = mainENUM;
+					}
+					break;
+					case assembleENUM://ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE 
+					if (event.type == sf::Event::EventType::MouseButtonPressed) {
+						if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) 
+						validMouseClick = true;
+					}
+					if (!solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition) || !sf::Mouse::isButtonPressed(sf::Mouse::Left))
+					validMouseClick = false;
+
+					if (validMouseClick)
+					assembleScreen = 2;
+					else assembleScreen = 1;
+
+					switch (assembleScreen) {
+						case 1:
+						assembleGameScreen.drawScreen(window, timerText.getText());
+						for (int i = 0; i < assemblePartsSpriteVector.size(); i++) {
+							if (i != 4 && !assembleDataSpriteVector.getSingleSprite(i).getIsComplete()) {
+								assembleDataSpriteVector.setCanMove(i, event, translatedMousePosition);
+								if (assembleDataSpriteVector.getSingleSprite(i).getCanMove()) {
+									assembleDataSpriteVector.setSpritePosition(i, translatedMousePosition);
+									mouseContactIndex = i;
+									if (assemblePartsGoals[i].getGlobalBounds().contains(translatedMousePosition)) {
+										assembleDataSpriteVector.getSingleSprite(i).setToComplete();
+										assembleDataSpriteVector.setSpritePosition(i,assembleGoalPositions[i]);
+										assembleDataSpriteVector.setSpriteToComplete(i);
+									}
+								} else mouseContactIndex = -1;																				
+							}
+						}
+						if (!assembleDataSpriteVector.getVectorComplete())
+							assembleDataSpriteVector.checkForCompletion();
+						else {
+							minigameSprites.updateIndividualTexture(assembleENUM, "completedMinigameSprite.png");
+							minigameSprites.setSpriteToComplete(assembleENUM);
 							gameScreenENUM = mainENUM;
 						}
-					break;
-					case assembleENUM://ASSEMBLE click and drag sprites
-						assemble.drawScreen(window, timerText.getText());
+						assembleDataSpriteVector.drawSprites(window, 4);
+						break;
+						case 2:
+						assembleSolution.drawScreen(window, timerText.getText());
+						break;
+					}
 
 					break;
-					case discussENUM://DISCUSS
+					case discussENUM://DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
+						if (discussTime == 0) discussTime = gameTimer.getTimeRemaining();
+						if (discussTime - gameTimer.getTimeRemaining() > 0.78) {
+							if (charToShow < textBlockersVector.size() - 1) {
+								charToShow++;
+								discussTime = gameTimer.getTimeRemaining();
+							} else {
+								charToShow = 0;
+								discussTime = 0;
+							}
+						}
 						discuss.drawScreen(window, timerText.getText());
+						window.draw(npcText.getText());
+						for (int i = 0; i < textBlockersVector.size(); i++) {
+							if (i != charToShow)
+							window.draw(textBlockersVector[i]);
+						}
+
 					break;
-					case ignoreENUM://IGNORE
+					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 						ignore.drawScreen(window, timerText.getText());
 					break;
-					case driveENUM://DRIVE
+					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 
 						drive.drawScreen(window, timerText.getText());
 					break;
-					case retainENUM://RETAIN
+					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 						retain.drawScreen(window, timerText.getText());
 					break;
-					case pushENUM://PUSH
+					case pushENUM://PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH 
 						push.drawScreen(window, timerText.getText());
 					break;
-					case bonusENUM://BONUS
+					case bonusENUM://BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS 
 						bonus.drawScreen(window, timerText.getText());
 					break;
 				}
-
 			}else{//TIME IS UP
 				gameTimer = gameTimer.timeUp(gameTimer);
 				timerText.getText().setString("Time Up!");

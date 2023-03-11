@@ -8,6 +8,7 @@ class GameText{
 		string textString = "";//not to be mutated
 		int charSize = 10;
 		bool isFull = false;
+		vector <float> charWidths;
 	public:
 		GameText(){};//used in gameScreen
 		GameText(sf::Font &font, int characterSize, string string, float spaceFromTop, sf::RenderWindow &window);
@@ -20,4 +21,6 @@ class GameText{
 		void setIsFull(bool newBool);
 		void deleteLastChar();
 		void setTextToMoney(std::ostringstream& out);
+		vector <float> getCharWidthsVector();
+		void setCharWidthsVector(string newString);
 };
