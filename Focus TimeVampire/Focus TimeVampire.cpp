@@ -124,15 +124,15 @@ int main() {
 	}
 	//DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
 	GameScreen discuss("DISCUSS!", generalFont, 25, 25);
-	GameText npcText(generalFont,30,"How many days are in a week?",100,window);
-	//npcText.getText().getString().getSize()
-	for (int i = 0; i < 1; i++) {
-		sf::RectangleShape textBlocker(sf::Vector2f(npcText.getText().findCharacterPos(i).x, npcText.getText().findCharacterPos(i).y));
+	GameText npcText(generalFont,30,"What month is it?",200,window);
+	npcText.setCharWidthsVector("What month is it?");
+	for (int i = 0; i < npcText.getTextString().size(); i++) {
+		sf::RectangleShape textBlocker(sf::Vector2f(npcText.getCharWidthsVector()[i], npcText.getText().getCharacterSize()));
 		textBlocker.setOrigin(textBlocker.getSize().x/2, textBlocker.getSize().y/2);
-		textBlocker.setPosition(npcText.getText().findCharacterPos(i));
+		textBlocker.setPosition(sf::Vector2f(npcText.getText().findCharacterPos(i).x + textBlocker.getSize().x / 2, npcText.getText().findCharacterPos(i).y + textBlocker.getSize().y / 2));
 		textBlocker.setFillColor(sf::Color::Black);
 		textBlocker.setOutlineColor(sf::Color::Cyan);
-		textBlocker.setOutlineThickness(5);
+		textBlocker.setOutlineThickness(1);
 		textBlockersVector.push_back(textBlocker);
 	}
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
@@ -367,14 +367,22 @@ int main() {
 
 					break;
 					case discussENUM://DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
+						if (discussTime == 0) discussTime = gameTimer.getTimeRemaining();
+						if (discussTime - gameTimer.getTimeRemaining() > 0.78) {
+							if (charToShow < textBlockersVector.size() - 1) {
+								charToShow++;
+								discussTime = gameTimer.getTimeRemaining();
+							} else {
+								charToShow = 0;
+								discussTime = 0;
+							}
+						}
 						discuss.drawScreen(window, timerText.getText());
-						//only 2 chars are visible at one
-						//a timer that is changing the color of the text from black to white
-						//go throught the string and draw a black rectangle over the size of each char?
-						//need func to reset the textBlockers once the string changes
 						window.draw(npcText.getText());
-						for (int i = 0; i < textBlockersVector.size(); i++) 
+						for (int i = 0; i < textBlockersVector.size(); i++) {
+							if (i != charToShow)
 							window.draw(textBlockersVector[i]);
+						}
 
 					break;
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
