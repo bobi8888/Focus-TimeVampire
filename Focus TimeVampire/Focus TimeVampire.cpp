@@ -124,15 +124,15 @@ int main() {
 	}
 	//DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
 	GameScreen discuss("DISCUSS!", generalFont, 25, 25);
-	GameText npcText(generalFont,30,"What month is it?",200,window);
+	GameText npcText(generalFont,50,"What month is it?",200,window);
 	npcText.setCharWidthsVector("What month is it?");
 	for (int i = 0; i < npcText.getTextString().size(); i++) {
 		sf::RectangleShape textBlocker(sf::Vector2f(npcText.getCharWidthsVector()[i], npcText.getText().getCharacterSize()));
 		textBlocker.setOrigin(textBlocker.getSize().x/2, textBlocker.getSize().y/2);
 		textBlocker.setPosition(sf::Vector2f(npcText.getText().findCharacterPos(i).x + textBlocker.getSize().x / 2, npcText.getText().findCharacterPos(i).y + textBlocker.getSize().y / 2));
-		textBlocker.setFillColor(sf::Color::Black);
+		textBlocker.setFillColor(sf::Color::Red);
 		textBlocker.setOutlineColor(sf::Color::Cyan);
-		textBlocker.setOutlineThickness(1);
+		textBlocker.setOutlineThickness(3);
 		textBlockersVector.push_back(textBlocker);
 	}
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
@@ -367,9 +367,10 @@ int main() {
 
 					break;
 					case discussENUM://DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
+					//fix issue when time runs out
 						if (discussTime == 0) discussTime = gameTimer.getTimeRemaining();
-						if (discussTime - gameTimer.getTimeRemaining() > 0.78) {
-							if (charToShow < textBlockersVector.size() - 1) {
+						if (discussTime - gameTimer.getTimeRemaining() > discussSpeed) {
+							if (charToShow <= textBlockersVector.size()) {
 								charToShow++;
 								discussTime = gameTimer.getTimeRemaining();
 							} else {
@@ -380,8 +381,17 @@ int main() {
 						discuss.drawScreen(window, timerText.getText());
 						window.draw(npcText.getText());
 						for (int i = 0; i < textBlockersVector.size(); i++) {
-							if (i != charToShow)
-							window.draw(textBlockersVector[i]);
+							if			(charToShow == 0 && i != charToShow) {//only displays 1st char
+								window.draw(textBlockersVector[i]);
+							} else if	(charToShow == 1 && i != charToShow && i != charToShow -1) {//only display 1st 2 chars
+								window.draw(textBlockersVector[i]);
+							} else if	(i != charToShow && i != charToShow-1) {//middle
+								window.draw(textBlockersVector[i]);
+							} else if	(charToShow == textBlockersVector.size() - 1 && i != charToShow && i != charToShow-1) {//2nd to last
+								window.draw(textBlockersVector[i]);
+							} else if	(charToShow == textBlockersVector.size() && i != charToShow-1) {//last
+								window.draw(textBlockersVector[i]);
+							}
 						}
 
 					break;
