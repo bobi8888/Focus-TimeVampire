@@ -68,3 +68,10 @@ GameTimer GameTimer::timeUp(GameTimer gameTimer) {
 	gameTimer.resetTimer();
 	return gameTimer;
 }
+bool GameTimer::handleMinigamePace(float minigameTime, float minigameSpeed){
+	if (minigameTime - getTimeRemaining() > minigameSpeed) {
+		return true;
+	} else {
+		return false;
+	}
+}

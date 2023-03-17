@@ -135,6 +135,9 @@ int main() {
 		textBlocker.setOutlineThickness(3);
 		textBlockersVector.push_back(textBlocker);
 	}
+	GameText leftAnswer(generalFont, 20, "left", 200, window);
+	GameText rightAnswer(generalFont, 20, "right", 200, window);
+
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 	GameScreen ignore("IGNORE!", generalFont, 25, 25);
 	GameScreen drive("DRIVE!", generalFont, 25, 25);
@@ -369,47 +372,27 @@ int main() {
 					case discussENUM://DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
 					//fix issue when time runs out
 						if (discussTime == 0) discussTime = gameTimer.getTimeRemaining();
-
-						//handle charToShow 
 						npcText.charToShowIncrementor(discussTime,gameTimer.getTimeRemaining(), discussSpeed, textBlockersVector);
+						if (gameTimer.handleMinigamePace(discussTime, discussSpeed)) {
+							if (charToShow <= textBlockersVector.size()) discussTime = gameTimer.getTimeRemaining();
+							else discussTime = 0;
 
-						//handle discussTime
-						if (discussTime - gameTimer.getTimeRemaining() > discussSpeed) {
-							if (charToShow <= textBlockersVector.size()) {
-								charToShow++;
-								discussTime = gameTimer.getTimeRemaining();
-							} else {
-								charToShow = 0;
-								discussTime = 0;
-							}
+							blockerFill = npcText.handleColor(blockerFill, redInc, blueInc, greenInc);
 						}
-
-				//get colors to ocillate
-						red++;
-						blue = blue + 0.5;
-						green = green + 0.25;
-						blockerFill.r = red;
-						blockerFill.b = blue;
-						blockerFill.g = green;
-
+						for (int i = 0; i < textBlockersVector.size(); i++){
+							textBlockersVector[i].setOutlineColor(blockerFill);
+						}
 						discuss.drawScreen(window, timerText.getText());
 						window.draw(npcText.getText());
 						npcText.drawTextBlockers(textBlockersVector, window);
-						//for (int i = 0; i < textBlockersVector.size(); i++) {
-						//	if			(charToShow == 0 && i != charToShow) {//only displays 1st char
-						//		window.draw(textBlockersVector[i]);
-						//	} else if	(charToShow == 1 && i != charToShow && i != charToShow -1) {//only display 1st 2 chars
-						//		window.draw(textBlockersVector[i]);
-						//	} else if	(i != charToShow && i != charToShow-1) {//middle
-						//		window.draw(textBlockersVector[i]);
-						//	} else if	(charToShow == textBlockersVector.size() - 1 && i != charToShow && i != charToShow-1) {//2nd to last
-						//		window.draw(textBlockersVector[i]);
-						//	} else if	(charToShow == textBlockersVector.size() && i != charToShow-1) {//last
-						//		window.draw(textBlockersVector[i]);
-						//	}
-						//}
-						// 
-						//textBlockersVector[i].setFillColor(blockerFill);
+
+						bannerText.setTextString("March");
+						window.draw(bannerSprite.getSprite());
+						window.draw(bannerText.getText());
+
+						//answer 3 prompts, progress regardless of answer, answers affect score
+						if (questionNumber == 1)
+						if (bannerText.getText().getGlobalBounds().contains(translatedMousePosition)) std::cout << "Hi "; 
 
 					break;
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 

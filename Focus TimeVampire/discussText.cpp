@@ -12,7 +12,6 @@ void DiscussText::setCharWidthsVector(string newString) {
 		text.setString(newString.substr(i));
 		next = text.getGlobalBounds().width;
 		charWidths.push_back(prev - next);
-		//std::cout << charWidths[i-1] << "\n";
 	}
 	text.setString(newString);
 }
@@ -44,4 +43,13 @@ void DiscussText::charToShowIncrementor(float discussTime, float timeRemaining, 
 			charToShow = 0;
 		}
 	}
+}
+sf::Color DiscussText::handleColor(sf::Color& color, int redInc, int blueInc, int greenInc) {
+	if (color.r > 255) color.r = 0;
+	if (color.b > 255) color.b = 0;
+	if (color.g > 255) color.g = 0;
+	color.r += redInc;
+	color.b += blueInc;
+	color.g += greenInc;
+	return color;
 }
