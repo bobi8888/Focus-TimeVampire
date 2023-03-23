@@ -56,7 +56,8 @@ sf::Color DiscussText::handleColor(sf::Color& color, int redInc, int blueInc, in
 	color.g += greenInc;
 	return color;
 }
-vector <sf::RectangleShape> DiscussText::setTextBlockers(vector <sf::RectangleShape> textBlockersVector){
+vector <sf::RectangleShape> DiscussText::resetTextBlockers(vector <sf::RectangleShape> textBlockersVector){
+	textBlockersVector.clear();
 	for (int i = 0; i < getTextString().size(); i++) {
 		sf::RectangleShape textBlocker(sf::Vector2f(getCharWidthsVector()[i], getText().getCharacterSize() + 10));
 		textBlocker.setOrigin(textBlocker.getSize().x / 2, textBlocker.getSize().y / 2);

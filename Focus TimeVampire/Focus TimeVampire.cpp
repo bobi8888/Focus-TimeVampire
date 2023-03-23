@@ -401,34 +401,33 @@ int main() {
 								event.type = sf::Event::EventType::MouseButtonReleased;
 								switch (questionNumber) {
 									case 2:
-										textBlockersVector.clear();
+									//func returning textBlockersVector?
+									//func returning npcText
 										npcText.clearCharWidthsVector();
 										npcText.setTextString(question2);
 										npcText.setCharWidthsVector(question2);
 										npcText.setTextPosition(sf::Vector2f(window.getSize().x / 2, questionY));
 										leftAnswer.setTextString(response2A);
 										rightAnswer.setTextString(response2B);
-										textBlockersVector = npcText.setTextBlockers(textBlockersVector);
+										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
 									break;
 									case 3:
-										textBlockersVector.clear();
 										npcText.clearCharWidthsVector();
 										npcText.setTextString(question3);
 										npcText.setCharWidthsVector(question3);
 										npcText.setTextPosition(sf::Vector2f(window.getSize().x / 2, questionY));
 										leftAnswer.setTextString(response3A);
 										rightAnswer.setTextString(response3B);
-										textBlockersVector = npcText.setTextBlockers(textBlockersVector);
+										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
 									break;
 									case 4:
-										textBlockersVector.clear();
 										npcText.clearCharWidthsVector();
 										npcText.setTextString(question4);
 										npcText.setCharWidthsVector(question4);
 										npcText.setTextPosition(sf::Vector2f(window.getSize().x / 2, questionY));
 										leftAnswer.setTextString(response4A);
 										rightAnswer.setTextString(response4B);
-										textBlockersVector = npcText.setTextBlockers(textBlockersVector);
+										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
 									break;
 								}
 							}
