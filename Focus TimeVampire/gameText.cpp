@@ -54,3 +54,8 @@ void GameText::setTextToMoney(std::ostringstream& out) {
 	text.setString(outString);
 	out.str("");
 }
+void GameText::setTextPosition(sf::Vector2f newPosition){
+	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2
+		, (text.getCharacterSize() / 2 + ((text.getCharacterSize() - text.getGlobalBounds().height) / 2))));
+	text.setPosition(newPosition);
+}

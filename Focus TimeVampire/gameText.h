@@ -20,7 +20,8 @@ class GameText{
 		bool getIsFull();
 		void setIsFull(bool newBool);
 		void deleteLastChar();
-		void setTextToMoney(std::ostringstream& out);		
+		void setTextToMoney(std::ostringstream& out);	
+		void setTextPosition(sf::Vector2f newPosition);
 };
 
 class DiscussText: public GameText {
@@ -31,6 +32,8 @@ class DiscussText: public GameText {
 		using GameText::GameText;
 		vector <float> getCharWidthsVector();
 		void setCharWidthsVector(string newString);
+		void clearCharWidthsVector();
+		vector <sf::RectangleShape> setTextBlockers(vector <sf::RectangleShape> textBlockersVector);
 		void drawTextBlockers(vector <sf::RectangleShape> textBlockersVector, sf::RenderWindow& window);
 		void charToShowIncrementor(float discussTime, float timeRemaining, float discussSpeed, vector <sf::RectangleShape> textBlockersVector);
 		sf::Color handleColor(sf::Color& color, int red, int blue, int green);

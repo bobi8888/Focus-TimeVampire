@@ -124,10 +124,10 @@ int main() {
 	}
 	//DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
 	GameScreen discuss("DISCUSS!", generalFont, 25, 25);
-	DiscussText npcText(generalFont,50,"What month is it?",200,window);
-	npcText.setCharWidthsVector("What month is it?");
+	DiscussText npcText(generalFont, 35, question1, questionY, window);
+	npcText.setCharWidthsVector(question1);
 	for (int i = 0; i < npcText.getTextString().size(); i++) {
-		sf::RectangleShape textBlocker(sf::Vector2f(npcText.getCharWidthsVector()[i], npcText.getText().getCharacterSize()));
+		sf::RectangleShape textBlocker(sf::Vector2f(npcText.getCharWidthsVector()[i], npcText.getText().getCharacterSize() + 10));
 		textBlocker.setOrigin(textBlocker.getSize().x/2, textBlocker.getSize().y/2);
 		textBlocker.setPosition(sf::Vector2f(npcText.getText().findCharacterPos(i).x + textBlocker.getSize().x / 2, npcText.getText().findCharacterPos(i).y + textBlocker.getSize().y / 2));
 		textBlocker.setFillColor(sf::Color::White);
@@ -135,8 +135,12 @@ int main() {
 		textBlocker.setOutlineThickness(3);
 		textBlockersVector.push_back(textBlocker);
 	}
-	GameText leftAnswer(generalFont, 20, "left", 200, window);
-	GameText rightAnswer(generalFont, 20, "right", 200, window);
+	GameText leftAnswer(generalFont, 30, response1A, 200, window);
+	leftAnswer.getText().setFillColor(sf::Color::Black);
+	leftAnswer.getText().setPosition(sf::Vector2f(bannerSprite.getSprite().getPosition().x - 60, bannerSprite.getSprite().getPosition().y));
+	GameText rightAnswer(generalFont, 30, response1B, 200, window);
+	rightAnswer.getText().setFillColor(sf::Color::Black);
+	rightAnswer.getText().setPosition(sf::Vector2f(bannerSprite.getSprite().getPosition().x + 60, bannerSprite.getSprite().getPosition().y));
 
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 	GameScreen ignore("IGNORE!", generalFont, 25, 25);
@@ -386,14 +390,54 @@ int main() {
 						window.draw(npcText.getText());
 						npcText.drawTextBlockers(textBlockersVector, window);
 
-						bannerText.setTextString("March");
 						window.draw(bannerSprite.getSprite());
-						window.draw(bannerText.getText());
+						window.draw(leftAnswer.getText());
+						window.draw(rightAnswer.getText());
 
-						//answer 3 prompts, progress regardless of answer, answers affect score
-						if (questionNumber == 1)
-						if (bannerText.getText().getGlobalBounds().contains(translatedMousePosition)) std::cout << "Hi "; 
-
+						if (event.type == sf::Event::EventType::MouseButtonPressed) {
+							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && leftAnswer.getText().getGlobalBounds().contains(translatedMousePosition) 
+							|| rightAnswer.getText().getGlobalBounds().contains(translatedMousePosition)) {
+								questionNumber++;
+								event.type = sf::Event::EventType::MouseButtonReleased;
+								switch (questionNumber) {
+									case 2:
+										textBlockersVector.clear();
+										npcText.clearCharWidthsVector();
+										npcText.setTextString(question2);
+										npcText.setCharWidthsVector(question2);
+										npcText.setTextPosition(sf::Vector2f(window.getSize().x / 2, questionY));
+										leftAnswer.setTextString(response2A);
+										rightAnswer.setTextString(response2B);
+										textBlockersVector = npcText.setTextBlockers(textBlockersVector);
+									break;
+									case 3:
+										textBlockersVector.clear();
+										npcText.clearCharWidthsVector();
+										npcText.setTextString(question3);
+										npcText.setCharWidthsVector(question3);
+										npcText.setTextPosition(sf::Vector2f(window.getSize().x / 2, questionY));
+										leftAnswer.setTextString(response3A);
+										rightAnswer.setTextString(response3B);
+										textBlockersVector = npcText.setTextBlockers(textBlockersVector);
+									break;
+									case 4:
+										textBlockersVector.clear();
+										npcText.clearCharWidthsVector();
+										npcText.setTextString(question4);
+										npcText.setCharWidthsVector(question4);
+										npcText.setTextPosition(sf::Vector2f(window.getSize().x / 2, questionY));
+										leftAnswer.setTextString(response4A);
+										rightAnswer.setTextString(response4B);
+										textBlockersVector = npcText.setTextBlockers(textBlockersVector);
+									break;
+								}
+							}
+						}
+						if (questionNumber == 5) {
+							minigameSprites.updateIndividualTexture(discussENUM, "completedMinigameSprite.png");
+							minigameSprites.setSpriteToComplete(discussENUM);
+							gameScreenENUM = mainENUM;
+						}
 					break;
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 						ignore.drawScreen(window, timerText.getText());
