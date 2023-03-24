@@ -70,3 +70,10 @@ vector <sf::RectangleShape> DiscussText::resetTextBlockers(vector <sf::Rectangle
 	}
 	return textBlockersVector;
 }
+
+void DiscussText::updateNextQuestion(string nextQuestion, sf::RenderWindow& window, float questionY){
+	clearCharWidthsVector();
+	setTextString(nextQuestion);
+	setCharWidthsVector(nextQuestion);
+	setTextPosition(sf::Vector2f(window.getSize().x / 2, questionY));
+}

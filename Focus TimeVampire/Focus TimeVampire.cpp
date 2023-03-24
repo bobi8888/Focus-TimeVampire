@@ -401,30 +401,22 @@ int main() {
 								event.type = sf::Event::EventType::MouseButtonReleased;
 								switch (questionNumber) {
 									case 2:
-									//func returning textBlockersVector?
-									//func returning npcText
-										npcText.clearCharWidthsVector();
-										npcText.setTextString(question2);
-										npcText.setCharWidthsVector(question2);
-										npcText.setTextPosition(sf::Vector2f(window.getSize().x / 2, questionY));
+										npcText.updateNextQuestion(question2, window, questionY);
+										//need to update the position of the new responses
 										leftAnswer.setTextString(response2A);
 										rightAnswer.setTextString(response2B);
 										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
 									break;
 									case 3:
-										npcText.clearCharWidthsVector();
-										npcText.setTextString(question3);
-										npcText.setCharWidthsVector(question3);
-										npcText.setTextPosition(sf::Vector2f(window.getSize().x / 2, questionY));
+
+										npcText.updateNextQuestion(question3, window, questionY);
 										leftAnswer.setTextString(response3A);
 										rightAnswer.setTextString(response3B);
 										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
 									break;
 									case 4:
-										npcText.clearCharWidthsVector();
-										npcText.setTextString(question4);
-										npcText.setCharWidthsVector(question4);
-										npcText.setTextPosition(sf::Vector2f(window.getSize().x / 2, questionY));
+
+										npcText.updateNextQuestion(question4, window, questionY);
 										leftAnswer.setTextString(response4A);
 										rightAnswer.setTextString(response4B);
 										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
