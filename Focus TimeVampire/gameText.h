@@ -20,8 +20,10 @@ class GameText{
 		bool getIsFull();
 		void setIsFull(bool newBool);
 		void deleteLastChar();
-		void setTextToMoney(std::ostringstream& out);	
+		void setTextToMoney(std::ostringstream& out);
+		void setTextOrigin();
 		void setTextPosition(sf::Vector2f newPosition);
+		void setString_Origin_Position(string newString, sf::Vector2f newPosition);
 };
 
 class DiscussText: public GameText {

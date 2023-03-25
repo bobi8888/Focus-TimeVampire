@@ -54,8 +54,16 @@ void GameText::setTextToMoney(std::ostringstream& out) {
 	text.setString(outString);
 	out.str("");
 }
+void GameText::setTextOrigin(){
+	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2, text.getCharacterSize() / 2 + ((text.getCharacterSize() - text.getGlobalBounds().height) / 2)));
+}
 void GameText::setTextPosition(sf::Vector2f newPosition){
 	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2
 		, (text.getCharacterSize() / 2 + ((text.getCharacterSize() - text.getGlobalBounds().height) / 2))));
 	text.setPosition(newPosition);
+}
+void GameText::setString_Origin_Position(string newString, sf::Vector2f newPosition){
+	setTextString(newString);
+	setTextOrigin();
+	setTextPosition(newPosition);
 }
