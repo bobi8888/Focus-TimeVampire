@@ -13,8 +13,8 @@
 //reset random numbers each playthrough for Remember
 //add reset button
 //add X_out button
-//switches are good for catching errors
-//changing window size and player movement
+//changing window size and player sprite going past the window
+//sprite sizes should be relative the the window size at initialization
 
 int main() {	
 	//WINDOW
@@ -124,7 +124,7 @@ int main() {
 	}
 	//DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
 	GameScreen discuss("DISCUSS!", generalFont, 25, 25);
-	DiscussText npcText(generalFont, 35, question1, questionY, window);
+	DiscussText npcText(generalFont, 25, question1, questionY, window);
 	npcText.setCharWidthsVector(question1);
 	for (int i = 0; i < npcText.getTextString().size(); i++) {
 		sf::RectangleShape textBlocker(sf::Vector2f(npcText.getCharWidthsVector()[i], npcText.getText().getCharacterSize() + 10));
@@ -135,14 +135,18 @@ int main() {
 		textBlocker.setOutlineThickness(3);
 		textBlockersVector.push_back(textBlocker);
 	}
-	GameText leftAnswer(generalFont, 30, response1A, 200, window);
+	GameSprite discussBannerSprite("bannerSprite.png", 1.3, 1.1);
+	discussBannerSprite.setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y - 150));
+
+	GameText leftAnswer(generalFont, 32, response1A, 200, window);
 	leftAnswer.getText().setFillColor(sf::Color::Black);
-	leftAnswer.setTextPosition(sf::Vector2f(bannerSprite.getSprite().getPosition().x - bannerSprite.getSprite().getGlobalBounds().width * 0.25
-		, bannerSprite.getSprite().getPosition().y));
-	GameText rightAnswer(generalFont, 30, response1B, 200, window);
+	leftAnswer.setTextPosition(sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+		, discussBannerSprite.getSprite().getPosition().y));
+	GameText rightAnswer(generalFont, 32, response1B, 200, window);
+
 	rightAnswer.getText().setFillColor(sf::Color::Black);
-	rightAnswer.setTextPosition(sf::Vector2f(bannerSprite.getSprite().getPosition().x + bannerSprite.getSprite().getGlobalBounds().width * 0.25
-		, bannerSprite.getSprite().getPosition().y));
+	rightAnswer.setTextPosition(sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+		, discussBannerSprite.getSprite().getPosition().y));
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 	GameScreen ignore("IGNORE!", generalFont, 25, 25);
 	GameScreen drive("DRIVE!", generalFont, 25, 25);
@@ -157,8 +161,6 @@ int main() {
 	enum gameScreens { rememberENUM, countENUM, assembleENUM, discussENUM, ignoreENUM, driveENUM, retainENUM, pushENUM, bonusENUM, mainENUM };
 	mainScreens mainScreenENUM = startMAIN;
 	gameScreens gameScreenENUM = mainENUM;
-
-
 
 	//GAME LOOP: mainScreenENUM
 	sf::Event event;
@@ -390,8 +392,8 @@ int main() {
 						discuss.drawScreen(window, timerText.getText());
 						window.draw(npcText.getText());
 						npcText.drawTextBlockers(textBlockersVector, window);
-						//bannerSprite.set
-						window.draw(bannerSprite.getSprite());
+						//make banner bigger
+						window.draw(discussBannerSprite.getSprite());
 						window.draw(leftAnswer.getText());
 						window.draw(rightAnswer.getText());
 
@@ -404,26 +406,26 @@ int main() {
 									case 2:
 										npcText.updateNextQuestion(question2, window, questionY);
 
-										leftAnswer.setString_Origin_Position(response2A, sf::Vector2f(bannerSprite.getSprite().getPosition().x - bannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, bannerSprite.getSprite().getPosition().y));
-										rightAnswer.setString_Origin_Position(response2B, sf::Vector2f(bannerSprite.getSprite().getPosition().x + bannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, bannerSprite.getSprite().getPosition().y));
+										leftAnswer.setString_Origin_Position(response2A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+											, discussBannerSprite.getSprite().getPosition().y));
+										rightAnswer.setString_Origin_Position(response2B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+											, discussBannerSprite.getSprite().getPosition().y));
 										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
 									break;
 									case 3:
 										npcText.updateNextQuestion(question3, window, questionY);
-										leftAnswer.setString_Origin_Position(response3A, sf::Vector2f(bannerSprite.getSprite().getPosition().x - bannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, bannerSprite.getSprite().getPosition().y));
-										rightAnswer.setString_Origin_Position(response3B, sf::Vector2f(bannerSprite.getSprite().getPosition().x + bannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, bannerSprite.getSprite().getPosition().y));
+										leftAnswer.setString_Origin_Position(response3A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+											, discussBannerSprite.getSprite().getPosition().y));
+										rightAnswer.setString_Origin_Position(response3B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+											, discussBannerSprite.getSprite().getPosition().y));
 										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
 									break;
 									case 4:
 										npcText.updateNextQuestion(question4, window, questionY);
-										leftAnswer.setString_Origin_Position(response4A, sf::Vector2f(bannerSprite.getSprite().getPosition().x - bannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, bannerSprite.getSprite().getPosition().y));
-										rightAnswer.setString_Origin_Position(response4B, sf::Vector2f(bannerSprite.getSprite().getPosition().x + bannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, bannerSprite.getSprite().getPosition().y));
+										leftAnswer.setString_Origin_Position(response4A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+											, discussBannerSprite.getSprite().getPosition().y));
+										rightAnswer.setString_Origin_Position(response4B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+											, discussBannerSprite.getSprite().getPosition().y));
 										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
 									break;
 								}
