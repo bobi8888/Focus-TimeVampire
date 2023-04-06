@@ -28,4 +28,5 @@ class GameTimer {
 		GameTimer pause(sf::Clock &clock, GameTimer gameTimer);
 		GameTimer timeUp(GameTimer gameTimer);
 		string getString(std::ostringstream& out);
+		bool handleMinigamePace(float minigameTime, float minigameSpeed);
 };

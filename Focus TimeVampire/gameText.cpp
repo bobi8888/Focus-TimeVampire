@@ -1,5 +1,4 @@
 #include "utils.h"
-
 #include "gameSprite.h"
 #include "gameText.h"
 
@@ -55,18 +54,16 @@ void GameText::setTextToMoney(std::ostringstream& out) {
 	text.setString(outString);
 	out.str("");
 }
-vector <float> GameText::getCharWidthsVector(){
-	return charWidths;
+void GameText::setTextOrigin(){
+	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2, text.getCharacterSize() / 2 + ((text.getCharacterSize() - text.getGlobalBounds().height) / 2)));
 }
-void GameText::setCharWidthsVector(string newString){
-	float prev = 0, next = 0;
-	text.setString(newString);
-	for (int i = 1; i <= newString.size(); i++){
-		prev = text.getGlobalBounds().width;
-		text.setString(newString.substr(i));
-		next = text.getGlobalBounds().width;
-		charWidths.push_back(prev - next);
-		//std::cout << charWidths[i-1] << "\n";
-	}
-	text.setString(newString);
+void GameText::setTextPosition(sf::Vector2f newPosition){
+	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2
+		, (text.getCharacterSize() / 2 + ((text.getCharacterSize() - text.getGlobalBounds().height) / 2))));
+	text.setPosition(newPosition);
+}
+void GameText::setString_Origin_Position(string newString, sf::Vector2f newPosition){
+	setTextString(newString);
+	setTextOrigin();
+	setTextPosition(newPosition);
 }
