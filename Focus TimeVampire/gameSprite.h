@@ -15,7 +15,6 @@ class GameSprite {
 		void setNewTexture(string spritePNG); 
 		void setSprite(sf::Sprite &newSprite);
 		sf::Sprite getSprite();
-		void setSpritePosition(sf::Vector2f);
 		void setRotation(float angle);
 		void setPosition(sf::Vector2f newPosition);
 		bool getIsVisible();

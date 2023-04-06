@@ -23,9 +23,6 @@ void GameSprite::setNewTexture(string spritePNG) {
 void GameSprite::setSprite(sf::Sprite& newSprite) {
 	sprite = newSprite;
 }
-void GameSprite::setSpritePosition(sf::Vector2f newPosition) {
-	sprite.setPosition(newPosition);
-}
 void GameSprite::setRotation(float angle) {
 	sprite.setRotation(angle);
 }

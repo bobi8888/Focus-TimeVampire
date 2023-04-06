@@ -23,25 +23,25 @@ sf::Sprite PlayerSprite::setMovement(sf::RenderWindow &window) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 			setPosition(sf::Vector2f(getSprite().getPosition().x - getMovementSpeed(), getSprite().getPosition().y));
 			if (getSprite().getPosition().x - getRadius() < 0) {
-				setSpritePosition(sf::Vector2f(getRadius(), getSprite().getPosition().y));
+				setPosition(sf::Vector2f(getRadius(), getSprite().getPosition().y));
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
 			setPosition(sf::Vector2f(getSprite().getPosition().x + getMovementSpeed(), getSprite().getPosition().y));
 			if (getSprite().getPosition().x + getRadius() > window.getSize().x) {
-				setSpritePosition(sf::Vector2f(window.getSize().x - getRadius(), getSprite().getPosition().y));
+				setPosition(sf::Vector2f(window.getSize().x - getRadius(), getSprite().getPosition().y));
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 			setPosition(sf::Vector2f(getSprite().getPosition().x, getSprite().getPosition().y - getMovementSpeed()));
 			if (getSprite().getPosition().y - getRadius() < 0) {
-				setSpritePosition(sf::Vector2f(getSprite().getPosition().x, getRadius()));
+				setPosition(sf::Vector2f(getSprite().getPosition().x, getRadius()));
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 			setPosition(sf::Vector2f(getSprite().getPosition().x, getSprite().getPosition().y + getMovementSpeed()));
 			if (getSprite().getPosition().y + getRadius() > window.getSize().y) {
-				setSpritePosition(sf::Vector2f(getSprite().getPosition().x, window.getSize().y - getRadius()));
+				setPosition(sf::Vector2f(getSprite().getPosition().x, window.getSize().y - getRadius()));
 			}
 		}
 		return getSprite();

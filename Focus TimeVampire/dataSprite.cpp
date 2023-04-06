@@ -1,5 +1,4 @@
 #include"utils.h"
-
 #include "gameSprite.h"
 
 string DataSprite::getLetter() {
