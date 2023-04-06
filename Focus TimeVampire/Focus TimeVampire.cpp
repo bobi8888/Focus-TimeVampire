@@ -16,6 +16,8 @@
 //changing window size and player sprite going past the window
 //sprite sizes should be relative the the window size at initialization
 
+//newMachine
+
 int main() {	
 	//WINDOW
 	antialiasing.antialiasingLevel = 8;
