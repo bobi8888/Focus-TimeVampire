@@ -16,6 +16,8 @@
 //switches are good for catching errors
 //changing window size and player movement
 
+//newMachine
+
 int main() {	
 	//WINDOW
 	antialiasing.antialiasingLevel = 8;
