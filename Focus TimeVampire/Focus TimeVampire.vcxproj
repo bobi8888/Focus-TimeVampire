@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="discussText.cpp" />
     <ClCompile Include="Focus TimeVampire.cpp" />
+    <ClCompile Include="gameScreen.cpp" />
     <ClCompile Include="gameTimer.cpp" />
     <ClCompile Include="dataSprite.cpp" />
     <ClCompile Include="gameSprite.cpp" />
