@@ -257,22 +257,20 @@ int main() {
 					}
 				}
 
-				if (gameScreensENUM == ignoreENUM) {
-					dullBed.play();
-				} else {
-					dullBed.stop();
-				}
 				switch(gameScreensENUM){
 					case mainENUM:
 					gameScreen.drawScreen(window, timerText.getText());
 					minigameSprites.drawSprites(window, -1);
+					dullBed.pause();
 					//SWITCH FOR WHICH MINIGAME IS SELECTED
 					if (event.type == sf::Event::EventType::MouseButtonPressed) {
 						for (int i = 0; i < minigameSprites.getDataSpriteVector().size(); i++) {
 							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && 
 							minigameSprites.getSingleSprite(i).getSprite().getGlobalBounds().contains(translatedMousePosition)) {
 								if (!minigameSprites.getSingleSprite(i).getIsComplete())
-								gameScreensENUM = static_cast<gameScreens>(i);
+									gameScreensENUM = static_cast<gameScreens>(i);
+								if (gameScreensENUM == ignoreENUM)
+									dullBed.play();
 							}
 						}
 					}
@@ -456,8 +454,7 @@ int main() {
 						}
 					break;
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
-						ignore.drawScreen(window, timerText.getText());						
-						//dullBed.play();
+						ignore.drawScreen(window, timerText.getText());	
 					break;
 					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 
 						drive.drawScreen(window, timerText.getText());
