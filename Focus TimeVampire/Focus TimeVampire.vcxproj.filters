@@ -77,5 +77,8 @@
     <ClInclude Include="discussUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ignoreUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

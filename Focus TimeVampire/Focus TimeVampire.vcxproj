@@ -154,6 +154,7 @@
     <ClInclude Include="discussUtils.h" />
     <ClInclude Include="gameSprite.h" />
     <ClInclude Include="assembleUtils.h" />
+    <ClInclude Include="ignoreUtils.h" />
     <ClInclude Include="randomizedData.h" />
     <ClInclude Include="gameText.h" />
     <ClInclude Include="mouse.h" />

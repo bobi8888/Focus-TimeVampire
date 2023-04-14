@@ -8,6 +8,7 @@
 #include "randomizedData.h"
 #include "assembleUtils.h"
 #include "discussUtils.h"
+#include "ignoreUtils.h"
 #include "gameScreen.h"
 
 //ISSUES
@@ -155,9 +156,19 @@ int main() {
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 	GameScreen ignore("IGNORE!", generalFont, 25, 25, window);
 	sf::Music dullBed;
-	if (!dullBed.openFromFile("dullBed.wav"))
-		return -1; // error
-//	dullBed.play();
+	dullBed.setLoop(true);
+	if (!dullBed.openFromFile("dullBed.wav")) std::cout << "Error loading dullBed.wav \n";	
+	dullBed.setVolume(dullBedVolume);
+	sf::Music convo;
+	convo.setLoop(true);
+	if (!convo.openFromFile("convo.wav")) std::cout << "Error loading convo.wav \n";
+	convo.setVolume(convoVolume);
+	sf::SoundBuffer ignoreSoundBuffer;
+	if (!ignoreSoundBuffer.loadFromFile("beep.wav")) std::cout << "Error loading beep.wav \n";
+	sf::Sound ignoreBeep;
+	ignoreBeep.setBuffer(ignoreSoundBuffer);
+	ignoreBeep.setVolume(beepVolume);
+	beepCountdown = gameTimer.getTimeRemaining() - randomInt(8, 4);
 	// DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE
 	GameScreen drive("DRIVE!", generalFont, 25, 25, window);
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -262,6 +273,7 @@ int main() {
 					gameScreen.drawScreen(window, timerText.getText());
 					minigameSprites.drawSprites(window, -1);
 					dullBed.pause();
+					convo.pause();
 					//SWITCH FOR WHICH MINIGAME IS SELECTED
 					if (event.type == sf::Event::EventType::MouseButtonPressed) {
 						for (int i = 0; i < minigameSprites.getDataSpriteVector().size(); i++) {
@@ -269,8 +281,10 @@ int main() {
 							minigameSprites.getSingleSprite(i).getSprite().getGlobalBounds().contains(translatedMousePosition)) {
 								if (!minigameSprites.getSingleSprite(i).getIsComplete())
 									gameScreensENUM = static_cast<gameScreens>(i);
-								if (gameScreensENUM == ignoreENUM)
+								if (gameScreensENUM == ignoreENUM) {//playing music for ignore minigame
 									dullBed.play();
+									convo.play();
+								}
 							}
 						}
 					}
@@ -455,6 +469,11 @@ int main() {
 					break;
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 						ignore.drawScreen(window, timerText.getText());	
+						if (beepCountdown > gameTimer.getTimeRemaining()) {
+							ignoreBeep.play();
+							beepCountdown = gameTimer.getTimeRemaining() - randomInt(1, 10);
+						}
+						
 					break;
 					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 
 						drive.drawScreen(window, timerText.getText());
