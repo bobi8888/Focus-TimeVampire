@@ -145,6 +145,7 @@
     <ClCompile Include="gameTimer.cpp" />
     <ClCompile Include="dataSprite.cpp" />
     <ClCompile Include="gameSprite.cpp" />
+    <ClCompile Include="ignoreUtils.cpp" />
     <ClCompile Include="randomizedData.cpp" />
     <ClCompile Include="gameText.cpp" />
     <ClCompile Include="dataSpriteVector.cpp" />

@@ -3,7 +3,12 @@
 sf::Color blockerFill(0,0,0);
 sf::Color blockerBorder(0,0,0);
 vector <sf::RectangleShape> textBlockersVector; 
-float discussTime = 0, discussSpeed = 0.02;
+float discussTime = 0;
+float* discussTimePtr = &discussTime;
+
+float discussSpeed = 0.02;
+float* discussSpeedPtr = &discussSpeed;
+
 float questionY = 200;
 int charToShow = 0;
 int red = 0, blue = 0, green = 0;

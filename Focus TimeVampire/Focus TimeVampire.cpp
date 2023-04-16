@@ -8,8 +8,9 @@
 #include "randomizedData.h"
 #include "assembleUtils.h"
 #include "discussUtils.h"
-#include "ignoreUtils.h"
 #include "gameScreen.h"
+#include "ignoreUtils.h"
+
 
 //ISSUES
 //reset random numbers each playthrough for Remember
@@ -17,10 +18,6 @@
 //add X_out button
 //changing window size and player sprite going past the window
 //sprite sizes should be relative the the window size at initialization
-
-//newMachine
-
-//newMachine
 
 int main() {	
 	//WINDOW
@@ -409,8 +406,8 @@ int main() {
 					case discussENUM://DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
 					//fix issue when time runs out
 						if (discussTime == 0) discussTime = gameTimer.getTimeRemaining();
-						npcText.charToShowIncrementor(discussTime,gameTimer.getTimeRemaining(), discussSpeed, textBlockersVector);
-						if (gameTimer.handleMinigamePace(discussTime, discussSpeed)) {
+						npcText.charToShowIncrementor(discussTimePtr,gameTimer.getTimeRemaining(), discussSpeedPtr, textBlockersVector);
+						if (gameTimer.handleMinigamePace(discussTime, *discussSpeedPtr)) {
 							if (charToShow <= textBlockersVector.size()) discussTime = gameTimer.getTimeRemaining();
 							else discussTime = 0;
 
@@ -468,12 +465,20 @@ int main() {
 						}
 					break;
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
+					//Read text and click to a new window to input answers
+						//player has a count down to read a prompt
+						//when time expires, they go to another screen where they have to answer a question.
+						//if incorrect, they repeat the prompt
+						//if correct, move on to a new prompt
+						//Procedural generated prompts and answers
+						//answers should be one word or number
 						ignore.drawScreen(window, timerText.getText());	
 						if (beepCountdown > gameTimer.getTimeRemaining()) {
 							ignoreBeep.play();
 							beepCountdown = gameTimer.getTimeRemaining() - randomInt(1, 10);
 						}
 						
+						window.draw(tipText.getText());
 					break;
 					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 
 						drive.drawScreen(window, timerText.getText());

@@ -37,7 +37,7 @@ class DiscussText: public GameText {
 		void clearCharWidthsVector();
 		vector <sf::RectangleShape> resetTextBlockers(vector <sf::RectangleShape> textBlockersVector);
 		void drawTextBlockers(vector <sf::RectangleShape> textBlockersVector, sf::RenderWindow& window);
-		void charToShowIncrementor(float discussTime, float timeRemaining, float discussSpeed, vector <sf::RectangleShape> textBlockersVector);
+		void charToShowIncrementor(float *discussTimePtr, float timeRemaining, float *discussSpeedPtr, vector <sf::RectangleShape> textBlockersVector);
 		sf::Color handleColor(sf::Color& color, int red, int blue, int green);
 		void updateNextQuestion(string nextQuestion, sf::RenderWindow& window, float questionY);
 };
