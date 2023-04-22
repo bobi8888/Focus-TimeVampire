@@ -27,7 +27,8 @@ int main() {
 	window.setKeyRepeatEnabled(false);
 
 	//TIME
-	GameTimer gameTimer;
+	GameTimer gameTimer(100);
+	GameTimer ignoreTimer(6);
 	sf::Clock timerClock;
 	sf::Clock typingClock;
 	sf::Time gameTime;
@@ -194,6 +195,15 @@ int main() {
 			if (event.type == sf::Event::Closed)
 				window.close();
 		
+
+			float testFloat = gameTimer.getTimeRemaining() - 400;
+			out << std::setprecision(2) << testFloat;
+			string testString = out.str();
+			out.str("");
+			tipText.setTextString(testString);
+
+
+
 			switch (event.key.code) {
 				case sf::Keyboard::Delete://66
 				if(!deleteKeyWorkaround){
@@ -416,6 +426,7 @@ int main() {
 						for (int i = 0; i < textBlockersVector.size(); i++){
 							textBlockersVector[i].setOutlineColor(blockerFill);
 						}
+
 						discuss.drawScreen(window, timerText.getText());
 						window.draw(npcText.getText());
 						npcText.drawTextBlockers(textBlockersVector, window);
@@ -472,12 +483,15 @@ int main() {
 						//if correct, move on to a new prompt
 						//Procedural generated prompts and answers
 						//answers should be one word or number
+						//draw minigame countdown
+
 						ignore.drawScreen(window, timerText.getText());	
+
 						if (beepCountdown > gameTimer.getTimeRemaining()) {
 							ignoreBeep.play();
 							beepCountdown = gameTimer.getTimeRemaining() - randomInt(1, 10);
 						}
-						
+
 						window.draw(tipText.getText());
 					break;
 					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 

@@ -10,9 +10,18 @@ float discussSpeed = 0.02;
 float* discussSpeedPtr = &discussSpeed;
 
 float questionY = 200;
+float* questionYPtr = &questionY;
+
 int charToShow = 0;
-int red = 0, blue = 0, green = 0;
+int* charToShowPtr = &charToShow;
+
+//int red = 0, blue = 0, green = 0;
+//int* redPtr = &red;
+//int* bluePtr = &blue;
+//int* greenPtr = &green;
+
 int redInc = 1, blueInc = 5, greenInc = 3;
+int* redIncPtr = &redInc;
 int questionNumber = 1;
 string question1 = "How many minigames are there?", response1A = "9", response1B = "8";
 string question2 = "Are they too easy?", response2A = "Yes", response2B = "No";

@@ -2,6 +2,9 @@
 
 # include "gameTimer.h"
 
+GameTimer::GameTimer(float newGameTimer) {
+	timerLength = newGameTimer;
+}
 int GameTimer::getPrecision() {
 	return precision;
 }
