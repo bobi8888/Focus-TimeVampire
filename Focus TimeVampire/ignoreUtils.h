@@ -1,6 +1,7 @@
 #pragma once
 
 int ignorePromptTimer = 10;
+int ignoreScreen = 1;
 float beepCountdown = 0;
 float beepVolume = 40;
 float dullBedVolume = 20;

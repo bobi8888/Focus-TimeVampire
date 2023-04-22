@@ -28,10 +28,12 @@ int main() {
 
 	//TIME
 	GameTimer gameTimer(100);
+	sf::Clock gameTimerClock;
+
 	GameTimer ignoreTimer(6);
-	sf::Clock timerClock;
-	sf::Clock typingClock;
-	sf::Time gameTime;
+	sf::Clock ignoreTimerClock;
+
+	//STREAM
 	std::ostringstream out;
 	std::stringstream stream;
 	srand(time(NULL));
@@ -152,7 +154,8 @@ int main() {
 	rightAnswer.setTextPosition(sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
 		, discussBannerSprite.getSprite().getPosition().y));
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
-	GameScreen ignore("IGNORE!", generalFont, 25, 25, window);
+	GameScreen ignorePrompt("IGNORE!", generalFont, 25, 25, window);
+	GameScreen ignoreQuestion("IGNORE!", generalFont, 25, 25, window);
 	sf::Music dullBed;
 	dullBed.setLoop(true);
 	if (!dullBed.openFromFile("dullBed.wav")) std::cout << "Error loading dullBed.wav \n";	
@@ -195,15 +198,6 @@ int main() {
 			if (event.type == sf::Event::Closed)
 				window.close();
 		
-
-			float testFloat = gameTimer.getTimeRemaining() - 400;
-			out << std::setprecision(2) << testFloat;
-			string testString = out.str();
-			out.str("");
-			tipText.setTextString(testString);
-
-
-
 			switch (event.key.code) {
 				case sf::Keyboard::Delete://66
 				if(!deleteKeyWorkaround){
@@ -242,7 +236,7 @@ int main() {
 			if (event.type == sf::Event::EventType::MouseButtonPressed){
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && 
 				startButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-					timerClock.restart();
+					gameTimerClock.restart();
 					mainScreensENUM = gameMAIN;
 					event.type = sf::Event::MouseButtonReleased;
 				}
@@ -251,14 +245,14 @@ int main() {
 
 			case gameMAIN://GAME SCREEN
 			window.draw(pauseButton.getSprite());
-			if (gameTimer.getTimeRemaining() > 0) {
+			if (gameTimer.getTimeRemaining() > 0) {//game timer
 				timerText.getText().setString(gameTimer.getString(out));
-				gameTimer = gameTimer.manageGameTimer(timerClock, gameTimer);	
+				gameTimer = gameTimer.manageGameTimer(gameTimerClock, gameTimer);
 					
 				//create function for the mouse click event?
 				if (event.type == sf::Event::EventType::MouseButtonPressed) {
 					if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && pauseButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-						gameTimer = gameTimer.pause(timerClock, gameTimer);
+						gameTimer = gameTimer.pause(gameTimerClock, gameTimer);
 						timerText.getText().setString(("::Paused::"));
 						mainScreensENUM = resumeMAIN;
 					}
@@ -288,9 +282,10 @@ int main() {
 							minigameSprites.getSingleSprite(i).getSprite().getGlobalBounds().contains(translatedMousePosition)) {
 								if (!minigameSprites.getSingleSprite(i).getIsComplete())
 									gameScreensENUM = static_cast<gameScreens>(i);
-								if (gameScreensENUM == ignoreENUM) {//playing music for ignore minigame
+								if (gameScreensENUM == ignoreENUM) {//excecute once when switching to ignorePrompt
 									dullBed.play();
 									convo.play();
+									tipText.setTextPosition(sf::Vector2f(window.getSize().x, 100));
 								}
 							}
 						}
@@ -484,14 +479,28 @@ int main() {
 						//Procedural generated prompts and answers
 						//answers should be one word or number
 						//draw minigame countdown
+						switch (ignoreScreen) {
+						case 1:
+							ignorePrompt.drawScreen(window, timerText.getText());
 
-						ignore.drawScreen(window, timerText.getText());	
+							if (beepCountdown > gameTimer.getTimeRemaining()) {
+								ignoreBeep.play();
+								beepCountdown = gameTimer.getTimeRemaining() - randomInt(1, 10);
+							}
 
-						if (beepCountdown > gameTimer.getTimeRemaining()) {
-							ignoreBeep.play();
-							beepCountdown = gameTimer.getTimeRemaining() - randomInt(1, 10);
+							if (ignoreTimer.getTimeRemaining() > 0.02) {
+								tipText.setString_Origin_Position("Time Left: " + ignoreTimer.getString(out), sf::Vector2f(window.getSize().x / 2, 65));
+								ignoreTimer = ignoreTimer.manageGameTimer(ignoreTimerClock, ignoreTimer);
+							}
+							else { ignoreScreen = 2; 
+								tipText.setString_Origin_Position("Question: How many?", sf::Vector2f(window.getSize().x / 2, 65));
+
+							}
+							break;
+						case 2:
+							ignoreQuestion.drawScreen(window, timerText.getText());
+							break;
 						}
-
 						window.draw(tipText.getText());
 					break;
 					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 
@@ -522,7 +531,7 @@ int main() {
 			resumeScreen.drawScreen(window, timerText.getText());
 			if (event.type == sf::Event::EventType::MouseButtonPressed) {
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && resumeButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-					timerClock.restart();
+					gameTimerClock.restart();
 					mainScreensENUM = gameMAIN;						
 				}
 			}

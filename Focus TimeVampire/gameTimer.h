@@ -6,7 +6,7 @@ class GameTimer {
 	private:
 		int precision = 2;
 		float elapsedSeconds = 0;
-		float timerLength = 0;
+		float timerLength = 1;
 		float timeRemaining = timerLength;
 		float timeTaken = 0;
 		string timerString;
