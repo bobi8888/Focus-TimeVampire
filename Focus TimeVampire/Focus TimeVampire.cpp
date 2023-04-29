@@ -30,7 +30,7 @@ int main() {
 	GameTimer gameTimer(100);
 	sf::Clock gameTimerClock;
 
-	GameTimer ignoreTimer(6);
+	GameTimer ignoreTimer(10);
 	sf::Clock ignoreTimerClock;
 
 	//STREAM
@@ -49,6 +49,8 @@ int main() {
 	playerText.getText().setFillColor(sf::Color::White);	
 	GameText tipText(generalFont, 25, "Enter the missing values!", 55, window);
 	playerText.getText().setFillColor(sf::Color::White);
+	GameText ignorePromptText(generalFont, 30, "",20, window);
+	ignorePromptText.setTextPosition(sf::Vector2f(50, 125));
 
 	//GAME SPRITES
 	GameSprite startButton("startSprite.png", 0.5, 0.5);
@@ -154,8 +156,8 @@ int main() {
 	rightAnswer.setTextPosition(sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
 		, discussBannerSprite.getSprite().getPosition().y));
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
-	GameScreen ignorePrompt("IGNORE!", generalFont, 25, 25, window);
-	GameScreen ignoreQuestion("IGNORE!", generalFont, 25, 25, window);
+	GameScreen ignorePromptScreen("IGNORE!", generalFont, 25, 25, window);
+	GameScreen ignoreQuestionScreen("IGNORE!", generalFont, 25, 25, window);
 	sf::Music dullBed;
 	dullBed.setLoop(true);
 	if (!dullBed.openFromFile("dullBed.wav")) std::cout << "Error loading dullBed.wav \n";	
@@ -170,6 +172,8 @@ int main() {
 	ignoreBeep.setBuffer(ignoreSoundBuffer);
 	ignoreBeep.setVolume(beepVolume);
 	beepCountdown = gameTimer.getTimeRemaining() - randomInt(8, 4);
+	sf::Text tempText("", generalFont);
+	ignorePromptText = loadPrompt(tempText, ignorePrompts, ignorePromptText, window);
 	// DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE
 	GameScreen drive("DRIVE!", generalFont, 25, 25, window);
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -286,6 +290,7 @@ int main() {
 									dullBed.play();
 									convo.play();
 									tipText.setTextPosition(sf::Vector2f(window.getSize().x, 100));
+									ignoreTimerClock.restart();
 								}
 							}
 						}
@@ -472,36 +477,39 @@ int main() {
 					break;
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 					//Read text and click to a new window to input answers
-						//player has a count down to read a prompt
-						//when time expires, they go to another screen where they have to answer a question.
 						//if incorrect, they repeat the prompt
 						//if correct, move on to a new prompt
 						//Procedural generated prompts and answers
 						//answers should be one word or number
-						//draw minigame countdown
+
+						//need to add a reset button to 2nd ignore screen
+						//need to add an answer buttong to 1st ignore screen
+						//reset ignoreTimer when going back to the 1st screen
+
+						if (beepCountdown > gameTimer.getTimeRemaining()) {
+							ignoreBeep.play();
+							beepCountdown = gameTimer.getTimeRemaining() - randomInt(1, 10);
+						}
 						switch (ignoreScreen) {
 						case 1:
-							ignorePrompt.drawScreen(window, timerText.getText());
-
-							if (beepCountdown > gameTimer.getTimeRemaining()) {
-								ignoreBeep.play();
-								beepCountdown = gameTimer.getTimeRemaining() - randomInt(1, 10);
-							}
+							ignorePromptScreen.drawScreen(window, timerText.getText());
 
 							if (ignoreTimer.getTimeRemaining() > 0.02) {
-								tipText.setString_Origin_Position("Time Left: " + ignoreTimer.getString(out), sf::Vector2f(window.getSize().x / 2, 65));
+								tipText.setString_Origin_Position("Time Left: " + ignoreTimer.getString(out), sf::Vector2f(window.getSize().x / 2, 425));
 								ignoreTimer = ignoreTimer.manageGameTimer(ignoreTimerClock, ignoreTimer);
-							}
-							else { ignoreScreen = 2; 
+							} else { 
+								ignoreScreen = 2; 
 								tipText.setString_Origin_Position("Question: How many?", sf::Vector2f(window.getSize().x / 2, 65));
-
 							}
+							window.draw(ignorePromptText.getText());
+							window.draw(tipText.getText());
 							break;
 						case 2:
-							ignoreQuestion.drawScreen(window, timerText.getText());
+							ignoreQuestionScreen.drawScreen(window, timerText.getText());
+							window.draw(bannerSprite.getSprite());
+							window.draw(tipText.getText());
 							break;
 						}
-						window.draw(tipText.getText());
 					break;
 					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 
 						drive.drawScreen(window, timerText.getText());

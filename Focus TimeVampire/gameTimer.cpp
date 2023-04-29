@@ -4,6 +4,7 @@
 
 GameTimer::GameTimer(float newGameTimer) {
 	timerLength = newGameTimer;
+	timeRemaining = timerLength;
 }
 int GameTimer::getPrecision() {
 	return precision;
