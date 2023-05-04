@@ -30,7 +30,7 @@ int main() {
 	GameTimer gameTimer(100);
 	sf::Clock gameTimerClock;
 
-	GameTimer ignoreTimer(10);
+	GameTimer ignoreTimer(20);
 	sf::Clock ignoreTimerClock;
 
 	//STREAM
@@ -54,7 +54,11 @@ int main() {
 
 	//GAME SPRITES
 	GameSprite startButton("startSprite.png", 0.5, 0.5);
-	startButton.setPosition(getCenterOfWindow(window));
+	startButton.setPosition(getCenterOfWindow(window));	
+	GameSprite questionButton("questionButton.png", 0.4, 0.4);
+	questionButton.setPosition(sf::Vector2f(window.getSize().x/2, 300));	
+	GameSprite resetButton("resetButton.png", 0.4, 0.4);
+	resetButton.setPosition(getCenterOfWindow(window));
 	GameSprite pauseButton("pauseSprite.png", 0.25, 0.25);
 	pauseButton.setPosition(sf::Vector2f(window.getSize().x - 35, 40));
 	GameSprite resumeButton("resumeSprite.png", 0.5, 0.5);
@@ -157,7 +161,9 @@ int main() {
 		, discussBannerSprite.getSprite().getPosition().y));
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 	GameScreen ignorePromptScreen("IGNORE!", generalFont, 25, 25, window);
+	ignorePromptScreen.addSprite(questionButton.getSprite());
 	GameScreen ignoreQuestionScreen("IGNORE!", generalFont, 25, 25, window);
+	ignoreQuestionScreen.addSprite(resetButton.getSprite());
 	sf::Music dullBed;
 	dullBed.setLoop(true);
 	if (!dullBed.openFromFile("dullBed.wav")) std::cout << "Error loading dullBed.wav \n";	
@@ -171,7 +177,7 @@ int main() {
 	sf::Sound ignoreBeep;
 	ignoreBeep.setBuffer(ignoreSoundBuffer);
 	ignoreBeep.setVolume(beepVolume);
-	beepCountdown = gameTimer.getTimeRemaining() - randomInt(8, 4);
+	beepCountdown = gameTimer.getTimeRemaining() - randomInt(5, 1);
 	sf::Text tempText("", generalFont);
 	ignorePromptText = loadPrompt(tempText, ignorePrompts, ignorePromptText, window);
 	// DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE
@@ -237,9 +243,10 @@ int main() {
 			case startMAIN://START SCREEN
 			startScreen.drawScreen(window, timerText.getText());
 			//PRESS START TO BEGIN GAME
+
 			if (event.type == sf::Event::EventType::MouseButtonPressed){
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && 
-				startButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && startButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+
 					gameTimerClock.restart();
 					mainScreensENUM = gameMAIN;
 					event.type = sf::Event::MouseButtonReleased;
@@ -254,8 +261,10 @@ int main() {
 				gameTimer = gameTimer.manageGameTimer(gameTimerClock, gameTimer);
 					
 				//create function for the mouse click event?
+
 				if (event.type == sf::Event::EventType::MouseButtonPressed) {
 					if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && pauseButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+
 						gameTimer = gameTimer.pause(gameTimerClock, gameTimer);
 						timerText.getText().setString(("::Paused::"));
 						mainScreensENUM = resumeMAIN;
@@ -264,8 +273,10 @@ int main() {
 
 				if(gameScreensENUM != mainENUM){//BACK BUTTON
 					window.draw(backButton.getSprite());
+
 					if (event.type == sf::Event::EventType::MouseButtonPressed) {
 						if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && backButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+
 							gameScreensENUM = mainENUM;
 							playerText.getText().setString("");
 							acceptText = false;
@@ -280,10 +291,11 @@ int main() {
 					dullBed.pause();
 					convo.pause();
 					//SWITCH FOR WHICH MINIGAME IS SELECTED
+
 					if (event.type == sf::Event::EventType::MouseButtonPressed) {
 						for (int i = 0; i < minigameSprites.getDataSpriteVector().size(); i++) {
-							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && 
-							minigameSprites.getSingleSprite(i).getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && minigameSprites.getSingleSprite(i).getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+
 								if (!minigameSprites.getSingleSprite(i).getIsComplete())
 									gameScreensENUM = static_cast<gameScreens>(i);
 								if (gameScreensENUM == ignoreENUM) {//excecute once when switching to ignorePrompt
@@ -436,7 +448,7 @@ int main() {
 						window.draw(rightAnswer.getText());
 
 						if (event.type == sf::Event::EventType::MouseButtonPressed) {
-							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && leftAnswer.getText().getGlobalBounds().contains(translatedMousePosition) 
+							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && leftAnswer.getText().getGlobalBounds().contains(translatedMousePosition)
 							|| rightAnswer.getText().getGlobalBounds().contains(translatedMousePosition)) {
 								questionNumber++;
 								event.type = sf::Event::EventType::MouseButtonReleased;
@@ -485,6 +497,8 @@ int main() {
 						//need to add a reset button to 2nd ignore screen
 						//need to add an answer buttong to 1st ignore screen
 						//reset ignoreTimer when going back to the 1st screen
+						//swap banner and reset
+						//make buttons work
 
 						if (beepCountdown > gameTimer.getTimeRemaining()) {
 							ignoreBeep.play();
@@ -492,8 +506,13 @@ int main() {
 						}
 						switch (ignoreScreen) {
 						case 1:
+							if (event.type == sf::Event::EventType::MouseButtonPressed) {
+								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && questionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+									ignoreScreen = 2;
+									event.type = sf::Event::EventType::MouseButtonReleased;
+								}
+							}
 							ignorePromptScreen.drawScreen(window, timerText.getText());
-
 							if (ignoreTimer.getTimeRemaining() > 0.02) {
 								tipText.setString_Origin_Position("Time Left: " + ignoreTimer.getString(out), sf::Vector2f(window.getSize().x / 2, 425));
 								ignoreTimer = ignoreTimer.manageGameTimer(ignoreTimerClock, ignoreTimer);
@@ -505,6 +524,12 @@ int main() {
 							window.draw(tipText.getText());
 							break;
 						case 2:
+							if (event.type == sf::Event::EventType::MouseButtonPressed) {
+								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && resetButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+									ignoreScreen = 1;
+									event.type = sf::Event::EventType::MouseButtonReleased;
+								}
+							}
 							ignoreQuestionScreen.drawScreen(window, timerText.getText());
 							window.draw(bannerSprite.getSprite());
 							window.draw(tipText.getText());
