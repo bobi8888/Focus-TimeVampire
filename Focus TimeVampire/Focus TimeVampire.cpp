@@ -165,6 +165,7 @@ int main() {
 	ignorePromptScreen.addSprite(questionButton.getSprite());
 	GameScreen ignoreQuestionScreen("IGNORE!", generalFont, 25, 25, window);
 	ignoreQuestionScreen.addSprite(resetButton.getSprite());
+
 	sf::Music dullBed;
 	dullBed.setLoop(true);
 	if (!dullBed.openFromFile("dullBed.wav")) std::cout << "Error loading dullBed.wav \n";	
@@ -178,13 +179,16 @@ int main() {
 	sf::Sound ignoreBeep;
 	ignoreBeep.setBuffer(ignoreSoundBuffer);
 	ignoreBeep.setVolume(beepVolume);
+
 	beepCountdown = gameTimer.getTimeRemaining() - randomInt(5, 1);
+
 	sf::Text tempText("", generalFont);
 	int randomIgnore_Int = randomInt(2, 15);
 	int ignoreKey_Int = randomIgnore_Int + 5;
 	string ignoreKey_String = std::to_string(ignoreKey_Int);
 	string randomInt_String = std::to_string(randomIgnore_Int);
-	ignorePromptText = loadPrompt(randomInt_String, tempText, ignorePrompts, ignorePromptText, window);
+
+	ignorePromptText = loadPrompt(randomInt_String, tempText, ignorePrompt_1, ignorePromptText, window);
 	// DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE
 	GameScreen drive("DRIVE!", generalFont, 25, 25, window);
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -502,7 +506,7 @@ int main() {
 						//answers should be one word or number
 						//if the player goes over the prompt timer, they score 0 points
 
-						//create answer key for each prompt
+						//need to increment the prompts and questions 
 
 						if (beepCountdown > gameTimer.getTimeRemaining()) {
 							ignoreBeep.play();
@@ -520,7 +524,7 @@ int main() {
 							if (event.type == sf::Event::EventType::MouseButtonPressed) {//execute if 'go to question' sprite is clicked
 								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && questionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
 									ignoreScreen = 2;
-									tipText.setString_Origin_Position("How many wheels were there?", sf::Vector2f(window.getSize().x / 2, 65));
+									tipText.setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
 									ignoreTimer = ignoreTimer.pause(ignoreTimerClock, ignoreTimer);
 									event.type = sf::Event::EventType::MouseButtonReleased;
 									playerText.getText().setFillColor(sf::Color::White);
@@ -537,20 +541,19 @@ int main() {
 									event.type = sf::Event::EventType::MouseButtonReleased;
 								}
 							}
-
-
-							//all this checks the size of playerText
 							if (playerText.getTextString().size() <= ignoreKey_String.size() - 1) {
 								acceptText = true;
-							}
-							else {
+							} else {
 								acceptText = false;
 								if (playerText.getTextString() == ignoreKey_String) {
-									//move on to next prompt
+									ignorePromptText.setTextString("");
+									ignorePromptText = loadPrompt("", tempText, ignorePrompt_2, ignorePromptText, window);
+									ignoreScreen = 1;
+									playerText.setTextString("");
+									currentQuestion++;
+									//std::cout << "correct \n";
 								}
 							}
-
-
 							ignoreQuestionScreen.drawScreen(window, timerText.getText());
 							window.draw(bannerSprite.getSprite());							
 							playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +5);
