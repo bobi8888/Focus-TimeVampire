@@ -13,11 +13,10 @@ float convoVolume = 85;
 
 string question_2_color = "pink ";
 
-vector <vector <string>> ignorePrompt_1{ { "A ", "sedan ", "stops ", "next ", "to ", "a ", "motorcyle. "}, {"bicycles ", "approach ", "from ", "the ", "north. "}
-	,{"A ", "football ", "player ", "on ", "a ", "unicycle ", "just ", "left. "}};
-
-vector <vector <string>> ignorePrompt_2{ {"In ", "a ", "pile ", "of ", "Legos ", "you ", "see ", "4 ", "black ", "pieces, ", "5 ", "dark ", "green " , "pieces, ", " and ", "8 ", "light ", "green ", 
-	"pieces."}};
+vector <vector <vector <string>>> ignorePromptVectors{ { { "A ", "sedan ", "stops ", "next ", "to ", "a ", "motorcyle. "}, {"bicycles ", "approach ", "from ", "the ", "north. "}
+	,{"A ", "football ", "player ", "on ", "a ", "unicycle ", "just ", "left. "}}, 
+	{ {"In ", "a ", "pile ", "of ", "Legos ", "you ", "see ", "4 ", "black ", "pieces, ", "5 ", "dark ", "green " , "pieces, ", " and ", "8 ", "light ", "green ",
+	"pieces."}} };
 
 vector <string> ignoreQuestions = { "How many wheels were there?", "How many " + question_2_color + "pieces where there?" };
 

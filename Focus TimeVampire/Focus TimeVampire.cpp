@@ -188,7 +188,7 @@ int main() {
 	string ignoreKey_String = std::to_string(ignoreKey_Int);
 	string randomInt_String = std::to_string(randomIgnore_Int);
 
-	ignorePromptText = loadPrompt(randomInt_String, tempText, ignorePrompt_1, ignorePromptText, window);
+	ignorePromptText = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptText, window);
 	// DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE
 	GameScreen drive("DRIVE!", generalFont, 25, 25, window);
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -506,7 +506,7 @@ int main() {
 						//answers should be one word or number
 						//if the player goes over the prompt timer, they score 0 points
 
-						//need to increment the prompts and questions 
+						//find a way to increment the prompts while still being able to use load prompt....pass in the superPrompt vector? 
 
 						if (beepCountdown > gameTimer.getTimeRemaining()) {
 							ignoreBeep.play();
@@ -547,10 +547,17 @@ int main() {
 								acceptText = false;
 								if (playerText.getTextString() == ignoreKey_String) {
 									ignorePromptText.setTextString("");
-									ignorePromptText = loadPrompt("", tempText, ignorePrompt_2, ignorePromptText, window);
 									ignoreScreen = 1;
 									playerText.setTextString("");
 									currentQuestion++;
+									currentPrompt++;
+									if (currentPrompt == ignorePromptVectors.size() && currentQuestion == ignoreQuestions.size()) {
+										minigameSprites.updateIndividualTexture(ignoreENUM, "completedMinigameSprite.png");
+										minigameSprites.setSpriteToComplete(ignoreENUM);
+										gameScreensENUM = mainENUM;
+										break;
+									}
+									ignorePromptText = loadPrompt("", tempText, ignorePromptVectors[currentPrompt], ignorePromptText, window);
 									//std::cout << "correct \n";
 								}
 							}
