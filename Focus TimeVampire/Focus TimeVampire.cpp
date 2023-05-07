@@ -180,7 +180,11 @@ int main() {
 	ignoreBeep.setVolume(beepVolume);
 	beepCountdown = gameTimer.getTimeRemaining() - randomInt(5, 1);
 	sf::Text tempText("", generalFont);
-	ignorePromptText = loadPrompt(tempText, ignorePrompts, ignorePromptText, window);
+	int randomIgnore_Int = randomInt(2, 15);
+	int ignoreKey_Int = randomIgnore_Int + 5;
+	string ignoreKey_String = std::to_string(ignoreKey_Int);
+	string randomInt_String = std::to_string(randomIgnore_Int);
+	ignorePromptText = loadPrompt(randomInt_String, tempText, ignorePrompts, ignorePromptText, window);
 	// DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE
 	GameScreen drive("DRIVE!", generalFont, 25, 25, window);
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -296,9 +300,9 @@ int main() {
 					if (event.type == sf::Event::EventType::MouseButtonPressed) {
 						for (int i = 0; i < minigameSprites.getDataSpriteVector().size(); i++) {
 							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && minigameSprites.getSingleSprite(i).getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-
 								if (!minigameSprites.getSingleSprite(i).getIsComplete())
 									gameScreensENUM = static_cast<gameScreens>(i);
+									event.type = sf::Event::EventType::MouseButtonReleased;
 								if (gameScreensENUM == ignoreENUM) {//excecute once when switching to ignorePrompt
 									dullBed.play();
 									convo.play();
@@ -536,23 +540,22 @@ int main() {
 
 
 							//all this checks the size of playerText
-							//if (playerText.getTextString().size() <= rememberFullBubbles.getSingleSprite(player.getSpriteContactIndex()).getStringValue().size() - 1) {
-							//	acceptText = true;
-							//}
-							//else {
-							//	acceptText = false;
-							//	if (playerText.getTextString() == rememberFullBubbles.getSingleSprite(player.getSpriteContactIndex()).getStringValue()) {
-							//		rememberEmptyBubbles.updateIndividualTexture(player.getSpriteContactIndex(), "okBubbleSprite.png");
-							//		rememberEmptyBubbles.setSpriteToComplete(player.getSpriteContactIndex());
-							//	}
-							//}
+							if (playerText.getTextString().size() <= ignoreKey_String.size() - 1) {
+								acceptText = true;
+							}
+							else {
+								acceptText = false;
+								if (playerText.getTextString() == ignoreKey_String) {
+									//move on to next prompt
+								}
+							}
 
 
 							ignoreQuestionScreen.drawScreen(window, timerText.getText());
 							window.draw(bannerSprite.getSprite());							
 							playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +5);
 							window.draw(playerText.getText());
-							//window.draw(tipText.getText());
+							window.draw(tipText.getText());
 							break;
 						}
 					break;
