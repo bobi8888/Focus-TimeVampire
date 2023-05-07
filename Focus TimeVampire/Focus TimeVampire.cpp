@@ -19,6 +19,7 @@
 //changing window size and player sprite going past the window
 //sprite sizes should be relative the the window size at initialization
 
+//5/4/2023 21232 bytes in stack
 int main() {	
 	//WINDOW
 	antialiasing.antialiasingLevel = 8;
@@ -58,7 +59,7 @@ int main() {
 	GameSprite questionButton("questionButton.png", 0.4, 0.4);
 	questionButton.setPosition(sf::Vector2f(window.getSize().x/2, 300));	
 	GameSprite resetButton("resetButton.png", 0.4, 0.4);
-	resetButton.setPosition(getCenterOfWindow(window));
+	resetButton.setPosition(sf::Vector2f(window.getSize().x/2,window.getSize().y-100));
 	GameSprite pauseButton("pauseSprite.png", 0.25, 0.25);
 	pauseButton.setPosition(sf::Vector2f(window.getSize().x - 35, 40));
 	GameSprite resumeButton("resumeSprite.png", 0.5, 0.5);
@@ -233,7 +234,7 @@ int main() {
 			}
 			if (acceptText) {
 				if(!playerText.getIsFull()) {
-					if (event.text.unicode < 57 && event.text.unicode >= 48 && event.type != sf::Event::MouseMoved)
+					if (event.text.unicode < 58 && event.text.unicode >= 48 && event.type != sf::Event::MouseMoved)
 						playerText.appendTextString(event.text.unicode);
 				} else playerText.setTextString("");
 			}		
@@ -301,8 +302,10 @@ int main() {
 								if (gameScreensENUM == ignoreENUM) {//excecute once when switching to ignorePrompt
 									dullBed.play();
 									convo.play();
-									tipText.setTextPosition(sf::Vector2f(window.getSize().x, 100));
+									tipText.getText().setFillColor(sf::Color::White);
 									ignoreTimerClock.restart();
+									bannerSprite.setPosition(getCenterOfWindow(window));
+									acceptText = true;
 								}
 							}
 						}
@@ -490,15 +493,12 @@ int main() {
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 					//Read text and click to a new window to input answers
 						//if incorrect, they repeat the prompt
-						//if correct, move on to a new prompt
-						//Procedural generated prompts and answers
+						//if correct, move on to a new prompt?
+						//Procedural generated prompts and answers?
 						//answers should be one word or number
+						//if the player goes over the prompt timer, they score 0 points
 
-						//need to add a reset button to 2nd ignore screen
-						//need to add an answer buttong to 1st ignore screen
-						//reset ignoreTimer when going back to the 1st screen
-						//swap banner and reset
-						//make buttons work
+						//create answer key for each prompt
 
 						if (beepCountdown > gameTimer.getTimeRemaining()) {
 							ignoreBeep.play();
@@ -506,19 +506,21 @@ int main() {
 						}
 						switch (ignoreScreen) {
 						case 1:
-							if (event.type == sf::Event::EventType::MouseButtonPressed) {
-								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && questionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-									ignoreScreen = 2;
-									event.type = sf::Event::EventType::MouseButtonReleased;
-								}
-							}
 							ignorePromptScreen.drawScreen(window, timerText.getText());
 							if (ignoreTimer.getTimeRemaining() > 0.02) {
 								tipText.setString_Origin_Position("Time Left: " + ignoreTimer.getString(out), sf::Vector2f(window.getSize().x / 2, 425));
 								ignoreTimer = ignoreTimer.manageGameTimer(ignoreTimerClock, ignoreTimer);
 							} else { 
 								ignoreScreen = 2; 
-								tipText.setString_Origin_Position("Question: How many?", sf::Vector2f(window.getSize().x / 2, 65));
+							}
+							if (event.type == sf::Event::EventType::MouseButtonPressed) {//execute if 'go to question' sprite is clicked
+								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && questionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+									ignoreScreen = 2;
+									tipText.setString_Origin_Position("How many wheels were there?", sf::Vector2f(window.getSize().x / 2, 65));
+									ignoreTimer = ignoreTimer.pause(ignoreTimerClock, ignoreTimer);
+									event.type = sf::Event::EventType::MouseButtonReleased;
+									playerText.getText().setFillColor(sf::Color::White);
+								}
 							}
 							window.draw(ignorePromptText.getText());
 							window.draw(tipText.getText());
@@ -527,12 +529,30 @@ int main() {
 							if (event.type == sf::Event::EventType::MouseButtonPressed) {
 								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && resetButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
 									ignoreScreen = 1;
+									ignoreTimerClock.restart();
 									event.type = sf::Event::EventType::MouseButtonReleased;
 								}
 							}
+
+
+							//all this checks the size of playerText
+							//if (playerText.getTextString().size() <= rememberFullBubbles.getSingleSprite(player.getSpriteContactIndex()).getStringValue().size() - 1) {
+							//	acceptText = true;
+							//}
+							//else {
+							//	acceptText = false;
+							//	if (playerText.getTextString() == rememberFullBubbles.getSingleSprite(player.getSpriteContactIndex()).getStringValue()) {
+							//		rememberEmptyBubbles.updateIndividualTexture(player.getSpriteContactIndex(), "okBubbleSprite.png");
+							//		rememberEmptyBubbles.setSpriteToComplete(player.getSpriteContactIndex());
+							//	}
+							//}
+
+
 							ignoreQuestionScreen.drawScreen(window, timerText.getText());
-							window.draw(bannerSprite.getSprite());
-							window.draw(tipText.getText());
+							window.draw(bannerSprite.getSprite());							
+							playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +5);
+							window.draw(playerText.getText());
+							//window.draw(tipText.getText());
 							break;
 						}
 					break;
