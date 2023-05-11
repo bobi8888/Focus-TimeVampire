@@ -254,17 +254,11 @@ int main() {
 
 		switch (mainScreensENUM){
 			case startMAIN://START SCREEN
-			startScreen.drawScreen(window, timerText.getText());
-			//PRESS START TO BEGIN GAME
-
-			if (event.type == sf::Event::EventType::MouseButtonPressed){
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && startButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-
-					gameTimerClock.restart();
-					mainScreensENUM = gameMAIN;
-					event.type = sf::Event::MouseButtonReleased;
-				}
-			}
+			if (validSpriteClick(event, startButton.getSprite().getGlobalBounds(), translatedMousePosition) == true) {
+				gameTimerClock.restart();
+				mainScreensENUM = gameMAIN;
+				event.type = sf::Event::MouseButtonReleased;
+			} else startScreen.drawScreen(window, timerText.getText());
 			break;	 
 
 			case gameMAIN://GAME SCREEN
@@ -273,28 +267,19 @@ int main() {
 				timerText.getText().setString(gameTimer.getString(out));
 				gameTimer = gameTimer.manageGameTimer(gameTimerClock, gameTimer);
 					
-				//create function for the mouse click event?
-
-				if (event.type == sf::Event::EventType::MouseButtonPressed) {
-					if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && pauseButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-
-						gameTimer = gameTimer.pause(gameTimerClock, gameTimer);
-						timerText.getText().setString(("::Paused::"));
-						mainScreensENUM = resumeMAIN;
-					}
+				if (validSpriteClick(event, pauseButton.getSprite().getGlobalBounds(), translatedMousePosition) == true) {
+					gameTimer = gameTimer.pause(gameTimerClock, gameTimer);
+					timerText.getText().setString(("::Paused::"));
+					mainScreensENUM = resumeMAIN;					
 				}		
 
 				if(gameScreensENUM != mainENUM){//BACK BUTTON
-					window.draw(backButton.getSprite());
 
-					if (event.type == sf::Event::EventType::MouseButtonPressed) {
-						if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && backButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-
-							gameScreensENUM = mainENUM;
-							playerText.getText().setString("");
-							acceptText = false;
-						}
-					}
+					if (validSpriteClick (event, backButton.getSprite().getGlobalBounds(), translatedMousePosition) == true) {
+						gameScreensENUM = mainENUM;
+						playerText.getText().setString("");
+						acceptText = false;						
+					} else window.draw(backButton.getSprite());					
 				}
 
 				switch(gameScreensENUM){
@@ -396,15 +381,12 @@ int main() {
 					}
 					break;
 					case assembleENUM://ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE 
-					if (event.type == sf::Event::EventType::MouseButtonPressed) {
-						if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) 
+					if (validSpriteClick(event, solutionButton.getSprite().getGlobalBounds(), translatedMousePosition) == true)
 						validMouseClick = true;
-					}
+					
 					if (!solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition) || !sf::Mouse::isButtonPressed(sf::Mouse::Left))
-					validMouseClick = false;
-
-					if (validMouseClick)
-					assembleScreen = 2;
+						validMouseClick = false;
+					if (validMouseClick) assembleScreen = 2;
 					else assembleScreen = 1;
 
 					switch (assembleScreen) {
@@ -460,40 +442,39 @@ int main() {
 						window.draw(leftAnswer.getText());
 						window.draw(rightAnswer.getText());
 
-						if (event.type == sf::Event::EventType::MouseButtonPressed) {
-							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && leftAnswer.getText().getGlobalBounds().contains(translatedMousePosition)
-							|| rightAnswer.getText().getGlobalBounds().contains(translatedMousePosition)) {
-								questionNumber++;
-								event.type = sf::Event::EventType::MouseButtonReleased;
-								switch (questionNumber) {
-									case 2:
-										npcText.updateNextQuestion(question2, window, questionY);
+						if (validSpriteClick(event, leftAnswer.getText().getGlobalBounds(), translatedMousePosition) == true 
+							|| validSpriteClick(event, rightAnswer.getText().getGlobalBounds(), translatedMousePosition) == true) {
+							questionNumber++;
+							event.type = sf::Event::EventType::MouseButtonReleased;
+							switch (questionNumber) {
+								case 2:
+									npcText.updateNextQuestion(question2, window, questionY);
 
-										leftAnswer.setString_Origin_Position(response2A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										rightAnswer.setString_Origin_Position(response2B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
-									break;
-									case 3:
-										npcText.updateNextQuestion(question3, window, questionY);
-										leftAnswer.setString_Origin_Position(response3A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										rightAnswer.setString_Origin_Position(response3B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
-									break;
-									case 4:
-										npcText.updateNextQuestion(question4, window, questionY);
-										leftAnswer.setString_Origin_Position(response4A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										rightAnswer.setString_Origin_Position(response4B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
-									break;
-								}
+									leftAnswer.setString_Origin_Position(response2A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									rightAnswer.setString_Origin_Position(response2B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
+								break;
+								case 3:
+									npcText.updateNextQuestion(question3, window, questionY);
+									leftAnswer.setString_Origin_Position(response3A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									rightAnswer.setString_Origin_Position(response3B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
+								break;
+								case 4:
+									npcText.updateNextQuestion(question4, window, questionY);
+									leftAnswer.setString_Origin_Position(response4A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									rightAnswer.setString_Origin_Position(response4B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
+								break;
 							}
 						}
+						
 						if (questionNumber == 5) {
 							minigameSprites.updateIndividualTexture(discussENUM, "completedMinigameSprite.png");
 							minigameSprites.setSpriteToComplete(discussENUM);
@@ -525,30 +506,25 @@ int main() {
 								tipText.setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
 							}
 
-							//execute if 'go to question' sprite is clicked
-							if (event.type == sf::Event::EventType::MouseButtonPressed) {
-								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && questionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-									ignoreScreen = 2;
-									tipText.setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
-									ignoreTimer = ignoreTimer.pause(ignoreTimerClock, ignoreTimer);
-									event.type = sf::Event::EventType::MouseButtonReleased;
-								}
+							if (validSpriteClick(event, questionButton.getSprite().getGlobalBounds(), translatedMousePosition) == true) {
+								ignoreScreen = 2;
+								tipText.setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
+								ignoreTimer = ignoreTimer.pause(ignoreTimerClock, ignoreTimer);
 							}
 
 							ignorePromptScreen.drawScreen(window, timerText.getText());
 							window.draw(ignorePromptText.getText());
 							window.draw(tipText.getText());
+							event.type = sf::Event::EventType::MouseButtonReleased;
 							break;
-						case 2:			
-
+						case 2:		
 							if (playerText.getTextString().size() <= ignoreKeys[currentKey].size() - 1) {
 								acceptText = true;
 							} else {
 								acceptText = false;
 							}
-
-							//find a way to condense these 2
-							if (playerText.getTextString() == ignoreKeys[currentKey]) {
+										
+							if (validSpriteClick(event, skipButton.getSprite().getGlobalBounds(), translatedMousePosition) == true || playerText.getTextString() == ignoreKeys[currentKey]) {
 								ignoreScreen = 1;
 								ignorePromptText.setTextString("");
 								playerText.setTextString("");
@@ -561,29 +537,10 @@ int main() {
 								ignoreTimer.resetTimer();
 								ignoreTimerClock.restart();
 							}
-															
-							if (event.type == sf::Event::EventType::MouseButtonPressed) {
-								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && skipButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-									ignoreScreen = 1;
-									ignorePromptText.setTextString("");
-									playerText.setTextString("");
-									currentKey++;
-									currentQuestion++;
-									currentPrompt++;
-									if (currentPrompt < ignorePromptVectors.size()) {
-										ignorePromptText = loadPrompt("", tempText, ignorePromptVectors[currentPrompt], ignorePromptText, window);
-									}
-									ignoreTimer.resetTimer();
-									ignoreTimerClock.restart();
-								}
-							}
 
-							if (event.type == sf::Event::EventType::MouseButtonPressed) {
-								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && gobackButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-									ignoreScreen = 1;
-									ignoreTimerClock.restart();
-									event.type = sf::Event::EventType::MouseButtonReleased;
-								}
+							if (validSpriteClick(event, gobackButton.getSprite().getGlobalBounds(), translatedMousePosition) == true && ignoreTimer.getTimeRemaining() > 0.02) {
+								ignoreScreen = 1;
+								ignoreTimerClock.restart();								
 							}
 
 							ignoreQuestionScreen.drawScreen(window, timerText.getText());
@@ -591,6 +548,7 @@ int main() {
 							playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +5);//where can this be put so it isn't always being called
 							window.draw(playerText.getText());
 							window.draw(tipText.getText());
+							event.type = sf::Event::EventType::MouseButtonReleased;
 							break;
 						}
 					break;
