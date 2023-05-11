@@ -1,10 +1,10 @@
 #pragma once
 #include "window.h"
 
-int ignorePromptTimer = 10;
 int ignoreScreen = 1;
 int currentQuestion = 0;
 int currentPrompt = 0;
+int currentKey = 0;
 
 float beepCountdown = 0;
 float beepVolume = 40;
@@ -15,10 +15,15 @@ string question_2_color = "pink ";
 
 vector <vector <vector <string>>> ignorePromptVectors{ { { "A ", "sedan ", "stops ", "next ", "to ", "a ", "motorcyle. "}, {"bicycles ", "approach ", "from ", "the ", "north. "}
 	,{"A ", "football ", "player ", "on ", "a ", "unicycle ", "just ", "left. "}}, 
-	{ {"In ", "a ", "pile ", "of ", "Legos ", "you ", "see ", "4 ", "black ", "pieces, ", "5 ", "dark ", "green " , "pieces, ", " and ", "8 ", "light ", "green ",
-	"pieces."}} };
 
-vector <string> ignoreQuestions = { "How many wheels were there?", "How many " + question_2_color + "pieces where there?" };
+	{{"In ", "a ", "pile ", "of ", "Legos ", "you ", "see ", "4 ", "black ", "plates, ", "5 ", "dark ", "green " , "tiles, ", "8 ", "light ", "blue ", "bricks, ",
+	"7 ", "tan  ", "plates, ", "1 ", "dark ", "blue ", "tiles, ", "and ", "11 ", "black ", "bricks."}},
+
+	{{"Please ", "add ", "2 ", "values ", "of ", "-2 ", "to ", "2 ", "X ", "12 ", "then ", "divide ", "by ", "5."}}
+};
+
+vector <string> ignoreQuestions = { "How many wheels were there?", "How many bricks where there?", "What is your answer?"};
+vector <string> ignoreKeys = { "", "19", "4"};
 
 GameText loadPrompt(string randomInt_String, sf::Text tempText, vector <vector <string>> ignorePrompt, GameText ignorePromptText, sf::RenderWindow& window) {	
 	if (ignorePrompt.size() > 1)

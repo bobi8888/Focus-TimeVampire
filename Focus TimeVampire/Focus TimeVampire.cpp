@@ -31,7 +31,7 @@ int main() {
 	GameTimer gameTimer(100);
 	sf::Clock gameTimerClock;
 
-	GameTimer ignoreTimer(20);
+	GameTimer ignoreTimer(5);
 	sf::Clock ignoreTimerClock;
 
 	//STREAM
@@ -58,8 +58,10 @@ int main() {
 	startButton.setPosition(getCenterOfWindow(window));	
 	GameSprite questionButton("questionButton.png", 0.4, 0.4);
 	questionButton.setPosition(sf::Vector2f(window.getSize().x/2, 300));	
-	GameSprite resetButton("resetButton.png", 0.4, 0.4);
-	resetButton.setPosition(sf::Vector2f(window.getSize().x/2,window.getSize().y-100));
+	GameSprite gobackButton("gobackButton.png", 0.35, 0.35);
+	gobackButton.setPosition(sf::Vector2f(window.getSize().x / 4, window.getSize().y - 100));	
+	GameSprite skipButton("skipButton.png", 0.35, 0.35);
+	skipButton.setPosition(sf::Vector2f(window.getSize().x / 4 * 3 , window.getSize().y - 100));
 	GameSprite pauseButton("pauseSprite.png", 0.25, 0.25);
 	pauseButton.setPosition(sf::Vector2f(window.getSize().x - 35, 40));
 	GameSprite resumeButton("resumeSprite.png", 0.5, 0.5);
@@ -164,7 +166,8 @@ int main() {
 	GameScreen ignorePromptScreen("IGNORE!", generalFont, 25, 25, window);
 	ignorePromptScreen.addSprite(questionButton.getSprite());
 	GameScreen ignoreQuestionScreen("IGNORE!", generalFont, 25, 25, window);
-	ignoreQuestionScreen.addSprite(resetButton.getSprite());
+	ignoreQuestionScreen.addSprite(gobackButton.getSprite());
+	ignoreQuestionScreen.addSprite(skipButton.getSprite());
 
 	sf::Music dullBed;
 	dullBed.setLoop(true);
@@ -185,6 +188,7 @@ int main() {
 	sf::Text tempText("", generalFont);
 	int randomIgnore_Int = randomInt(2, 15);
 	int ignoreKey_Int = randomIgnore_Int + 5;
+	ignoreKeys[0] = std::to_string(ignoreKey_Int);
 	string ignoreKey_String = std::to_string(ignoreKey_Int);
 	string randomInt_String = std::to_string(randomIgnore_Int);
 
@@ -310,7 +314,6 @@ int main() {
 								if (gameScreensENUM == ignoreENUM) {//excecute once when switching to ignorePrompt
 									dullBed.play();
 									convo.play();
-									tipText.getText().setFillColor(sf::Color::White);
 									ignoreTimerClock.restart();
 									bannerSprite.setPosition(getCenterOfWindow(window));
 									acceptText = true;
@@ -453,7 +456,6 @@ int main() {
 						discuss.drawScreen(window, timerText.getText());
 						window.draw(npcText.getText());
 						npcText.drawTextBlockers(textBlockersVector, window);
-						//make banner bigger
 						window.draw(discussBannerSprite.getSprite());
 						window.draw(leftAnswer.getText());
 						window.draw(rightAnswer.getText());
@@ -499,71 +501,94 @@ int main() {
 						}
 					break;
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
-					//Read text and click to a new window to input answers
-						//if incorrect, they repeat the prompt
-						//if correct, move on to a new prompt?
-						//Procedural generated prompts and answers?
-						//answers should be one word or number
-						//if the player goes over the prompt timer, they score 0 points
-
-						//find a way to increment the prompts while still being able to use load prompt....pass in the superPrompt vector? 
-
 						if (beepCountdown > gameTimer.getTimeRemaining()) {
 							ignoreBeep.play();
 							beepCountdown = gameTimer.getTimeRemaining() - randomInt(1, 10);
 						}
+
+						//win condition and result
+						if (currentPrompt == ignorePromptVectors.size() && currentQuestion >= ignoreQuestions.size()) {
+							minigameSprites.updateIndividualTexture(ignoreENUM, "completedMinigameSprite.png");
+							minigameSprites.setSpriteToComplete(ignoreENUM);
+							gameScreensENUM = mainENUM;
+							break;
+						}
+
 						switch (ignoreScreen) {
 						case 1:
-							ignorePromptScreen.drawScreen(window, timerText.getText());
+							//timer for the prompt screen
 							if (ignoreTimer.getTimeRemaining() > 0.02) {
 								tipText.setString_Origin_Position("Time Left: " + ignoreTimer.getString(out), sf::Vector2f(window.getSize().x / 2, 425));
 								ignoreTimer = ignoreTimer.manageGameTimer(ignoreTimerClock, ignoreTimer);
 							} else { 
-								ignoreScreen = 2; 
+								ignoreScreen = 2;
+								tipText.setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
 							}
-							if (event.type == sf::Event::EventType::MouseButtonPressed) {//execute if 'go to question' sprite is clicked
+
+							//execute if 'go to question' sprite is clicked
+							if (event.type == sf::Event::EventType::MouseButtonPressed) {
 								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && questionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
 									ignoreScreen = 2;
 									tipText.setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
 									ignoreTimer = ignoreTimer.pause(ignoreTimerClock, ignoreTimer);
 									event.type = sf::Event::EventType::MouseButtonReleased;
-									playerText.getText().setFillColor(sf::Color::White);
 								}
 							}
+
+							ignorePromptScreen.drawScreen(window, timerText.getText());
 							window.draw(ignorePromptText.getText());
 							window.draw(tipText.getText());
 							break;
-						case 2:
+						case 2:			
+
+							if (playerText.getTextString().size() <= ignoreKeys[currentKey].size() - 1) {
+								acceptText = true;
+							} else {
+								acceptText = false;
+							}
+
+							//find a way to condense these 2
+							if (playerText.getTextString() == ignoreKeys[currentKey]) {
+								ignoreScreen = 1;
+								ignorePromptText.setTextString("");
+								playerText.setTextString("");
+								currentKey++;
+								currentQuestion++;
+								currentPrompt++;
+								if (currentPrompt < ignorePromptVectors.size()) {
+									ignorePromptText = loadPrompt("", tempText, ignorePromptVectors[currentPrompt], ignorePromptText, window);
+								}
+								ignoreTimer.resetTimer();
+								ignoreTimerClock.restart();
+							}
+															
 							if (event.type == sf::Event::EventType::MouseButtonPressed) {
-								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && resetButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && skipButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+									ignoreScreen = 1;
+									ignorePromptText.setTextString("");
+									playerText.setTextString("");
+									currentKey++;
+									currentQuestion++;
+									currentPrompt++;
+									if (currentPrompt < ignorePromptVectors.size()) {
+										ignorePromptText = loadPrompt("", tempText, ignorePromptVectors[currentPrompt], ignorePromptText, window);
+									}
+									ignoreTimer.resetTimer();
+									ignoreTimerClock.restart();
+								}
+							}
+
+							if (event.type == sf::Event::EventType::MouseButtonPressed) {
+								if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && gobackButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
 									ignoreScreen = 1;
 									ignoreTimerClock.restart();
 									event.type = sf::Event::EventType::MouseButtonReleased;
 								}
 							}
-							if (playerText.getTextString().size() <= ignoreKey_String.size() - 1) {
-								acceptText = true;
-							} else {
-								acceptText = false;
-								if (playerText.getTextString() == ignoreKey_String) {
-									ignorePromptText.setTextString("");
-									ignoreScreen = 1;
-									playerText.setTextString("");
-									currentQuestion++;
-									currentPrompt++;
-									if (currentPrompt == ignorePromptVectors.size() && currentQuestion == ignoreQuestions.size()) {
-										minigameSprites.updateIndividualTexture(ignoreENUM, "completedMinigameSprite.png");
-										minigameSprites.setSpriteToComplete(ignoreENUM);
-										gameScreensENUM = mainENUM;
-										break;
-									}
-									ignorePromptText = loadPrompt("", tempText, ignorePromptVectors[currentPrompt], ignorePromptText, window);
-									//std::cout << "correct \n";
-								}
-							}
+
 							ignoreQuestionScreen.drawScreen(window, timerText.getText());
 							window.draw(bannerSprite.getSprite());							
-							playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +5);
+							playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +5);//where can this be put so it isn't always being called
 							window.draw(playerText.getText());
 							window.draw(tipText.getText());
 							break;
