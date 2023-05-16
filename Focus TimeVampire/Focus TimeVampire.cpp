@@ -9,6 +9,8 @@
 #include "assembleUtils.h"
 #include "discussUtils.h"
 #include "gameScreen.h"
+#include "ignoreUtils.h"
+
 
 //ISSUES
 //reset random numbers each playthrough for Remember
@@ -17,10 +19,11 @@
 //changing window size and player sprite going past the window
 //sprite sizes should be relative the the window size at initialization
 
-//newMachine
+//					gameTimer = gameTimer.pause(gameTimerClock, gameTimer); so many game timers?
 
-//newMachine
 
+//5/4/2023 21232 bytes in stack
+//5/10/23 21664 bytes in stack
 int main() {	
 	//WINDOW
 	antialiasing.antialiasingLevel = 8;
@@ -29,10 +32,13 @@ int main() {
 	window.setKeyRepeatEnabled(false);
 
 	//TIME
-	GameTimer gameTimer;
-	sf::Clock timerClock;
-	sf::Clock typingClock;
-	sf::Time gameTime;
+	GameTimer gameTimer(100);
+	sf::Clock gameTimerClock;
+
+	GameTimer ignoreTimer(5);
+	sf::Clock ignoreTimerClock;
+
+	//STREAM
 	std::ostringstream out;
 	std::stringstream stream;
 	srand(time(NULL));
@@ -48,10 +54,18 @@ int main() {
 	playerText.getText().setFillColor(sf::Color::White);	
 	GameText tipText(generalFont, 25, "Enter the missing values!", 55, window);
 	playerText.getText().setFillColor(sf::Color::White);
+	GameText ignorePromptText(generalFont, 30, "",20, window);
+	ignorePromptText.setTextPosition(sf::Vector2f(50, 125));
 
 	//GAME SPRITES
 	GameSprite startButton("startSprite.png", 0.5, 0.5);
-	startButton.setPosition(getCenterOfWindow(window));
+	startButton.setPosition(getCenterOfWindow(window));	
+	GameSprite questionButton("questionButton.png", 0.4, 0.4);
+	questionButton.setPosition(sf::Vector2f(window.getSize().x/2, 300));	
+	GameSprite gobackButton("gobackButton.png", 0.35, 0.35);
+	gobackButton.setPosition(sf::Vector2f(window.getSize().x / 4, window.getSize().y - 100));	
+	GameSprite skipButton("skipButton.png", 0.35, 0.35);
+	skipButton.setPosition(sf::Vector2f(window.getSize().x / 4 * 3 , window.getSize().y - 100));
 	GameSprite pauseButton("pauseSprite.png", 0.25, 0.25);
 	pauseButton.setPosition(sf::Vector2f(window.getSize().x - 35, 40));
 	GameSprite resumeButton("resumeSprite.png", 0.5, 0.5);
@@ -153,11 +167,36 @@ int main() {
 	rightAnswer.setTextPosition(sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
 		, discussBannerSprite.getSprite().getPosition().y));
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
-	GameScreen ignore("IGNORE!", generalFont, 25, 25, window);
+	GameScreen ignorePromptScreen("IGNORE!", generalFont, 25, 25, window);
+	ignorePromptScreen.addSprite(questionButton.getSprite());
+	GameScreen ignoreQuestionScreen("IGNORE!", generalFont, 25, 25, window);
+	ignoreQuestionScreen.addSprite(gobackButton.getSprite());
+	ignoreQuestionScreen.addSprite(skipButton.getSprite());
+
 	sf::Music dullBed;
-	if (!dullBed.openFromFile("dullBed.wav"))
-		return -1; // error
-//	dullBed.play();
+	dullBed.setLoop(true);
+	if (!dullBed.openFromFile("dullBed.wav")) std::cout << "Error loading dullBed.wav \n";	
+	dullBed.setVolume(dullBedVolume);
+	sf::Music convo;
+	convo.setLoop(true);
+	if (!convo.openFromFile("convo.wav")) std::cout << "Error loading convo.wav \n";
+	convo.setVolume(convoVolume);
+	sf::SoundBuffer ignoreSoundBuffer;
+	if (!ignoreSoundBuffer.loadFromFile("beep.wav")) std::cout << "Error loading beep.wav \n";
+	sf::Sound ignoreBeep;
+	ignoreBeep.setBuffer(ignoreSoundBuffer);
+	ignoreBeep.setVolume(beepVolume);
+
+	beepCountdown = gameTimer.getTimeRemaining() - randomInt(5, 1);
+
+	sf::Text tempText("", generalFont);
+	int randomIgnore_Int = randomInt(2, 15);
+	int ignoreKey_Int = randomIgnore_Int + 5;
+	ignoreKeys[0] = std::to_string(ignoreKey_Int);
+	string ignoreKey_String = std::to_string(ignoreKey_Int);
+	string randomInt_String = std::to_string(randomIgnore_Int);
+
+	ignorePromptText = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptText, window);
 	// DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE
 	GameScreen drive("DRIVE!", generalFont, 25, 25, window);
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -211,7 +250,7 @@ int main() {
 			}
 			if (acceptText) {
 				if(!playerText.getIsFull()) {
-					if (event.text.unicode < 57 && event.text.unicode >= 48 && event.type != sf::Event::MouseMoved)
+					if (event.text.unicode < 58 && event.text.unicode >= 48 && event.type != sf::Event::MouseMoved)
 						playerText.appendTextString(event.text.unicode);
 				} else playerText.setTextString("");
 			}		
@@ -219,60 +258,60 @@ int main() {
 
 		switch (mainScreensENUM){
 			case startMAIN://START SCREEN
-			startScreen.drawScreen(window, timerText.getText());
-			//PRESS START TO BEGIN GAME
-			if (event.type == sf::Event::EventType::MouseButtonPressed){
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && 
-				startButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-					timerClock.restart();
-					mainScreensENUM = gameMAIN;
-					event.type = sf::Event::MouseButtonReleased;
-				}
-			}
+			if (validSpriteClick(event, startButton.getSprite().getGlobalBounds(), translatedMousePosition) == true) {
+				gameTimerClock.restart();
+				mainScreensENUM = gameMAIN;
+				event.type = sf::Event::MouseButtonReleased;
+			} else startScreen.drawScreen(window, timerText.getText());
 			break;	 
 
 			case gameMAIN://GAME SCREEN
 			window.draw(pauseButton.getSprite());
-			if (gameTimer.getTimeRemaining() > 0) {
+			if (gameTimer.getTimeRemaining() > 0) {//game timer
 				timerText.getText().setString(gameTimer.getString(out));
-				gameTimer = gameTimer.manageGameTimer(timerClock, gameTimer);	
+				gameTimer = gameTimer.manageGameTimer(gameTimerClock, gameTimer);
 					
-				//create function for the mouse click event?
-				if (event.type == sf::Event::EventType::MouseButtonPressed) {
-					if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && pauseButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-						gameTimer = gameTimer.pause(timerClock, gameTimer);
-						timerText.getText().setString(("::Paused::"));
-						mainScreensENUM = resumeMAIN;
-					}
+				if (validSpriteClick(event, pauseButton.getSprite().getGlobalBounds(), translatedMousePosition) == true) {
+					gameTimer = gameTimer.pause(gameTimerClock, gameTimer);
+					ignoreTimer = ignoreTimer.pause(ignoreTimerClock, ignoreTimer);
+					timerText.getText().setString(("::Paused::"));
+					mainScreensENUM = resumeMAIN;					
 				}		
 
 				if(gameScreensENUM != mainENUM){//BACK BUTTON
-					window.draw(backButton.getSprite());
-					if (event.type == sf::Event::EventType::MouseButtonPressed) {
-						if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && backButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-							gameScreensENUM = mainENUM;
-							playerText.getText().setString("");
-							acceptText = false;
-						}
-					}
+					if (validSpriteClick (event, backButton.getSprite().getGlobalBounds(), translatedMousePosition) == true) {
+						gameScreensENUM = mainENUM;
+						playerText.getText().setString("");
+						acceptText = false;						
+					} else window.draw(backButton.getSprite());					
 				}
 
-				if (gameScreensENUM == ignoreENUM) {
-					dullBed.play();
-				} else {
-					dullBed.stop();
-				}
 				switch(gameScreensENUM){
 					case mainENUM:
 					gameScreen.drawScreen(window, timerText.getText());
 					minigameSprites.drawSprites(window, -1);
+					dullBed.pause();
+					convo.pause();
 					//SWITCH FOR WHICH MINIGAME IS SELECTED
+
 					if (event.type == sf::Event::EventType::MouseButtonPressed) {
 						for (int i = 0; i < minigameSprites.getDataSpriteVector().size(); i++) {
-							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && 
-							minigameSprites.getSingleSprite(i).getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-								if (!minigameSprites.getSingleSprite(i).getIsComplete())
-								gameScreensENUM = static_cast<gameScreens>(i);
+							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && minigameSprites.getSingleSprite(i).getSprite().getGlobalBounds().contains(translatedMousePosition)) {
+								if (!minigameSprites.getSingleSprite(i).getIsComplete()) { gameScreensENUM = static_cast<gameScreens>(i); }
+
+								event.type = sf::Event::EventType::MouseButtonReleased;
+								
+								if (gameScreensENUM == ignoreENUM) {//excecute once when switching to ignorePrompt
+									dullBed.play();
+									convo.play();
+									ignoreTimerClock.restart();
+									bannerSprite.setPosition(getCenterOfWindow(window));
+									acceptText = true;
+								}
+
+								if (gameScreensENUM == driveENUM) {	player.setMovementSpeed(1);	}
+
+								if (gameScreensENUM == rememberENUM) { player.setMovementSpeed(15);	}
 							}
 						}
 					}
@@ -319,7 +358,7 @@ int main() {
 						playerText.setTextString("");
 						acceptText = false;
 					}
-							
+					//win condition		
 					if (!rememberEmptyBubbles.getVectorComplete())
 						rememberEmptyBubbles.checkForCompletion();
 					else {
@@ -351,15 +390,12 @@ int main() {
 					}
 					break;
 					case assembleENUM://ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE 
-					if (event.type == sf::Event::EventType::MouseButtonPressed) {
-						if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) 
+					if (validSpriteClick(event, solutionButton.getSprite().getGlobalBounds(), translatedMousePosition) == true)
 						validMouseClick = true;
-					}
+					
 					if (!solutionButton.getSprite().getGlobalBounds().contains(translatedMousePosition) || !sf::Mouse::isButtonPressed(sf::Mouse::Left))
-					validMouseClick = false;
-
-					if (validMouseClick)
-					assembleScreen = 2;
+						validMouseClick = false;
+					if (validMouseClick) assembleScreen = 2;
 					else assembleScreen = 1;
 
 					switch (assembleScreen) {
@@ -395,10 +431,12 @@ int main() {
 
 					break;
 					case discussENUM://DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
-					//fix issue when time runs out
+
+					//check that ignore timer is stoping, pausing, restarting etc
+
 						if (discussTime == 0) discussTime = gameTimer.getTimeRemaining();
-						npcText.charToShowIncrementor(discussTime,gameTimer.getTimeRemaining(), discussSpeed, textBlockersVector);
-						if (gameTimer.handleMinigamePace(discussTime, discussSpeed)) {
+						npcText.charToShowIncrementor(discussTimePtr,gameTimer.getTimeRemaining(), discussSpeedPtr, textBlockersVector);
+						if (gameTimer.handleMinigamePace(discussTime, *discussSpeedPtr)) {
 							if (charToShow <= textBlockersVector.size()) discussTime = gameTimer.getTimeRemaining();
 							else discussTime = 0;
 
@@ -407,48 +445,47 @@ int main() {
 						for (int i = 0; i < textBlockersVector.size(); i++){
 							textBlockersVector[i].setOutlineColor(blockerFill);
 						}
+
 						discuss.drawScreen(window, timerText.getText());
 						window.draw(npcText.getText());
 						npcText.drawTextBlockers(textBlockersVector, window);
-						//make banner bigger
 						window.draw(discussBannerSprite.getSprite());
 						window.draw(leftAnswer.getText());
 						window.draw(rightAnswer.getText());
 
-						if (event.type == sf::Event::EventType::MouseButtonPressed) {
-							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && leftAnswer.getText().getGlobalBounds().contains(translatedMousePosition) 
-							|| rightAnswer.getText().getGlobalBounds().contains(translatedMousePosition)) {
-								questionNumber++;
-								event.type = sf::Event::EventType::MouseButtonReleased;
-								switch (questionNumber) {
-									case 2:
-										npcText.updateNextQuestion(question2, window, questionY);
+						if (validSpriteClick(event, leftAnswer.getText().getGlobalBounds(), translatedMousePosition) == true 
+							|| validSpriteClick(event, rightAnswer.getText().getGlobalBounds(), translatedMousePosition) == true) {
+							questionNumber++;
+							event.type = sf::Event::EventType::MouseButtonReleased;
+							switch (questionNumber) {
+								case 2:
+									npcText.updateNextQuestion(question2, window, questionY);
 
-										leftAnswer.setString_Origin_Position(response2A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										rightAnswer.setString_Origin_Position(response2B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
-									break;
-									case 3:
-										npcText.updateNextQuestion(question3, window, questionY);
-										leftAnswer.setString_Origin_Position(response3A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										rightAnswer.setString_Origin_Position(response3B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
-									break;
-									case 4:
-										npcText.updateNextQuestion(question4, window, questionY);
-										leftAnswer.setString_Origin_Position(response4A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										rightAnswer.setString_Origin_Position(response4B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-											, discussBannerSprite.getSprite().getPosition().y));
-										textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
-									break;
-								}
+									leftAnswer.setString_Origin_Position(response2A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									rightAnswer.setString_Origin_Position(response2B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
+								break;
+								case 3:
+									npcText.updateNextQuestion(question3, window, questionY);
+									leftAnswer.setString_Origin_Position(response3A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									rightAnswer.setString_Origin_Position(response3B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
+								break;
+								case 4:
+									npcText.updateNextQuestion(question4, window, questionY);
+									leftAnswer.setString_Origin_Position(response4A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									rightAnswer.setString_Origin_Position(response4B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSprite.getSprite().getPosition().y));
+									textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
+								break;
 							}
 						}
+						
 						if (questionNumber == 5) {
 							minigameSprites.updateIndividualTexture(discussENUM, "completedMinigameSprite.png");
 							minigameSprites.setSpriteToComplete(discussENUM);
@@ -456,10 +493,81 @@ int main() {
 						}
 					break;
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
-						ignore.drawScreen(window, timerText.getText());						
-						//dullBed.play();
+						if (beepCountdown > gameTimer.getTimeRemaining()) {
+							ignoreBeep.play();
+							beepCountdown = gameTimer.getTimeRemaining() - randomInt(1, 10);
+						}
+
+						//win condition and result
+						if (currentPrompt == ignorePromptVectors.size() && currentQuestion >= ignoreQuestions.size()) {
+							minigameSprites.updateIndividualTexture(ignoreENUM, "completedMinigameSprite.png");
+							minigameSprites.setSpriteToComplete(ignoreENUM);
+							gameScreensENUM = mainENUM;
+							break;
+						}
+
+						switch (ignoreScreen) {
+						case 1:
+							//timer for the prompt screen
+							if (ignoreTimer.getTimeRemaining() > 0.02) {
+								tipText.setString_Origin_Position("Time Left: " + ignoreTimer.getString(out), sf::Vector2f(window.getSize().x / 2, 425));
+								ignoreTimer = ignoreTimer.manageGameTimer(ignoreTimerClock, ignoreTimer);
+							} else { 
+								ignoreScreen = 2;
+								tipText.setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
+							}
+
+							if (validSpriteClick(event, questionButton.getSprite().getGlobalBounds(), translatedMousePosition) == true) {
+								ignoreScreen = 2;
+								tipText.setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
+								ignoreTimer = ignoreTimer.pause(ignoreTimerClock, ignoreTimer);
+							}
+
+							ignorePromptScreen.drawScreen(window, timerText.getText());
+							window.draw(ignorePromptText.getText());
+							window.draw(tipText.getText());
+							event.type = sf::Event::EventType::MouseButtonReleased;
+							break;
+						case 2:		
+							if (playerText.getTextString().size() <= ignoreKeys[currentKey].size() - 1) {
+								acceptText = true;
+							} else {
+								acceptText = false;
+							}
+										
+							if (validSpriteClick(event, skipButton.getSprite().getGlobalBounds(), translatedMousePosition) == true || playerText.getTextString() == ignoreKeys[currentKey]) {
+								//for the last prompt,  should it progress even if the answer is wrong?
+								ignoreScreen = 1;
+								ignorePromptText.setTextString("");
+								playerText.setTextString("");
+								currentKey++;
+								currentQuestion++;
+								currentPrompt++;
+								if (currentPrompt < ignorePromptVectors.size()) {
+									ignorePromptText = loadPrompt("", tempText, ignorePromptVectors[currentPrompt], ignorePromptText, window);
+								}
+								ignoreTimer.resetTimer();
+								ignoreTimerClock.restart();
+							}
+
+							if (validSpriteClick(event, gobackButton.getSprite().getGlobalBounds(), translatedMousePosition) == true && ignoreTimer.getTimeRemaining() > 0.02) {
+								ignoreScreen = 1;
+								ignoreTimerClock.restart();								
+							}
+
+							ignoreQuestionScreen.drawScreen(window, timerText.getText());
+							window.draw(bannerSprite.getSprite());							
+							playerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, +5);//where can this be put so it isn't always being called
+							window.draw(playerText.getText());
+							window.draw(tipText.getText());
+							event.type = sf::Event::EventType::MouseButtonReleased;
+							break;
+						}
 					break;
 					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 
+						player.setMovement(window);
+						window.draw(player.getSprite());
+
 						drive.drawScreen(window, timerText.getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -483,14 +591,12 @@ int main() {
 			break;
 
 			case resumeMAIN://RESUME			
-			assert(gameTimer.getTimeRemaining() > 0);
-			resumeScreen.drawScreen(window, timerText.getText());
-			if (event.type == sf::Event::EventType::MouseButtonPressed) {
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && resumeButton.getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-					timerClock.restart();
-					mainScreensENUM = gameMAIN;						
-				}
-			}
+			assert(gameTimer.getTimeRemaining() > 0);			
+			if (validSpriteClick(event, resumeButton.getSprite().getGlobalBounds(), translatedMousePosition) == true) {
+				gameTimerClock.restart();
+				ignoreTimerClock.restart();
+				mainScreensENUM = gameMAIN;					
+			} else resumeScreen.drawScreen(window, timerText.getText());
 			event.type = sf::Event::EventType::MouseButtonReleased;//this stops clicking through sprites
 			break;
 		}		

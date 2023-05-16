@@ -145,6 +145,7 @@
     <ClCompile Include="gameTimer.cpp" />
     <ClCompile Include="dataSprite.cpp" />
     <ClCompile Include="gameSprite.cpp" />
+    <ClCompile Include="ignoreUtils.cpp" />
     <ClCompile Include="randomizedData.cpp" />
     <ClCompile Include="gameText.cpp" />
     <ClCompile Include="dataSpriteVector.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="discussUtils.h" />
     <ClInclude Include="gameSprite.h" />
     <ClInclude Include="assembleUtils.h" />
+    <ClInclude Include="ignoreUtils.h" />
     <ClInclude Include="randomizedData.h" />
     <ClInclude Include="gameText.h" />
     <ClInclude Include="mouse.h" />

@@ -6,12 +6,13 @@ class GameTimer {
 	private:
 		int precision = 2;
 		float elapsedSeconds = 0;
-		float timerLength = 500;
+		float timerLength = 1;
 		float timeRemaining = timerLength;
 		float timeTaken = 0;
 		string timerString;
 
 	public:
+		GameTimer(float newTimerLength);
 		int getPrecision();
 		void setPrecision();
 		float getTimeRemaining();

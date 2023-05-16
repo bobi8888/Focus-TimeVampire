@@ -2,6 +2,10 @@
 
 # include "gameTimer.h"
 
+GameTimer::GameTimer(float newGameTimer) {
+	timerLength = newGameTimer;
+	timeRemaining = timerLength;
+}
 int GameTimer::getPrecision() {
 	return precision;
 }
@@ -59,11 +63,13 @@ GameTimer GameTimer::manageGameTimer(sf::Clock& clock, GameTimer gameTimer) {
 	gameTimer.setTimeRemaining(clock);
 	return gameTimer;
 };
+
 GameTimer GameTimer::pause(sf::Clock& clock, GameTimer gameTimer) {
 	gameTimer.setTimeRemaining(clock);
 	gameTimer.setTimeTaken();
 	return gameTimer;
 }
+
 GameTimer GameTimer::timeUp(GameTimer gameTimer) {
 	gameTimer.resetTimer();
 	return gameTimer;

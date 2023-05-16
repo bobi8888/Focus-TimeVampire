@@ -37,8 +37,8 @@ void DiscussText::drawTextBlockers(vector <sf::RectangleShape> textBlockersVecto
 		}
 	}
 }
-void DiscussText::charToShowIncrementor(float discussTime, float timeRemaining, float discussSpeed, vector <sf::RectangleShape> textBlockersVector) {
-	if (discussTime - timeRemaining > discussSpeed) {
+void DiscussText::charToShowIncrementor(float *discussTimePtr, float timeRemaining, float* discussSpeedPtr, vector <sf::RectangleShape> textBlockersVector) {
+	if (*discussTimePtr - timeRemaining > *discussSpeedPtr) {
 		if (charToShow <= textBlockersVector.size()) {
 			charToShow++;
 		}
