@@ -10,6 +10,3 @@ sf::Vector2f getCenterOfWindow(sf::Window& window) {
 	sf::Vector2f center(x, y);
 	return center;
 }
-
-sf::IntRect screenBounds (0,0,screenWidth, screenHeight);
-sf::IntRect testIntRect(70, 70, 50, 50);
