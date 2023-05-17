@@ -5,9 +5,10 @@ class GameSprite {
 	private:
 		sf::Sprite sprite;
 		sf::Texture texture;
+		int boundry = 40;
 		float xScale = 1, yScale = 1;
 		bool isVisible = true, isComplete = false, canMove = false;
-		friend class TransformableSprite;
+		//friend class TransformableSprite;
 		friend class DataSpriteVector;
 	public:
 		GameSprite(string spritePNG, float x, float y);
@@ -95,8 +96,8 @@ public:
 	float getRadius();
 	void setRadius(float newRadius);
 	sf::Sprite setMovement(sf::RenderWindow& window);
-	bool hasCircleContact(const sf::Sprite& sprite);
+	bool hasCircleContact(const sf::Sprite& sprite, int boundry);
 	int getSpriteContactIndex();
 	void setSpriteContactIndex(int itr);
-	void handleSpriteContactIndex(DataSpriteVector dataSpriteVector);
+	void handleSpriteContactIndex(DataSpriteVector dataSpriteVector, int boundry);
 };

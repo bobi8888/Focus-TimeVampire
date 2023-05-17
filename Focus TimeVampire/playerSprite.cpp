@@ -1,5 +1,4 @@
 #include "utils.h"
-
 #include "gameSprite.h"
 
 float PlayerSprite::getMovementSpeed() {
@@ -47,10 +46,10 @@ sf::Sprite PlayerSprite::setMovement(sf::RenderWindow &window) {
 		return getSprite();
 	}
 }
-bool PlayerSprite::hasCircleContact(const sf::Sprite& sprite) {
+bool PlayerSprite::hasCircleContact(const sf::Sprite& sprite, int boundry) {
 	float a, b, c, minDist;
 
-	minDist = getRadius() + sprite.getGlobalBounds().height / 2;
+	minDist = getRadius() + boundry + sprite.getGlobalBounds().height / 2;
 	a = getSprite().getPosition().y - sprite.getPosition().y;
 	if (a < 0) { a = a * -1; }
 	b = getSprite().getPosition().x - sprite.getPosition().x;
@@ -69,14 +68,14 @@ int PlayerSprite::getSpriteContactIndex(){
 void PlayerSprite::setSpriteContactIndex(int itr) {
 	spriteContactIndex = itr;
 }
-void PlayerSprite::handleSpriteContactIndex(DataSpriteVector dataSpriteVector) {
+void PlayerSprite::handleSpriteContactIndex(DataSpriteVector dataSpriteVector, int boundry) {
 	if (getSpriteContactIndex() == -1) {
 		for (int i = 0; i < dataSpriteVector.getDataSpriteVector().size(); i++) {
-			if (hasCircleContact(dataSpriteVector.getDataSpriteVector()[i].getSprite())) {
+			if (hasCircleContact(dataSpriteVector.getDataSpriteVector()[i].getSprite(), boundry)) {
 				setSpriteContactIndex(i);
 			}
 		}
-	} else if (!hasCircleContact(dataSpriteVector.getDataSpriteVector()[getSpriteContactIndex()].getSprite())) {
+	} else if (!hasCircleContact(dataSpriteVector.getDataSpriteVector()[getSpriteContactIndex()].getSprite(), boundry)) {
 		setSpriteContactIndex(-1);
 	}
 }

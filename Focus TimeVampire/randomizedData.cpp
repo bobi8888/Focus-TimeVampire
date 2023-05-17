@@ -1,5 +1,4 @@
 #include"utils.h"
-
 #include "randomizedData.h"
 
 int randomInt(float floor, int range) {

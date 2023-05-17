@@ -80,6 +80,8 @@ int main() {
 	, bannerSprite.getSprite().getPosition().y - bannerSprite.getSprite().getGlobalBounds().height / 2 + 30));	
 	GameSprite backButton("backSprite.png", 0.18, 0.18);
 	backButton.setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
+	GameSprite driveSprite("driveSprite.png", 0.3, 0.3);
+	driveSprite.setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
 		 
 	//TRANSFORMABLE SPRITES
 	PlayerSprite player("playerSprite.png", 0.4, 0.4);
@@ -326,14 +328,14 @@ int main() {
 					remember.drawScreen(window, timerText.getText());
 
 					for (int i = 0; i < rememberFullBubbles.getDataSpriteVector().size(); i++) {//contacting full sprites
-						if (player.hasCircleContact(rememberFullBubbles.getDataSpriteVector()[i].getSprite()) == true){
+						if (player.hasCircleContact(rememberFullBubbles.getDataSpriteVector()[i].getSprite(), 0) == true){
 							bannerText.setTextString(rememberFullBubbles.getFullDataStrings(i));
 							bannerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, -5);
 							window.draw(bannerSprite.getSprite());
 							window.draw(bannerText.getText());
 						}
 					}		
-					player.handleSpriteContactIndex(rememberEmptyBubbles);
+					player.handleSpriteContactIndex(rememberEmptyBubbles, 0);
 					if (player.getSpriteContactIndex() >= 0) {
 						if (rememberEmptyBubbles.getSingleSprite(player.getSpriteContactIndex()).getIsComplete()) {//checking if contacted sprite is complete
 						} else {//sprite incomplete, check if text can be entered			
@@ -565,9 +567,10 @@ int main() {
 						}
 					break;
 					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 
+						//driveSprites need a boundry to slow down the player sprite
 						player.setMovement(window);
 						window.draw(player.getSprite());
-
+						window.draw(driveSprite.getSprite());
 						drive.drawScreen(window, timerText.getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
