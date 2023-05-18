@@ -53,3 +53,7 @@ void GameSprite::handleCanMove(sf::Event event, sf::Vector2f translatedMousePosi
 		canMove = false;
 	}
 }
+
+int GameSprite::getBoundry() {
+	return boundry;
+}

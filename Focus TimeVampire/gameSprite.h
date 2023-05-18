@@ -24,6 +24,7 @@ class GameSprite {
 		void setToComplete();
 		bool getCanMove();
 		void handleCanMove(sf::Event event,sf::Vector2f translatedMousePosition);
+		int getBoundry();
 };
 
 class DataSprite : public GameSprite{

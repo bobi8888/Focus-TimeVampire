@@ -569,6 +569,12 @@ int main() {
 					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 
 						//driveSprites need a boundry to slow down the player sprite
 						player.setMovement(window);
+						if (player.hasCircleContact(driveSprite.getSprite(), driveSprite.getBoundry())) {
+							player.setMovementSpeed(40);
+						}
+						else {
+							player.setMovementSpeed(1);
+						}
 						window.draw(player.getSprite());
 						window.draw(driveSprite.getSprite());
 						drive.drawScreen(window, timerText.getText());
