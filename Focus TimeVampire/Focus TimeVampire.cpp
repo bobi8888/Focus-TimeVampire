@@ -80,8 +80,8 @@ int main() {
 	, bannerSprite.getSprite().getPosition().y - bannerSprite.getSprite().getGlobalBounds().height / 2 + 30));	
 	GameSprite backButton("backSprite.png", 0.18, 0.18);
 	backButton.setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
-	GameSprite driveSprite("driveSprite.png", 0.3, 0.3);
-	driveSprite.setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
+	GameSprite acceptSprite("acceptSprite.png", 0.3, 0.3);
+	acceptSprite.setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y/2));
 		 
 	//TRANSFORMABLE SPRITES
 	PlayerSprite player("playerSprite.png", 0.4, 0.4);
@@ -199,8 +199,8 @@ int main() {
 	string randomInt_String = std::to_string(randomIgnore_Int);
 
 	ignorePromptText = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptText, window);
-	// DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE
-	GameScreen drive("DRIVE!", generalFont, 25, 25, window);
+	// ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
+	GameScreen drive("ACCEPT!", generalFont, 25, 25, window);
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen retain("RETAIN!", generalFont, 25, 25, window);
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
@@ -212,7 +212,7 @@ int main() {
 	bool acceptText = false;
 
 	enum mainScreens { startMAIN, gameMAIN, resumeMAIN };
-	enum gameScreens { rememberENUM, countENUM, assembleENUM, discussENUM, ignoreENUM, driveENUM, retainENUM, pushENUM, bonusENUM, mainENUM };
+	enum gameScreens { rememberENUM, countENUM, assembleENUM, discussENUM, ignoreENUM, acceptENUM, retainENUM, pushENUM, bonusENUM, mainENUM };
 	mainScreens mainScreensENUM = startMAIN;
 	gameScreens gameScreensENUM = mainENUM;
 
@@ -311,7 +311,10 @@ int main() {
 									acceptText = true;
 								}
 
-								if (gameScreensENUM == driveENUM) {	player.setMovementSpeed(1);	}
+								if (gameScreensENUM == acceptENUM) {	
+									player.setMovementSpeed(3);
+									player.setPosition(sf::Vector2f(0 + player.getSprite().getGlobalBounds().width/2, window.getSize().y - player.getSprite().getGlobalBounds().height/2));
+								}
 
 								if (gameScreensENUM == rememberENUM) { player.setMovementSpeed(15);	}
 							}
@@ -566,17 +569,19 @@ int main() {
 							break;
 						}
 					break;
-					case driveENUM://DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE DRIVE 
-						//driveSprites need a boundry to slow down the player sprite
+					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
+						//need to make a spriteVector for the acceptSprites
+						//need to make wallSprite class for the maze
+						//look up formula for magnetic repulsion
 						player.setMovement(window);
-						if (player.hasCircleContact(driveSprite.getSprite(), driveSprite.getBoundry())) {
+						if (player.hasCircleContact(acceptSprite.getSprite(), acceptSprite.getBoundry())) {
 							player.setMovementSpeed(40);
 						}
 						else {
 							player.setMovementSpeed(1);
 						}
 						window.draw(player.getSprite());
-						window.draw(driveSprite.getSprite());
+						window.draw(acceptSprite.getSprite());
 						drive.drawScreen(window, timerText.getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
