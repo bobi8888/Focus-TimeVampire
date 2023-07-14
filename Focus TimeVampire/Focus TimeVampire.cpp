@@ -10,6 +10,7 @@
 #include "discussUtils.h"
 #include "gameScreen.h"
 #include "ignoreUtils.h"
+#include "acceptUtils.h"
 
 
 //ISSUES
@@ -24,6 +25,7 @@
 
 //5/4/2023 21232 bytes in stack
 //5/10/23 21664 bytes in stack
+//22008 7/12/23
 int main() {	
 	//WINDOW
 	antialiasing.antialiasingLevel = 8;
@@ -272,7 +274,8 @@ int main() {
 			if (gameTimer.getTimeRemaining() > 0) {//game timer
 				timerText.getText().setString(gameTimer.getString(out));
 				gameTimer = gameTimer.manageGameTimer(gameTimerClock, gameTimer);
-					
+				
+				//PAUSE
 				if (validSpriteClick(event, pauseButton.getSprite().getGlobalBounds(), translatedMousePosition) == true) {
 					gameTimer = gameTimer.pause(gameTimerClock, gameTimer);
 					ignoreTimer = ignoreTimer.pause(ignoreTimerClock, ignoreTimer);
@@ -312,7 +315,7 @@ int main() {
 								}
 
 								if (gameScreensENUM == acceptENUM) {	
-									player.setMovementSpeed(3);
+									player.setMovementSpeed(12);
 									player.setPosition(sf::Vector2f(0 + player.getSprite().getGlobalBounds().width/2, window.getSize().y - player.getSprite().getGlobalBounds().height/2));
 								}
 
@@ -498,6 +501,7 @@ int main() {
 						}
 					break;
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
+						//Sound not stopping when pressing pause
 						if (beepCountdown > gameTimer.getTimeRemaining()) {
 							ignoreBeep.play();
 							beepCountdown = gameTimer.getTimeRemaining() - randomInt(1, 10);
@@ -572,11 +576,15 @@ int main() {
 					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
 						//need to make a spriteVector for the acceptSprites
 						//need to make wallSprite class for the maze
-						//look up formula for magnetic repulsion
+						//look up formula for magnetic repulsion, or set a max and min radius around each acceptSprite and have that change the speed of the player sprite
+						//need to store the speed and direction of the player
+						//press space bar, apply force?
 						player.setMovement(window);
+
 						if (player.hasCircleContact(acceptSprite.getSprite(), acceptSprite.getBoundry())) {
-							player.setMovementSpeed(40);
+							player.setPosition(player.getVectorDirection(acceptSprite.getSprite()));
 						}
+
 						else {
 							player.setMovementSpeed(1);
 						}

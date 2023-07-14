@@ -79,3 +79,14 @@ void PlayerSprite::handleSpriteContactIndex(DataSpriteVector dataSpriteVector, i
 		setSpriteContactIndex(-1);
 	}
 }
+float PlayerSprite::getVectorSpeed() {
+	return 0;
+}
+sf::Vector2f PlayerSprite::getVectorDirection(const sf::Sprite& acceptSprite) {
+	float xForce = 0.01, yForce = 0.01;
+
+	sf::Vector2f test ((getSprite().getPosition().x - acceptSprite.getPosition().x) * xForce + getSprite().getPosition().x
+		, (getSprite().getPosition().y - acceptSprite.getPosition().y) * yForce + getSprite().getPosition().y);
+	//std::cout << "x is " << test.x << " & y is " << test.y << "\n";
+	return test;
+}

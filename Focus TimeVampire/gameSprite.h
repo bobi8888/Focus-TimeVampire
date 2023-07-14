@@ -8,7 +8,6 @@ class GameSprite {
 		int boundry = 40;
 		float xScale = 1, yScale = 1;
 		bool isVisible = true, isComplete = false, canMove = false;
-		//friend class TransformableSprite;
 		friend class DataSpriteVector;
 	public:
 		GameSprite(string spritePNG, float x, float y);
@@ -88,7 +87,7 @@ class DataSpriteVector {
 class PlayerSprite : public GameSprite {
 private:
 	int spriteContactIndex = -1;
-	float movementSpeed = 0, radius = 0;
+	float movementSpeed = 0, radius = 0, vectorSpeed = 0, vectorDirection = 0;
 	bool hasContact = false;
 public:
 	using GameSprite::GameSprite;
@@ -101,4 +100,6 @@ public:
 	int getSpriteContactIndex();
 	void setSpriteContactIndex(int itr);
 	void handleSpriteContactIndex(DataSpriteVector dataSpriteVector, int boundry);
+	float getVectorSpeed();
+	sf::Vector2f getVectorDirection(const sf::Sprite& acceptSprite);
 };
