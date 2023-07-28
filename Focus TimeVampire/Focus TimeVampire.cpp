@@ -84,11 +84,13 @@ int main() {
 	backButton.setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
 	GameSprite acceptSprite("acceptSprite.png", 0.3, 0.3);
 	acceptSprite.setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y/2));
-		 
+	GameSprite wallSprite("wallSprite.png", 1, 1);
+	wallSprite.setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2));
+
 	//TRANSFORMABLE SPRITES
 	PlayerSprite player("playerSprite.png", 0.4, 0.4);
 	player.setPosition(getCenterOfWindow(window));
-	player.setMovementSpeed(15);
+	player.setMovementSpeed(5);
 	player.setRadius(player.getSprite().getGlobalBounds().height/2);
 
 	//DATA SPRITES
@@ -203,6 +205,9 @@ int main() {
 	ignorePromptText = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptText, window);
 	// ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
 	GameScreen drive("ACCEPT!", generalFont, 25, 25, window);
+	//sf::RectangleShape wall(sf::Vector2f(100, 100));
+	//wall.setFillColor(sf::Color::White);
+	//wall.setPosition(sf::Vector2f(200, 200));
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen retain("RETAIN!", generalFont, 25, 25, window);
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
@@ -306,7 +311,8 @@ int main() {
 
 								event.type = sf::Event::EventType::MouseButtonReleased;
 								
-								if (gameScreensENUM == ignoreENUM) {//excecute once when switching to ignorePrompt
+								//IGNORE 
+								if (gameScreensENUM == ignoreENUM) {
 									dullBed.play();
 									convo.play();
 									ignoreTimerClock.restart();
@@ -314,8 +320,9 @@ int main() {
 									acceptText = true;
 								}
 
+								//ACCEPT
 								if (gameScreensENUM == acceptENUM) {	
-									player.setMovementSpeed(12);
+									player.setMovementSpeed(5);
 									player.setPosition(sf::Vector2f(0 + player.getSprite().getGlobalBounds().width/2, window.getSize().y - player.getSprite().getGlobalBounds().height/2));
 								}
 
@@ -334,7 +341,7 @@ int main() {
 					remember.drawScreen(window, timerText.getText());
 
 					for (int i = 0; i < rememberFullBubbles.getDataSpriteVector().size(); i++) {//contacting full sprites
-						if (player.hasCircleContact(rememberFullBubbles.getDataSpriteVector()[i].getSprite(), 0) == true){
+						if (player.hasCircleContactWithSprite(rememberFullBubbles.getDataSpriteVector()[i].getSprite(), 0) == true){
 							bannerText.setTextString(rememberFullBubbles.getFullDataStrings(i));
 							bannerText.centerTextOriginOnSprite(bannerSprite.getSprite(), 0, -5);
 							window.draw(bannerSprite.getSprite());
@@ -575,21 +582,12 @@ int main() {
 					break;
 					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
 						//need to make a spriteVector for the acceptSprites
-						//need to make wallSprite class for the maze
-						//look up formula for magnetic repulsion, or set a max and min radius around each acceptSprite and have that change the speed of the player sprite
+						//need to make wallSprite class for the maze? rect?
 						//need to store the speed and direction of the player
-						//press space bar, apply force?
 						player.setMovement(window);
-
-						if (player.hasCircleContact(acceptSprite.getSprite(), acceptSprite.getBoundry())) {
-							player.setPosition(player.getVectorDirection(acceptSprite.getSprite()));
-						}
-
-						else {
-							player.setMovementSpeed(1);
-						}
+						player.tangentTest(wallSprite);
 						window.draw(player.getSprite());
-						window.draw(acceptSprite.getSprite());
+						window.draw(wallSprite.getSprite());
 						drive.drawScreen(window, timerText.getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 

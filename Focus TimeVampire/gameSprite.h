@@ -87,7 +87,7 @@ class DataSpriteVector {
 class PlayerSprite : public GameSprite {
 private:
 	int spriteContactIndex = -1;
-	float movementSpeed = 0, radius = 0, vectorSpeed = 0, vectorDirection = 0;
+	float movementSpeed = 0, radius = 0, vectorSpeed = 0, vectorDirection = 0, distance = 0;
 	bool hasContact = false;
 public:
 	using GameSprite::GameSprite;
@@ -96,10 +96,12 @@ public:
 	float getRadius();
 	void setRadius(float newRadius);
 	sf::Sprite setMovement(sf::RenderWindow& window);
-	bool hasCircleContact(const sf::Sprite& sprite, int boundry);
+	bool hasCircleContactWithSprite(const sf::Sprite& sprite, int boundry);
 	int getSpriteContactIndex();
 	void setSpriteContactIndex(int itr);
 	void handleSpriteContactIndex(DataSpriteVector dataSpriteVector, int boundry);
 	float getVectorSpeed();
 	sf::Vector2f getVectorDirection(const sf::Sprite& acceptSprite);
+	bool intersects(PlayerSprite& player, GameSprite& wall);
+	float tangentTest(GameSprite wall);
 };
