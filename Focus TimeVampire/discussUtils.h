@@ -15,11 +15,6 @@ float* questionYPtr = &questionY;
 int charToShow = 0;
 int* charToShowPtr = &charToShow;
 
-//int red = 0, blue = 0, green = 0;
-//int* redPtr = &red;
-//int* bluePtr = &blue;
-//int* greenPtr = &green;
-
 int redInc = 1, blueInc = 5, greenInc = 3;
 int* redIncPtr = &redInc;
 int questionNumber = 1;

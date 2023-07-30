@@ -25,12 +25,12 @@ vector <vector <vector <string>>> ignorePromptVectors{ { { "A ", "sedan ", "stop
 vector <string> ignoreQuestions = { "How many wheels were there?", "How many bricks where there?", "What is your answer?"};
 vector <string> ignoreKeys = { "", "19", "4"};
 
-GameText loadPrompt(string randomInt_String, sf::Text tempText, vector <vector <string>> ignorePrompt, GameText ignorePromptText, sf::RenderWindow& window) {	
+GameText* loadPrompt(string randomInt_String, sf::Text tempText, vector <vector <string>> ignorePrompt, GameText* ignorePromptTextPtr, sf::RenderWindow& window) {	
 	if (ignorePrompt.size() > 1)
 	ignorePrompt[1][0].insert(0, randomInt_String + " ");
 
-	tempText.setPosition(ignorePromptText.getText().getPosition());
-	float postAppend = ignorePromptText.getText().getPosition().x;
+	tempText.setPosition(ignorePromptTextPtr->getText().getPosition());
+	float postAppend = ignorePromptTextPtr->getText().getPosition().x;
 	float preAppend = 0;
 	float stringLength = postAppend;
 	float displayLength = 0;
@@ -43,12 +43,12 @@ GameText loadPrompt(string randomInt_String, sf::Text tempText, vector <vector <
 			stringLength = postAppend - preAppend;
 			displayLength += stringLength;
 			if (displayLength < (window.getSize().x - tempText.getPosition().x *1.3)) {
-				ignorePromptText.appendTextString(ignorePrompt[i][j]);
+				ignorePromptTextPtr->appendTextString(ignorePrompt[i][j]);
 			} else {
-				ignorePromptText.appendTextString("\n" + ignorePrompt[i][j]);
+				ignorePromptTextPtr->appendTextString("\n" + ignorePrompt[i][j]);
 				displayLength = stringLength;
 			}
 		}
 	}
-	return ignorePromptText;
+	return ignorePromptTextPtr;
 }

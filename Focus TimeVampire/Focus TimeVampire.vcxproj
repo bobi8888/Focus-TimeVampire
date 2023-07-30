@@ -145,13 +145,13 @@
     <ClCompile Include="gameTimer.cpp" />
     <ClCompile Include="dataSprite.cpp" />
     <ClCompile Include="gameSprite.cpp" />
-    <ClCompile Include="ignoreUtils.cpp" />
     <ClCompile Include="randomizedData.cpp" />
     <ClCompile Include="gameText.cpp" />
     <ClCompile Include="dataSpriteVector.cpp" />
     <ClCompile Include="playerSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="acceptUtils.h" />
     <ClInclude Include="discussUtils.h" />
     <ClInclude Include="gameSprite.h" />
     <ClInclude Include="assembleUtils.h" />

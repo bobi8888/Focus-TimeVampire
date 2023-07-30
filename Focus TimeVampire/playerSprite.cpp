@@ -1,5 +1,4 @@
 #include "utils.h"
-
 #include "gameSprite.h"
 
 float PlayerSprite::getMovementSpeed() {
@@ -8,17 +7,57 @@ float PlayerSprite::getMovementSpeed() {
 void PlayerSprite::setMovementSpeed(float speed) {
 	movementSpeed = speed;
 }
+sf::Vector2f PlayerSprite::getPreviousPosition() {
+	return previousPosition;
+}
+void PlayerSprite::setPreviousPosition(sf::Vector2f currentPosition) {
+	previousPosition = currentPosition;
+}
 float PlayerSprite::getRadius() {
 	return radius;
 }
 void PlayerSprite::setRadius(float newRadius) {
 	radius = newRadius;
 }
+
+sf::CircleShape PlayerSprite::getSpriteRadiusCircle() {
+	return spriteRadiusCircle;
+}
+void PlayerSprite::initializeSpriteRadiusCircle(float radius, size_t pointcount) {
+	spriteRadiusCircle.setRadius(radius);
+	spriteRadiusCircle.setPointCount(pointcount);
+	spriteRadiusCircle.setOrigin(spriteRadiusCircle.getGlobalBounds().width / 2, spriteRadiusCircle.getGlobalBounds().height / 2);
+	spriteRadiusCircle.setPosition(getSprite().getPosition());
+	spriteRadiusCircle.setTexture(getSprite().getTexture());
+}
+void PlayerSprite::setSpriteRadiusCirclePosition(sf::Vector2f playerPosition) {
+	spriteRadiusCircle.setPosition(getSprite().getPosition());
+}
+
+bool PlayerSprite::getCollision() {
+	return collision;
+}
+
+void PlayerSprite::setCollision(const sf::Sprite& wallSprite) {
+	if (getSpriteRadiusCircle().getGlobalBounds().intersects(wallSprite.getGlobalBounds())) {
+		collision = true;
+	}
+	else {
+		collision = false;
+	}
+}
+
 sf::Sprite PlayerSprite::setMovement(sf::RenderWindow &window) {
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 
-		setRotation(getSprite().getRotation() - getMovementSpeed());
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)  || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+			setRotation(getSprite().getRotation() - getMovementSpeed());
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+			setRotation(getSprite().getRotation() + getMovementSpeed());
+		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 			setPosition(sf::Vector2f(getSprite().getPosition().x - getMovementSpeed(), getSprite().getPosition().y));
@@ -47,10 +86,21 @@ sf::Sprite PlayerSprite::setMovement(sf::RenderWindow &window) {
 		return getSprite();
 	}
 }
-bool PlayerSprite::hasCircleContact(const sf::Sprite& sprite) {
+
+void PlayerSprite::handleCollision(const sf::Sprite& sprite) {
+	if (!getCollision()) {
+		previousPosition = getSpriteRadiusCircle().getPosition();
+	}
+	else {
+		setPosition(getPreviousPosition());
+
+	}
+}
+
+bool PlayerSprite::hasCircleContactWithSprite(const sf::Sprite& sprite, int boundry) {
 	float a, b, c, minDist;
 
-	minDist = getRadius() + sprite.getGlobalBounds().height / 2;
+	minDist = getRadius() + boundry + sprite.getGlobalBounds().height / 2;
 	a = getSprite().getPosition().y - sprite.getPosition().y;
 	if (a < 0) { a = a * -1; }
 	b = getSprite().getPosition().x - sprite.getPosition().x;
@@ -63,20 +113,21 @@ bool PlayerSprite::hasCircleContact(const sf::Sprite& sprite) {
 		return hasContact = false;
 	}
 }
+
 int PlayerSprite::getSpriteContactIndex(){
 	return spriteContactIndex;
 }
 void PlayerSprite::setSpriteContactIndex(int itr) {
 	spriteContactIndex = itr;
 }
-void PlayerSprite::handleSpriteContactIndex(DataSpriteVector dataSpriteVector) {
+void PlayerSprite::handleSpriteContactIndex(DataSpriteVector dataSpriteVector, int boundry) {
 	if (getSpriteContactIndex() == -1) {
 		for (int i = 0; i < dataSpriteVector.getDataSpriteVector().size(); i++) {
-			if (hasCircleContact(dataSpriteVector.getDataSpriteVector()[i].getSprite())) {
+			if (hasCircleContactWithSprite(dataSpriteVector.getDataSpriteVector()[i].getSprite(), boundry)) {
 				setSpriteContactIndex(i);
 			}
 		}
-	} else if (!hasCircleContact(dataSpriteVector.getDataSpriteVector()[getSpriteContactIndex()].getSprite())) {
+	} else if (!hasCircleContactWithSprite(dataSpriteVector.getDataSpriteVector()[getSpriteContactIndex()].getSprite(), boundry)) {
 		setSpriteContactIndex(-1);
 	}
 }
