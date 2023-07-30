@@ -93,6 +93,7 @@ void PlayerSprite::handleCollision(const sf::Sprite& sprite) {
 	}
 	else {
 		setPosition(getPreviousPosition());
+
 	}
 }
 
