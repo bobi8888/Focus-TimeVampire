@@ -102,6 +102,7 @@ public:
 	void handleSpriteContactIndex(DataSpriteVector dataSpriteVector, int boundry);
 	float getVectorSpeed();
 	sf::Vector2f getVectorDirection(const sf::Sprite& acceptSprite);
-	bool intersects(PlayerSprite& player, GameSprite& wall);
-	float tangentTest(GameSprite wall);
+
+	//bool intersects(PlayerSprite& player, GameSprite& wall);
+	//float tangentTest(GameSprite wall);
 };

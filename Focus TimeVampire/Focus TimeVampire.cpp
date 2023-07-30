@@ -223,6 +223,28 @@ int main() {
 	mainScreens mainScreensENUM = startMAIN;
 	gameScreens gameScreensENUM = mainENUM;
 
+	sf::CircleShape testCircle(player.getRadius(), 30);
+	testCircle.setFillColor(sf::Color::Yellow);
+	testCircle.setOrigin(sf::Vector2f(player.getRadius(), player.getRadius()));
+
+	sf::CircleShape testCircle2(player.getRadius(), 30);
+	testCircle2.setFillColor(sf::Color::Green);
+	testCircle2.setPosition(sf::Vector2f(300, 300));
+
+	sf::Vertex line[] =
+	{
+		sf::Vertex(sf::Vector2f(300, 10)),
+		sf::Vertex(sf::Vector2f(0, 150))
+	};
+
+	sf::VertexArray triangle(sf::Triangles, 3);
+	triangle[0].position = sf::Vector2f(10, 10);
+	triangle[1].position = sf::Vector2f(100, 10);
+	triangle[2].position = sf::Vector2f(100, 100);
+	triangle[0].color = sf::Color::Red;
+	triangle[1].color = sf::Color::Blue;
+	triangle[2].color = sf::Color::Green;
+
 	//GAME LOOP: mainScreensENUM
 	sf::Event event;
 	while (window.isOpen()) {
@@ -584,8 +606,18 @@ int main() {
 						//need to make a spriteVector for the acceptSprites
 						//need to make wallSprite class for the maze? rect?
 						//need to store the speed and direction of the player
+						//broad and narrow collision detection: only check for detection if actually close enough
+						testCircle.setPosition(player.getSprite().getPosition());
+						window.draw(testCircle);
+						window.draw(testCircle2);
+						window.draw(triangle);
+						window.draw(line, 2, sf::Lines);
+
+						//WORKS! need to add collision
+						if (testCircle.getGlobalBounds().intersects(wallSprite.getSprite().getGlobalBounds())) std::cout << "intersection\n";
+
 						player.setMovement(window);
-						player.tangentTest(wallSprite);
+						//player.tangentTest(wallSprite);
 						window.draw(player.getSprite());
 						window.draw(wallSprite.getSprite());
 						drive.drawScreen(window, timerText.getText());

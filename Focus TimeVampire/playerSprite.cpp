@@ -64,33 +64,6 @@ bool PlayerSprite::hasCircleContactWithSprite(const sf::Sprite& sprite, int boun
 	}
 }
 
-bool PlayerSprite::intersects(PlayerSprite &player, GameSprite &wall){
-	float circleDistance_x = abs(player.getSprite().getPosition().x - wall.getSprite().getPosition().x);
-	float circleDistance_y = abs(player.getSprite().getPosition().y - wall.getSprite().getPosition().y);
-
-	//left or right of wall
-	if (circleDistance_x > (wall.getSprite().getGlobalBounds().width / 2 + player.getRadius())) { 
-		std::cout << "1\n";
-		return false; }
-	//under or above wall
-	if (circleDistance_y > (wall.getSprite().getGlobalBounds().height / 2 + player.getRadius())) { 
-		std::cout << "2\n";
-		return false; }
-
-	if (circleDistance_x <= wall.getSprite().getGlobalBounds().width / 2) { 
-		std::cout << "3\n";
-		return true; }
-	if (circleDistance_y <= wall.getSprite().getGlobalBounds().height / 2) { 
-		std::cout << "4\n";
-		return true; }
-	std::cout << "test\n";
-	int temp_x = circleDistance_x - wall.getSprite().getGlobalBounds().width / 2;
-	int temp_y = circleDistance_y - wall.getSprite().getGlobalBounds().height / 2;
-	float cornerDistance_sq = pow(temp_x,2) + pow(temp_y,2);
-	std::cout << "5\n";
-	return (cornerDistance_sq <= pow(player.getRadius(),2));
-}
-
 int PlayerSprite::getSpriteContactIndex(){
 	return spriteContactIndex;
 }
@@ -111,6 +84,7 @@ void PlayerSprite::handleSpriteContactIndex(DataSpriteVector dataSpriteVector, i
 float PlayerSprite::getVectorSpeed() {
 	return 0;
 }
+
 sf::Vector2f PlayerSprite::getVectorDirection(const sf::Sprite& acceptSprite) {
 	float xForce = 0.01, yForce = 0.01;
 
@@ -120,12 +94,40 @@ sf::Vector2f PlayerSprite::getVectorDirection(const sf::Sprite& acceptSprite) {
 	return test;
 }
 
-float PlayerSprite::tangentTest(GameSprite wall) {
-	float tangent, degrees;
-	float abs_x = abs(getSprite().getPosition().x - wall.getSprite().getPosition().x);
-	float abs_y = abs(getSprite().getPosition().y - wall.getSprite().getPosition().y);
-	tangent = tan(abs_y / abs_x);
-	degrees = tangent*(180/3.14);
-	std::cout << degrees << "\n";
-	return tangent;
-}
+//bool PlayerSprite::intersects(PlayerSprite &player, GameSprite &wall){
+//	float circleDistance_x = abs(player.getSprite().getPosition().x - wall.getSprite().getPosition().x);
+//	float circleDistance_y = abs(player.getSprite().getPosition().y - wall.getSprite().getPosition().y);
+//
+//	//left or right of wall
+//	if (circleDistance_x > (wall.getSprite().getGlobalBounds().width / 2 + player.getRadius())) { 
+//		std::cout << "1\n";
+//		return false; }
+//	//under or above wall
+//	if (circleDistance_y > (wall.getSprite().getGlobalBounds().height / 2 + player.getRadius())) { 
+//		std::cout << "2\n";
+//		return false; }
+//
+//	if (circleDistance_x <= wall.getSprite().getGlobalBounds().width / 2) { 
+//		std::cout << "3\n";
+//		return true; }
+//	if (circleDistance_y <= wall.getSprite().getGlobalBounds().height / 2) { 
+//		std::cout << "4\n";
+//		return true; }
+//	std::cout << "test\n";
+//	int temp_x = circleDistance_x - wall.getSprite().getGlobalBounds().width / 2;
+//	int temp_y = circleDistance_y - wall.getSprite().getGlobalBounds().height / 2;
+//	float cornerDistance_sq = pow(temp_x,2) + pow(temp_y,2);
+//	std::cout << "5\n";
+//	return (cornerDistance_sq <= pow(player.getRadius(),2));
+
+//float PlayerSprite::tangentTest(GameSprite wall) {
+//	float tangent = 0, degrees = 0;
+//	float abs_x = abs(wall.getSprite().getPosition().x - getSprite().getPosition().x);
+//	float abs_y = abs(wall.getSprite().getPosition().y - getSprite().getPosition().y);
+//	tangent = tan(abs_x / abs_y);
+//	degrees = tangent*(180/3.14);
+//	//std::cout << "degrees are " << degrees << "\n";
+//	//std::cout << "wall x is " << wall.getSprite().getPosition().x << " and y is " << wall.getSprite().getPosition().y << "\n";
+//	//std::cout << "player x is " << getSprite().getPosition().x << " and y is " << getSprite().getPosition().y << "\n";
+//	return tangent;
+//}
