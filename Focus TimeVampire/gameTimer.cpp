@@ -58,21 +58,21 @@ sf::Text GameTimer::setTimerString(std::ostringstream& out, sf::Text& timerText)
 	out.str("");
 	return timerText;
 }
-GameTimer GameTimer::manageGameTimer(sf::Clock& clock, GameTimer gameTimer) {
-	gameTimer.setPrecision();
-	gameTimer.setTimeRemaining(clock);
-	return gameTimer;
+GameTimer* GameTimer::manageGameTimer(sf::Clock& clock, GameTimer* gameTimerPtr) {
+	gameTimerPtr->setPrecision();
+	gameTimerPtr->setTimeRemaining(clock);
+	return gameTimerPtr;
 };
 
-GameTimer GameTimer::pause(sf::Clock& clock, GameTimer gameTimer) {
-	gameTimer.setTimeRemaining(clock);
-	gameTimer.setTimeTaken();
-	return gameTimer;
+GameTimer* GameTimer::pause(sf::Clock& clock, GameTimer* gameTimerPtr) {
+	gameTimerPtr->setTimeRemaining(clock);
+	gameTimerPtr->setTimeTaken();
+	return gameTimerPtr;
 }
 
-GameTimer GameTimer::timeUp(GameTimer gameTimer) {
-	gameTimer.resetTimer();
-	return gameTimer;
+GameTimer* GameTimer::timeUp(GameTimer* gameTimerPtr) {
+	gameTimerPtr->resetTimer();
+	return gameTimerPtr;
 }
 bool GameTimer::handleMinigamePace(float minigameTime, float minigameSpeed){
 	if (minigameTime - getTimeRemaining() > minigameSpeed) {

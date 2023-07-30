@@ -25,9 +25,9 @@ class GameTimer {
 		float getTimeTaken();
 		void setTimeTaken();
 		sf::Text setTimerString(std::ostringstream& out, static sf::Text &timerText);
-		GameTimer manageGameTimer(sf::Clock &clock, GameTimer gameTimer);
-		GameTimer pause(sf::Clock &clock, GameTimer gameTimer);
-		GameTimer timeUp(GameTimer gameTimer);
+		GameTimer* manageGameTimer(sf::Clock &clock, GameTimer* gameTimerPtr);
+		GameTimer* pause(sf::Clock &clock, GameTimer* gameTimerPtr);
+		GameTimer* timeUp(GameTimer* gameTimerPtr);
 		string getString(std::ostringstream& out);
 		bool handleMinigamePace(float minigameTime, float minigameSpeed);
 };
