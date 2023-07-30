@@ -7,17 +7,57 @@ float PlayerSprite::getMovementSpeed() {
 void PlayerSprite::setMovementSpeed(float speed) {
 	movementSpeed = speed;
 }
+sf::Vector2f PlayerSprite::getPreviousPosition() {
+	return previousPosition;
+}
+void PlayerSprite::setPreviousPosition(sf::Vector2f currentPosition) {
+	previousPosition = currentPosition;
+}
 float PlayerSprite::getRadius() {
 	return radius;
 }
 void PlayerSprite::setRadius(float newRadius) {
 	radius = newRadius;
 }
+
+sf::CircleShape PlayerSprite::getSpriteRadiusCircle() {
+	return spriteRadiusCircle;
+}
+void PlayerSprite::initializeSpriteRadiusCircle(float radius, size_t pointcount) {
+	spriteRadiusCircle.setRadius(radius);
+	spriteRadiusCircle.setPointCount(pointcount);
+	spriteRadiusCircle.setOrigin(spriteRadiusCircle.getGlobalBounds().width / 2, spriteRadiusCircle.getGlobalBounds().height / 2);
+	spriteRadiusCircle.setPosition(getSprite().getPosition());
+	spriteRadiusCircle.setTexture(getSprite().getTexture());
+}
+void PlayerSprite::setSpriteRadiusCirclePosition(sf::Vector2f playerPosition) {
+	spriteRadiusCircle.setPosition(getSprite().getPosition());
+}
+
+bool PlayerSprite::getCollision() {
+	return collision;
+}
+
+void PlayerSprite::setCollision(const sf::Sprite& wallSprite) {
+	if (getSpriteRadiusCircle().getGlobalBounds().intersects(wallSprite.getGlobalBounds())) {
+		collision = true;
+	}
+	else {
+		collision = false;
+	}
+}
+
 sf::Sprite PlayerSprite::setMovement(sf::RenderWindow &window) {
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 
-		setRotation(getSprite().getRotation() - getMovementSpeed());
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)  || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+			setRotation(getSprite().getRotation() - getMovementSpeed());
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+			setRotation(getSprite().getRotation() + getMovementSpeed());
+		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 			setPosition(sf::Vector2f(getSprite().getPosition().x - getMovementSpeed(), getSprite().getPosition().y));
@@ -44,6 +84,15 @@ sf::Sprite PlayerSprite::setMovement(sf::RenderWindow &window) {
 			}
 		}
 		return getSprite();
+	}
+}
+
+void PlayerSprite::handleCollision(const sf::Sprite& sprite) {
+	if (!getCollision()) {
+		previousPosition = getSpriteRadiusCircle().getPosition();
+	}
+	else {
+		setPosition(getPreviousPosition());
 	}
 }
 
@@ -81,53 +130,3 @@ void PlayerSprite::handleSpriteContactIndex(DataSpriteVector dataSpriteVector, i
 		setSpriteContactIndex(-1);
 	}
 }
-float PlayerSprite::getVectorSpeed() {
-	return 0;
-}
-
-sf::Vector2f PlayerSprite::getVectorDirection(const sf::Sprite& acceptSprite) {
-	float xForce = 0.01, yForce = 0.01;
-
-	sf::Vector2f test ((getSprite().getPosition().x - acceptSprite.getPosition().x) * xForce + getSprite().getPosition().x
-		, (getSprite().getPosition().y - acceptSprite.getPosition().y) * yForce + getSprite().getPosition().y);
-	//std::cout << "x is " << test.x << " & y is " << test.y << "\n";
-	return test;
-}
-
-//bool PlayerSprite::intersects(PlayerSprite &player, GameSprite &wall){
-//	float circleDistance_x = abs(player.getSprite().getPosition().x - wall.getSprite().getPosition().x);
-//	float circleDistance_y = abs(player.getSprite().getPosition().y - wall.getSprite().getPosition().y);
-//
-//	//left or right of wall
-//	if (circleDistance_x > (wall.getSprite().getGlobalBounds().width / 2 + player.getRadius())) { 
-//		std::cout << "1\n";
-//		return false; }
-//	//under or above wall
-//	if (circleDistance_y > (wall.getSprite().getGlobalBounds().height / 2 + player.getRadius())) { 
-//		std::cout << "2\n";
-//		return false; }
-//
-//	if (circleDistance_x <= wall.getSprite().getGlobalBounds().width / 2) { 
-//		std::cout << "3\n";
-//		return true; }
-//	if (circleDistance_y <= wall.getSprite().getGlobalBounds().height / 2) { 
-//		std::cout << "4\n";
-//		return true; }
-//	std::cout << "test\n";
-//	int temp_x = circleDistance_x - wall.getSprite().getGlobalBounds().width / 2;
-//	int temp_y = circleDistance_y - wall.getSprite().getGlobalBounds().height / 2;
-//	float cornerDistance_sq = pow(temp_x,2) + pow(temp_y,2);
-//	std::cout << "5\n";
-//	return (cornerDistance_sq <= pow(player.getRadius(),2));
-
-//float PlayerSprite::tangentTest(GameSprite wall) {
-//	float tangent = 0, degrees = 0;
-//	float abs_x = abs(wall.getSprite().getPosition().x - getSprite().getPosition().x);
-//	float abs_y = abs(wall.getSprite().getPosition().y - getSprite().getPosition().y);
-//	tangent = tan(abs_x / abs_y);
-//	degrees = tangent*(180/3.14);
-//	//std::cout << "degrees are " << degrees << "\n";
-//	//std::cout << "wall x is " << wall.getSprite().getPosition().x << " and y is " << wall.getSprite().getPosition().y << "\n";
-//	//std::cout << "player x is " << getSprite().getPosition().x << " and y is " << getSprite().getPosition().y << "\n";
-//	return tangent;
-//}

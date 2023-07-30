@@ -88,21 +88,31 @@ class PlayerSprite : public GameSprite {
 private:
 	int spriteContactIndex = -1;
 	float movementSpeed = 0, radius = 0, vectorSpeed = 0, vectorDirection = 0, distance = 0;
-	bool hasContact = false;
+	bool hasContact = false, collision = false;
+	sf::CircleShape spriteRadiusCircle;
+	sf::Vector2f previousPosition;
 public:
 	using GameSprite::GameSprite;
 	float getMovementSpeed();
 	void setMovementSpeed(float speed);
+	sf::Vector2f getPreviousPosition();
+	void setPreviousPosition(sf::Vector2f currentPosition);
 	float getRadius();
 	void setRadius(float newRadius);
+
+	sf::CircleShape getSpriteRadiusCircle();
+	void initializeSpriteRadiusCircle(float radius, size_t pointcount);
+	void setSpriteRadiusCirclePosition(sf::Vector2f playerPosition);
+
+	bool getCollision();
+	void setCollision(const sf::Sprite& wallSprite);
+
 	sf::Sprite setMovement(sf::RenderWindow& window);
+
+	void handleCollision(const sf::Sprite& sprite);
+
 	bool hasCircleContactWithSprite(const sf::Sprite& sprite, int boundry);
 	int getSpriteContactIndex();
 	void setSpriteContactIndex(int itr);
 	void handleSpriteContactIndex(DataSpriteVector dataSpriteVector, int boundry);
-	float getVectorSpeed();
-	sf::Vector2f getVectorDirection(const sf::Sprite& acceptSprite);
-
-	//bool intersects(PlayerSprite& player, GameSprite& wall);
-	//float tangentTest(GameSprite wall);
 };

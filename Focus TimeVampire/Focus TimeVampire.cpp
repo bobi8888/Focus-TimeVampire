@@ -92,6 +92,8 @@ int main() {
 	player.setPosition(getCenterOfWindow(window));
 	player.setMovementSpeed(5);
 	player.setRadius(player.getSprite().getGlobalBounds().height/2);
+	player.initializeSpriteRadiusCircle(player.getRadius(), 30);
+
 
 	//DATA SPRITES
 	DataSprite minigameSprite("minigameSprite.png", 0.3, 0.3);
@@ -223,14 +225,6 @@ int main() {
 	mainScreens mainScreensENUM = startMAIN;
 	gameScreens gameScreensENUM = mainENUM;
 
-	sf::CircleShape testCircle(player.getRadius(), 30);
-	testCircle.setFillColor(sf::Color::Yellow);
-	testCircle.setOrigin(sf::Vector2f(player.getRadius(), player.getRadius()));
-
-	sf::CircleShape testCircle2(player.getRadius(), 30);
-	testCircle2.setFillColor(sf::Color::Green);
-	testCircle2.setPosition(sf::Vector2f(300, 300));
-
 	sf::Vertex line[] =
 	{
 		sf::Vertex(sf::Vector2f(300, 10)),
@@ -244,6 +238,7 @@ int main() {
 	triangle[0].color = sf::Color::Red;
 	triangle[1].color = sf::Color::Blue;
 	triangle[2].color = sf::Color::Green;
+
 
 	//GAME LOOP: mainScreensENUM
 	sf::Event event;
@@ -605,21 +600,19 @@ int main() {
 					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
 						//need to make a spriteVector for the acceptSprites
 						//need to make wallSprite class for the maze? rect?
-						//need to store the speed and direction of the player
 						//broad and narrow collision detection: only check for detection if actually close enough
-						testCircle.setPosition(player.getSprite().getPosition());
-						window.draw(testCircle);
-						window.draw(testCircle2);
+						//create sf::Rect for walls? create a sf::lineStrip?
+						//get the stutter out of the player movement when contacting a wall
+						player.setSpriteRadiusCirclePosition(player.getSprite().getPosition());
 						window.draw(triangle);
-						window.draw(line, 2, sf::Lines);
-
-						//WORKS! need to add collision
-						if (testCircle.getGlobalBounds().intersects(wallSprite.getSprite().getGlobalBounds())) std::cout << "intersection\n";
-
+						window.draw(line, 2, sf::Lines);						
+						
 						player.setMovement(window);
-						//player.tangentTest(wallSprite);
-						window.draw(player.getSprite());
+						player.setCollision(wallSprite.getSprite());
+						player.handleCollision(wallSprite.getSprite());
+
 						window.draw(wallSprite.getSprite());
+						if (!player.getCollision()) window.draw(player.getSprite());
 						drive.drawScreen(window, timerText.getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
