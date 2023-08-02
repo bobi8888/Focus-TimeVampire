@@ -4,7 +4,7 @@
 #include "randomizedData.h"
 
 DataSpriteVector::DataSpriteVector(){};
-DataSpriteVector::DataSpriteVector(int qty, DataSprite& dataSprite){
+DataSpriteVector::DataSpriteVector(int qty, DataSprite dataSprite){
 	for (int i = 1; i <= qty; i++) {
 		dataSpriteVector.push_back(dataSprite);
 	}
@@ -30,7 +30,7 @@ void DataSpriteVector::setPositions(sf::Vector2f center, int rows, int columns, 
 				if (j > 0) {
 					newPosition.x += xC2C;//increment x
 				}
-				dataSpriteVector.at(qty).setPosition(newPosition);
+				dataSpriteVector[qty].setPosition(newPosition);
 				qty++;
 			}
 		}
@@ -41,11 +41,11 @@ vector <DataSprite> DataSpriteVector::getDataSpriteVector() {
 	return dataSpriteVector;
 }
 DataSprite DataSpriteVector::getSingleSprite(int index){
-	return dataSpriteVector[index];
+	return dataSpriteVector.at(index);
 }
-void DataSpriteVector::addSprite(DataSprite dataSprite, int qty) {
+void DataSpriteVector::addSprite(DataSprite dataSpritePtr, int qty) {
 	for (int i = 1; i <= qty; i++) {
-		dataSpriteVector.push_back(dataSprite);
+		dataSpriteVector.push_back(dataSpritePtr);
 	}
 }
 

@@ -55,7 +55,7 @@ class DataSpriteVector {
 		bool vectorComplete = false;
 	public:
 		DataSpriteVector();
-		DataSpriteVector(int qty, DataSprite& dataSprite);
+		DataSpriteVector(int qty, DataSprite dataSprite);
 		void setPositions(sf::Vector2f center, int rows, int columns, float rowSpacing, float colSpacing);
 
 		vector <DataSprite> getDataSpriteVector();
