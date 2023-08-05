@@ -26,7 +26,7 @@ int main() {
 	//WINDOW
 	antialiasing.antialiasingLevel = 8;
 	window.setVerticalSyncEnabled(true);
-	window.setPosition(sf::Vector2i(1400, 400));
+	window.setPosition(sf::Vector2i(600, 300));
 	window.setKeyRepeatEnabled(false);
 
 	//TIME
@@ -117,27 +117,27 @@ int main() {
 	countingSprites.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 1, countingQTY, 0, 4);
 
 	//MAIN GAME SCREENS
-	GameScreen startScreen("FOCUS! Time Vampire", generalFont, 25, 25, window);
-	startScreen.addSprite(startButtonPtr ->getSprite());
-	GameScreen gameScreen("FOCUS! Time Vampire", generalFont, 25, 25, window);
-	GameScreen resumeScreen("FOCUS! Time Vampire", generalFont, 25, 25, window);
-	resumeScreen.addSprite(resumeButtonPtr->getSprite());
+	GameScreen* startScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25, 25, window);
+	startScreenPtr->addSprite(startButtonPtr ->getSprite());
+	GameScreen* gameScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25, 25, window);
+	GameScreen* resumeScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25, 25, window);
+	resumeScreenPtr->addSprite(resumeButtonPtr->getSprite());
 
 	//MINIGAMES
 	//REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER
-	GameScreen remember("REMEMBER!", generalFont, 25, 25, window);
+	GameScreen* rememberGameScreenPtr = new GameScreen("REMEMBER!", generalFont, 25, 25, window);
 	bannerTextPtr->setTextString("Enter #");
 	bannerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(),0,0);
 	//COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT 
-	GameScreen count("COUNT!", generalFont, 25, 25, window);
+	GameScreen* countGameScreenPtr = new GameScreen("COUNT!", generalFont, 25, 25, window);
 	stream << countingQTY;
 	string countingString = stream.str();
 	//ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE 
-	GameScreen assembleGameScreen("ASSEMBLE!", generalFont, 25, 25, window);
-	assembleGameScreen.addSprite(solutionButtonPtr->getSprite());
-	GameScreen assembleSolution("ASSEMBLE Solution", generalFont, 25, 25, window);
+	GameScreen* assembleGameScreenPtr = new GameScreen("ASSEMBLE!", generalFont, 25, 25, window);
+	assembleGameScreenPtr->addSprite(solutionButtonPtr->getSprite());
+	GameScreen* assembleSolutionGameScreenPtr = new GameScreen("ASSEMBLE Solution", generalFont, 25, 25, window);
 	pcbSolvedSprite.setPosition(getCenterOfWindow(window));
-	assembleSolution.addSprite(pcbSolvedSprite.getSprite());
+	assembleSolutionGameScreenPtr->addSprite(pcbSolvedSprite.getSprite());
 	for (int i = 0; i < 9; i++) {assembleDataSpriteVector.addSprite( assemblePartsSpriteVector.at(i), 1); }
 	assembleDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2 - 10), 3, 3, 90, 120);
 	assembleDataSpriteVector.setSpriteToComplete(4);
@@ -147,50 +147,50 @@ int main() {
 		assemblePartsGoals.push_back(assembleGoal);
 	}
 	//DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
-	GameScreen discuss("DISCUSS!", generalFont, 25, 25, window);
-	DiscussText npcText(generalFont, 25, question1, questionY, window);
-	npcText.setCharWidthsVector(question1);
-	for (int i = 0; i < npcText.getTextString().size(); i++) {
-		sf::RectangleShape textBlocker(sf::Vector2f(npcText.getCharWidthsVector()[i], npcText.getText().getCharacterSize() + 10));
+	GameScreen* discussGameScreenPtr = new GameScreen("DISCUSS!", generalFont, 25, 25, window);
+	DiscussText* npcTextPtr = new DiscussText(generalFont, 25, question1, questionY, window);
+	npcTextPtr->setCharWidthsVector(question1);
+	for (int i = 0; i < npcTextPtr->getTextString().size(); i++) {
+		sf::RectangleShape textBlocker(sf::Vector2f(npcTextPtr->getCharWidthsVector()[i], npcTextPtr->getText().getCharacterSize() + 10));
 		textBlocker.setOrigin(textBlocker.getSize().x/2, textBlocker.getSize().y/2);
-		textBlocker.setPosition(sf::Vector2f(npcText.getText().findCharacterPos(i).x + textBlocker.getSize().x / 2, npcText.getText().findCharacterPos(i).y + textBlocker.getSize().y / 2));
+		textBlocker.setPosition(sf::Vector2f(npcTextPtr->getText().findCharacterPos(i).x + textBlocker.getSize().x / 2, npcTextPtr->getText().findCharacterPos(i).y + textBlocker.getSize().y / 2));
 		textBlocker.setFillColor(sf::Color::White);
 		textBlocker.setOutlineColor(sf::Color::Cyan);
 		textBlocker.setOutlineThickness(3);
 		textBlockersVector.push_back(textBlocker);
 	}
-	GameSprite discussBannerSprite("bannerSprite.png", 1.3, 1.1);
-	discussBannerSprite.setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y - 150));
+	GameSprite* discussBannerSpritePtr = new GameSprite("bannerSprite.png", 1.3, 1.1);
+	discussBannerSpritePtr->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y - 150));
 
-	GameText leftAnswer(generalFont, 32, response1A, 200, window);
-	leftAnswer.getText().setFillColor(sf::Color::Black);
-	leftAnswer.setTextPosition(sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-		, discussBannerSprite.getSprite().getPosition().y));
-	GameText rightAnswer(generalFont, 32, response1B, 200, window);
+	GameText* leftAnswerPtr = new GameText(generalFont, 32, response1A, 200, window);
+	leftAnswerPtr->getText().setFillColor(sf::Color::Black);
+	leftAnswerPtr->setTextPosition(sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
+		, discussBannerSpritePtr->getSprite().getPosition().y));
 
-	rightAnswer.getText().setFillColor(sf::Color::Black);
-	rightAnswer.setTextPosition(sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-		, discussBannerSprite.getSprite().getPosition().y));
+	GameText* rightAnswerPtr = new GameText(generalFont, 32, response1B, 200, window);
+	rightAnswerPtr->getText().setFillColor(sf::Color::Black);
+	rightAnswerPtr->setTextPosition(sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
+		, discussBannerSpritePtr->getSprite().getPosition().y));
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
-	GameScreen ignorePromptScreen("IGNORE!", generalFont, 25, 25, window);
-	ignorePromptScreen.addSprite(questionButtonPtr->getSprite());
-	GameScreen ignoreQuestionScreen("IGNORE!", generalFont, 25, 25, window);
-	ignoreQuestionScreen.addSprite(gobackButtonPtr->getSprite());
-	ignoreQuestionScreen.addSprite(skipButtonPtr->getSprite());
+	GameScreen* ignorePromptScreenPtr = new GameScreen("IGNORE!", generalFont, 25, 25, window);
+	ignorePromptScreenPtr->addSprite(questionButtonPtr->getSprite());
+	GameScreen* ignoreQuestionScreenPtr = new GameScreen("IGNORE!", generalFont, 25, 25, window);
+	ignoreQuestionScreenPtr->addSprite(gobackButtonPtr->getSprite());
+	ignoreQuestionScreenPtr->addSprite(skipButtonPtr->getSprite());
 
-	sf::Music dullBed;
-	dullBed.setLoop(true);
-	if (!dullBed.openFromFile("dullBed.wav")) std::cout << "Error loading dullBed.wav \n";	
-	dullBed.setVolume(dullBedVolume);
-	sf::Music convo;
-	convo.setLoop(true);
-	if (!convo.openFromFile("convo.wav")) std::cout << "Error loading convo.wav \n";
-	convo.setVolume(convoVolume);
+	sf::Music* dullBedPtr = new sf::Music;
+	dullBedPtr->setLoop(true);
+	if (!dullBedPtr->openFromFile("dullBed.wav")) std::cout << "Error loading dullBed.wav \n";
+	dullBedPtr->setVolume(dullBedVolume);
+	sf::Music* convoPtr = new sf::Music;
+	convoPtr->setLoop(true);
+	if (!convoPtr->openFromFile("convo.wav")) std::cout << "Error loading convo.wav \n";
+	convoPtr->setVolume(convoVolume);
 	sf::SoundBuffer ignoreSoundBuffer;
 	if (!ignoreSoundBuffer.loadFromFile("beep.wav")) std::cout << "Error loading beep.wav \n";
-	sf::Sound ignoreBeep;
-	ignoreBeep.setBuffer(ignoreSoundBuffer);
-	ignoreBeep.setVolume(beepVolume);
+	sf::Sound* ignoreBeepPtr = new sf::Sound;
+	ignoreBeepPtr->setBuffer(ignoreSoundBuffer);
+	ignoreBeepPtr->setVolume(beepVolume);
 
 	beepCountdown = gameTimerPtr->getTimeRemaining() - randomInt(5, 1);
 
@@ -203,16 +203,16 @@ int main() {
 
 	ignorePromptTextPtr = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
 	// ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
-	GameScreen drive("ACCEPT!", generalFont, 25, 25, window);
+	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, 25, window);
 	//sf::RectangleShape wall(sf::Vector2f(100, 100));
 	//wall.setFillColor(sf::Color::White);
 	//wall.setPosition(sf::Vector2f(200, 200));
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
-	GameScreen retain("RETAIN!", generalFont, 25, 25, window);
+	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, 25, window);
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
-	GameScreen push("PUSH!", generalFont, 25, 25, window);
+	GameScreen* pushPtr  = new GameScreen("PUSH!", generalFont, 25, 25, window);
 	// BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS
-	GameScreen bonus("BONUS!", generalFont, 25, 25, window);
+	GameScreen* bonusPtr = new GameScreen("BONUS!", generalFont, 25, 25, window);
 
 	bool deleteKeyWorkaround = false;//both needed for delete workaround
 	bool acceptText = false;
@@ -285,7 +285,7 @@ int main() {
 				gameTimerClock.restart();
 				mainScreensENUM = gameMAIN;
 				event.type = sf::Event::MouseButtonReleased;
-			} else startScreen.drawScreen(window, timerTextPtr->getText());
+			} else startScreenPtr->drawScreen(window, timerTextPtr->getText());
 			break;	 
 
 			case gameMAIN://GAME SCREEN
@@ -312,10 +312,10 @@ int main() {
 
 				switch(gameScreensENUM){
 					case mainENUM:
-					gameScreen.drawScreen(window, timerTextPtr->getText());
+					gameScreenPtr->drawScreen(window, timerTextPtr->getText());
 					minigameDataSpriteVector.drawSprites(window, -1);
-					dullBed.pause();
-					convo.pause();
+					dullBedPtr->pause();
+					convoPtr->pause();
 					//SWITCH FOR WHICH MINIGAME IS SELECTED
 
 					if (event.type == sf::Event::EventType::MouseButtonPressed) {
@@ -327,8 +327,8 @@ int main() {
 								
 								//IGNORE 
 								if (gameScreensENUM == ignoreENUM) {
-									dullBed.play();
-									convo.play();
+									dullBedPtr->play();
+									convoPtr->play();
 									ignoreTimerClock.restart();
 									bannerSpritePtr->setPosition(getCenterOfWindow(window));
 									acceptText = true;
@@ -353,7 +353,7 @@ int main() {
 					window.draw(playerPtr->getSprite());
 					rememberFullBubbles.drawSprites(window, -1);
 					rememberEmptyBubbles.drawSprites(window, -1);
-					remember.drawScreen(window, timerTextPtr->getText());
+					rememberGameScreenPtr->drawScreen(window, timerTextPtr->getText());
 
 					for (int i = 0; i < rememberFullBubbles.getDataSpriteVector().size(); i++) {//contacting full sprites
 						if (playerPtr->hasCircleContactWithSprite(rememberFullBubbles.getDataSpriteVector()[i].getSprite(), 0) == true){
@@ -400,7 +400,7 @@ int main() {
 					break;
 					case countENUM://COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT 
 					//acceptText = true;
-					count.drawScreen(window, timerTextPtr->getText());
+					countGameScreenPtr->drawScreen(window, timerTextPtr->getText());
 					countingSprites.drawSprites(window, -1);							
 					bannerTextPtr->setTextString("How Many?");
 					bannerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(), 0, -20);
@@ -430,7 +430,7 @@ int main() {
 
 					switch (assembleScreen) {
 						case 1:
-						assembleGameScreen.drawScreen(window, timerTextPtr->getText());
+						assembleGameScreenPtr->drawScreen(window, timerTextPtr->getText());
 						for (int i = 0; i < assemblePartsSpriteVector.size(); i++) {
 							if (i != 4 && !assembleDataSpriteVector.getSingleSprite(i).getIsComplete()) {
 								assembleDataSpriteVector.setCanMove(i, event, translatedMousePosition);
@@ -455,7 +455,7 @@ int main() {
 						assembleDataSpriteVector.drawSprites(window, 4);
 						break;
 						case 2:
-						assembleSolution.drawScreen(window, timerTextPtr->getText());
+						assembleSolutionGameScreenPtr->drawScreen(window, timerTextPtr->getText());
 						break;
 					}
 
@@ -465,53 +465,53 @@ int main() {
 					//check that ignore timer is stoping, pausing, restarting etc
 
 						if (discussTime == 0) discussTime = gameTimerPtr->getTimeRemaining();
-						npcText.charToShowIncrementor(discussTimePtr,gameTimerPtr->getTimeRemaining(), discussSpeedPtr, textBlockersVector);
+						npcTextPtr->charToShowIncrementor(discussTimePtr,gameTimerPtr->getTimeRemaining(), discussSpeedPtr, textBlockersVector);
 						if (gameTimerPtr->handleMinigamePace(discussTime, *discussSpeedPtr)) {
 							if (charToShow <= textBlockersVector.size()) discussTime = gameTimerPtr->getTimeRemaining();
 							else discussTime = 0;
 
-							blockerFill = npcText.handleColor(blockerFill, redInc, blueInc, greenInc);
+							blockerFill = npcTextPtr->handleColor(blockerFill, redInc, blueInc, greenInc);
 						}
 						for (int i = 0; i < textBlockersVector.size(); i++){
 							textBlockersVector[i].setOutlineColor(blockerFill);
 						}
 
-						discuss.drawScreen(window, timerTextPtr->getText());
-						window.draw(npcText.getText());
-						npcText.drawTextBlockers(textBlockersVector, window);
-						window.draw(discussBannerSprite.getSprite());
-						window.draw(leftAnswer.getText());
-						window.draw(rightAnswer.getText());
+						discussGameScreenPtr->drawScreen(window, timerTextPtr->getText());
+						window.draw(npcTextPtr->getText());
+						npcTextPtr->drawTextBlockers(textBlockersVector, window);
+						window.draw(discussBannerSpritePtr->getSprite());
+						window.draw(leftAnswerPtr->getText());
+						window.draw(rightAnswerPtr->getText());
 
-						if (validSpriteClick(event, leftAnswer.getText().getGlobalBounds(), translatedMousePosition) == true 
-							|| validSpriteClick(event, rightAnswer.getText().getGlobalBounds(), translatedMousePosition) == true) {
+						if (validSpriteClick(event, leftAnswerPtr->getText().getGlobalBounds(), translatedMousePosition) == true
+							|| validSpriteClick(event, rightAnswerPtr->getText().getGlobalBounds(), translatedMousePosition) == true) {
 							questionNumber++;
 							event.type = sf::Event::EventType::MouseButtonReleased;
 							switch (questionNumber) {
 								case 2:
-									npcText.updateNextQuestion(question2, window, questionY);
+									npcTextPtr->updateNextQuestion(question2, window, questionY);
 
-									leftAnswer.setString_Origin_Position(response2A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-										, discussBannerSprite.getSprite().getPosition().y));
-									rightAnswer.setString_Origin_Position(response2B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-										, discussBannerSprite.getSprite().getPosition().y));
-									textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
+									leftAnswerPtr->setString_Origin_Position(response2A, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSpritePtr->getSprite().getPosition().y));
+									rightAnswerPtr->setString_Origin_Position(response2B, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSpritePtr->getSprite().getPosition().y));
+									textBlockersVector = npcTextPtr->resetTextBlockers(textBlockersVector);
 								break;
 								case 3:
-									npcText.updateNextQuestion(question3, window, questionY);
-									leftAnswer.setString_Origin_Position(response3A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-										, discussBannerSprite.getSprite().getPosition().y));
-									rightAnswer.setString_Origin_Position(response3B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-										, discussBannerSprite.getSprite().getPosition().y));
-									textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
+									npcTextPtr->updateNextQuestion(question3, window, questionY);
+									leftAnswerPtr->setString_Origin_Position(response3A, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSpritePtr->getSprite().getPosition().y));
+									rightAnswerPtr->setString_Origin_Position(response3B, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSpritePtr->getSprite().getPosition().y));
+									textBlockersVector = npcTextPtr->resetTextBlockers(textBlockersVector);
 								break;
 								case 4:
-									npcText.updateNextQuestion(question4, window, questionY);
-									leftAnswer.setString_Origin_Position(response4A, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x - discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-										, discussBannerSprite.getSprite().getPosition().y));
-									rightAnswer.setString_Origin_Position(response4B, sf::Vector2f(discussBannerSprite.getSprite().getPosition().x + discussBannerSprite.getSprite().getGlobalBounds().width * 0.25
-										, discussBannerSprite.getSprite().getPosition().y));
-									textBlockersVector = npcText.resetTextBlockers(textBlockersVector);
+									npcTextPtr->updateNextQuestion(question4, window, questionY);
+									leftAnswerPtr->setString_Origin_Position(response4A, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSpritePtr->getSprite().getPosition().y));
+									rightAnswerPtr->setString_Origin_Position(response4B, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
+										, discussBannerSpritePtr->getSprite().getPosition().y));
+									textBlockersVector = npcTextPtr->resetTextBlockers(textBlockersVector);
 								break;
 							}
 						}
@@ -525,7 +525,7 @@ int main() {
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 						//Sound not stopping when pressing pause
 						if (beepCountdown > gameTimerPtr->getTimeRemaining()) {
-							ignoreBeep.play();
+							ignoreBeepPtr->play();
 							beepCountdown = gameTimerPtr->getTimeRemaining() - randomInt(1, 10);
 						}
 
@@ -554,7 +554,7 @@ int main() {
 								ignoreTimerPtr = ignoreTimerPtr->pause(ignoreTimerClock, ignoreTimerPtr);
 							}
 
-							ignorePromptScreen.drawScreen(window, timerTextPtr->getText());
+							ignorePromptScreenPtr->drawScreen(window, timerTextPtr->getText());
 							window.draw(ignorePromptTextPtr->getText());
 							window.draw(tipTextPtr->getText());
 							event.type = sf::Event::EventType::MouseButtonReleased;
@@ -586,7 +586,7 @@ int main() {
 								ignoreTimerClock.restart();								
 							}
 
-							ignoreQuestionScreen.drawScreen(window, timerTextPtr->getText());
+							ignoreQuestionScreenPtr->drawScreen(window, timerTextPtr->getText());
 							window.draw(bannerSpritePtr->getSprite());
 							playerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(), 0, +5);//where can this be put so it isn't always being called
 							window.draw(playerTextPtr->getText());
@@ -611,22 +611,22 @@ int main() {
 
 						window.draw(wallSpritePtr->getSprite());
 						if (!playerPtr->getCollision()) window.draw(playerPtr->getSprite());
-						drive.drawScreen(window, timerTextPtr->getText());
+						drivePtr->drawScreen(window, timerTextPtr->getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
-						retain.drawScreen(window, timerTextPtr->getText());
+						retainPtr->drawScreen(window, timerTextPtr->getText());
 					break;
 					case pushENUM://PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH 
-						push.drawScreen(window, timerTextPtr->getText());
+						pushPtr->drawScreen(window, timerTextPtr->getText());
 					break;
 					case bonusENUM://BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS 
-						bonus.drawScreen(window, timerTextPtr->getText());
+						bonusPtr->drawScreen(window, timerTextPtr->getText());
 					break;
 				}
 			}else{//TIME IS UP
 				gameTimerPtr = gameTimerPtr->timeUp(gameTimerPtr);
 				timerTextPtr->getText().setString("Time Up!");
-				startScreen.setAndCenterTitle("GAME OVER!");
+				startScreenPtr->setAndCenterTitle("GAME OVER!");
 				playerPtr->setPosition(getCenterOfWindow(window));
 				mainScreensENUM = startMAIN;
 				gameScreensENUM = mainENUM;
@@ -639,7 +639,7 @@ int main() {
 				gameTimerClock.restart();
 				ignoreTimerClock.restart();
 				mainScreensENUM = gameMAIN;					
-			} else resumeScreen.drawScreen(window, timerTextPtr->getText());
+			} else resumeScreenPtr->drawScreen(window, timerTextPtr->getText());
 			event.type = sf::Event::EventType::MouseButtonReleased;//this stops clicking through sprites
 			break;
 		}		
