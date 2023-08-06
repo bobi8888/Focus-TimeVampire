@@ -78,8 +78,8 @@ int main() {
 	backButtonPtr->setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
 	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
 	acceptSpritePtr->setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y/2));
-	GameSprite* wallSpritePtr = new GameSprite("wallSprite.png", 1, 1);
-	wallSpritePtr->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2));
+	//GameSprite* wallSpritePtr = new GameSprite("wallSprite.png", 1, 1);
+	//wallSpritePtr->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2));
 
 	//GameSprite* x_outButtonPtr = new GameSprite("x_outSprite.png", 0.25, 0.25);
 //x_outButtonPtr->setPosition(sf::Vector2f(bannerSpritePtr->getSprite().getPosition().x + bannerSpritePtr->getSprite().getGlobalBounds().width/2 - 15
@@ -228,13 +228,23 @@ int main() {
 		sf::Vertex(sf::Vector2f(0, 150))
 	};
 
-	sf::VertexArray triangle(sf::Triangles, 3);
-	triangle[0].position = sf::Vector2f(10, 10);
-	triangle[1].position = sf::Vector2f(100, 10);
-	triangle[2].position = sf::Vector2f(100, 100);
-	triangle[0].color = sf::Color::Red;
-	triangle[1].color = sf::Color::Blue;
-	triangle[2].color = sf::Color::Green;
+	sf::VertexArray border(sf::TriangleStrip, 8);
+	border[0].position = sf::Vector2f(0, 0);
+	border[1].position = sf::Vector2f(0, 15);
+	border[2].position = sf::Vector2f(15, 0);
+	border[3].position = sf::Vector2f(15, 15);
+	border[4].position = sf::Vector2f(485, 0);
+	border[5].position = sf::Vector2f(485, 15);
+	border[6].position = sf::Vector2f(500, 0);
+	border[7].position = sf::Vector2f(500, 15);
+	border[0].color = sf::Color::Red;
+	border[1].color = sf::Color::Blue;
+	border[2].color = sf::Color::Green;
+	border[3].color = sf::Color::Yellow;
+	border[4].color = sf::Color::White;
+	border[5].color = sf::Color::Magenta;
+	border[6].color = sf::Color::Cyan;
+	border[7].color = sf::Color::Blue;
 
 
 	//GAME LOOP: mainScreensENUM
@@ -600,17 +610,14 @@ int main() {
 						//need to make wallSprite class for the maze? rect?
 						//broad and narrow collision detection: only check for detection if actually close enough
 						//create sf::Rect for walls? create a sf::lineStrip?
-						//get the stutter out of the player movement when contacting a wall
 						playerPtr->setSpriteRadiusCirclePosition(playerPtr->getSprite().getPosition());
-						window.draw(triangle);
-						window.draw(line, 2, sf::Lines);						
-						//window.draw(gsPtr->getSprite());
+						playerPtr->setCollision(border);
+						playerPtr->handleCollision(border);
 						playerPtr->setMovement(window);
-						playerPtr->setCollision(wallSpritePtr->getSprite());
-						playerPtr->handleCollision(wallSpritePtr->getSprite());
+						window.draw(border);
 
-						window.draw(wallSpritePtr->getSprite());
-						if (!playerPtr->getCollision()) window.draw(playerPtr->getSprite());
+						window.draw(playerPtr->getSprite()); 
+						//window.draw(wallSpritePtr->getSprite());
 						drivePtr->drawScreen(window, timerTextPtr->getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 

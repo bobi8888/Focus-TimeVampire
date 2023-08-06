@@ -38,8 +38,8 @@ bool PlayerSprite::getCollision() {
 	return collision;
 }
 
-void PlayerSprite::setCollision(const sf::Sprite& wallSprite) {
-	if (getSpriteRadiusCircle().getGlobalBounds().intersects(wallSprite.getGlobalBounds())) {
+void PlayerSprite::setCollision(sf::VertexArray vertexArray) {
+	if (getSpriteRadiusCircle().getGlobalBounds().intersects(vertexArray.getBounds())) {
 		collision = true;
 	}
 	else {
@@ -87,7 +87,7 @@ sf::Sprite PlayerSprite::setMovement(sf::RenderWindow &window) {
 	}
 }
 
-void PlayerSprite::handleCollision(const sf::Sprite& sprite) {
+void PlayerSprite::handleCollision(sf::VertexArray vertexArray) {
 	if (!getCollision()) {
 		previousPosition = getSpriteRadiusCircle().getPosition();
 	}

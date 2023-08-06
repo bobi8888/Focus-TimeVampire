@@ -105,11 +105,11 @@ public:
 	void setSpriteRadiusCirclePosition(sf::Vector2f playerPosition);
 
 	bool getCollision();
-	void setCollision(const sf::Sprite& wallSprite);
+	void setCollision(sf::VertexArray vertexArray);
 
 	sf::Sprite setMovement(sf::RenderWindow& window);
 
-	void handleCollision(const sf::Sprite& sprite);
+	void handleCollision(sf::VertexArray vertexArray);
 
 	bool hasCircleContactWithSprite(const sf::Sprite& sprite, int boundry);
 	int getSpriteContactIndex();
