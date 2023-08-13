@@ -6,7 +6,7 @@ class GameSprite {
 		sf::Sprite sprite;
 		sf::Texture texture;
 		int boundry = 40;
-		float xScale = 1, yScale = 1;
+		//float xScale = 1, yScale = 1;
 		bool isVisible = true, isComplete = false, canMove = false;
 		friend class DataSpriteVector;
 	public:
@@ -87,10 +87,11 @@ class DataSpriteVector {
 class PlayerSprite : public GameSprite {
 private:
 	int spriteContactIndex = -1;
-	float movementSpeed = 0, radius = 0, vectorSpeed = 0, vectorDirection = 0, distance = 0;
+	float movementSpeed = 0, radius = 0;
 	bool hasContact = false, collision = false;
 	sf::CircleShape spriteRadiusCircle;
-	sf::Vector2f previousPosition;
+	sf::CircleShape circle;
+	sf::Vector2f previousPosition = sf::Vector2f(250,250);
 public:
 	using GameSprite::GameSprite;
 	float getMovementSpeed();
@@ -101,8 +102,8 @@ public:
 	void setRadius(float newRadius);
 
 	sf::CircleShape getSpriteRadiusCircle();
-	void initializeSpriteRadiusCircle(float radius, size_t pointcount);
-	void setSpriteRadiusCirclePosition(sf::Vector2f playerPosition);
+	void initializeSpriteRadiusCircle(size_t pointcount);
+	void setSpriteRadiusCirclePosition();
 
 	bool getCollision();
 	void setCollision(sf::VertexArray vertexArray);

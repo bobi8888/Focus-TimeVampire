@@ -23,14 +23,16 @@ void PlayerSprite::setRadius(float newRadius) {
 sf::CircleShape PlayerSprite::getSpriteRadiusCircle() {
 	return spriteRadiusCircle;
 }
-void PlayerSprite::initializeSpriteRadiusCircle(float radius, size_t pointcount) {
-	spriteRadiusCircle.setRadius(radius);
+void PlayerSprite::initializeSpriteRadiusCircle(size_t pointcount) {
+	spriteRadiusCircle.setRadius(getRadius());
 	spriteRadiusCircle.setPointCount(pointcount);
-	spriteRadiusCircle.setOrigin(spriteRadiusCircle.getGlobalBounds().width / 2, spriteRadiusCircle.getGlobalBounds().height / 2);
+	spriteRadiusCircle.setOrigin(getSprite().getPosition().x, getSprite().getPosition().y);
 	spriteRadiusCircle.setPosition(getSprite().getPosition());
-	spriteRadiusCircle.setTexture(getSprite().getTexture());
+	spriteRadiusCircle.setFillColor(sf::Color::Red);
 }
-void PlayerSprite::setSpriteRadiusCirclePosition(sf::Vector2f playerPosition) {
+
+void PlayerSprite::setSpriteRadiusCirclePosition() {
+	spriteRadiusCircle.setOrigin(getSprite().getOrigin());
 	spriteRadiusCircle.setPosition(getSprite().getPosition());
 }
 
@@ -48,7 +50,6 @@ void PlayerSprite::setCollision(sf::VertexArray vertexArray) {
 }
 
 sf::Sprite PlayerSprite::setMovement(sf::RenderWindow &window) {
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 

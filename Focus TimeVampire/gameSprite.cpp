@@ -3,11 +3,9 @@
 #include "gameSprite.h"
 
 GameSprite::GameSprite(string spritePNG, float x, float y) {
+	sprite.setScale(x, y);
 	texture.loadFromFile(spritePNG);
-	xScale = x;
-	yScale = y;
 	sprite.setTexture(texture);
-	sprite.setScale(xScale, yScale);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 }
 const sf::Texture GameSprite::getTexture() {

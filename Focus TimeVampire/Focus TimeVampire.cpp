@@ -11,6 +11,7 @@
 #include "gameScreen.h"
 #include "ignoreUtils.h"
 #include "acceptUtils.h"
+#include "circle.h"
 
 
 //ISSUES
@@ -78,19 +79,24 @@ int main() {
 	backButtonPtr->setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
 	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
 	acceptSpritePtr->setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y/2));
-	//GameSprite* wallSpritePtr = new GameSprite("wallSprite.png", 1, 1);
-	//wallSpritePtr->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2));
 
 	//GameSprite* x_outButtonPtr = new GameSprite("x_outSprite.png", 0.25, 0.25);
 //x_outButtonPtr->setPosition(sf::Vector2f(bannerSpritePtr->getSprite().getPosition().x + bannerSpritePtr->getSprite().getGlobalBounds().width/2 - 15
 //, bannerSpritePtr->getSprite().getPosition().y - bannerSpritePtr->getSprite().getGlobalBounds().height / 2 + 30));
 
 	//TRANSFORMABLE SPRITES
-	PlayerSprite* playerPtr = new PlayerSprite("playerSprite.png", 0.4, 0.4);
+	//FIGURE OUT WHY THE SCALE MESSES UP THE CONTACT CIRCLE
+	PlayerSprite* playerPtr = new PlayerSprite("playerSprite.png", 1, 1);
 	playerPtr->setPosition(getCenterOfWindow(window));
-	playerPtr->setMovementSpeed(5);
+	playerPtr->setMovementSpeed(2);
 	playerPtr->setRadius(playerPtr->getSprite().getGlobalBounds().height/2);
-	playerPtr->initializeSpriteRadiusCircle(playerPtr->getRadius(), 30);
+	playerPtr->initializeSpriteRadiusCircle(30);
+
+	Circle* newCirclePtr = new Circle("playerSprite.png", 3, 7, 1, 1);
+	newCirclePtr->setPosition(sf::Vector2f(400,400));
+	Circle* secondCirclePtr = new Circle("minigameSprite.png", 3, 7, 1, 1);
+	secondCirclePtr->setPosition(getCenterOfWindow(window));
+
 
 	//DATA SPRITES
 	DataSprite* minigameSpritePtr = new DataSprite("minigameSprite.png", 0.3, 0.3);
@@ -204,9 +210,6 @@ int main() {
 	ignorePromptTextPtr = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
 	// ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
 	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, 25, window);
-	//sf::RectangleShape wall(sf::Vector2f(100, 100));
-	//wall.setFillColor(sf::Color::White);
-	//wall.setPosition(sf::Vector2f(200, 200));
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, 25, window);
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
@@ -222,30 +225,28 @@ int main() {
 	mainScreens mainScreensENUM = startMAIN;
 	gameScreens gameScreensENUM = mainENUM;
 
-	sf::Vertex line[] =
-	{
-		sf::Vertex(sf::Vector2f(300, 10)),
-		sf::Vertex(sf::Vector2f(0, 150))
-	};
+	sf::VertexArray border(sf::TriangleStrip, 4);
+	border[0].position = sf::Vector2f(200, 200);
+	border[1].position = sf::Vector2f(200, 300);
+	border[2].position = sf::Vector2f(300, 300);
+	border[3].position = sf::Vector2f(200, 300);
 
-	sf::VertexArray border(sf::TriangleStrip, 8);
-	border[0].position = sf::Vector2f(0, 0);
-	border[1].position = sf::Vector2f(0, 15);
-	border[2].position = sf::Vector2f(15, 0);
-	border[3].position = sf::Vector2f(15, 15);
-	border[4].position = sf::Vector2f(485, 0);
-	border[5].position = sf::Vector2f(485, 15);
-	border[6].position = sf::Vector2f(500, 0);
-	border[7].position = sf::Vector2f(500, 15);
+	sf::VertexArray testQuads(sf::Quads,5);
+	testQuads[0].position = sf::Vector2f(200, 200);
+	testQuads[1].position = sf::Vector2f(300, 200);
+	testQuads[2].position = sf::Vector2f(300, 300);
+	testQuads[3].position = sf::Vector2f(200, 300);
+	testQuads[4].position = sf::Vector2f(200, 200);
+
 	border[0].color = sf::Color::Red;
 	border[1].color = sf::Color::Blue;
 	border[2].color = sf::Color::Green;
 	border[3].color = sf::Color::Yellow;
-	border[4].color = sf::Color::White;
-	border[5].color = sf::Color::Magenta;
-	border[6].color = sf::Color::Cyan;
-	border[7].color = sf::Color::Blue;
 
+	testQuads[0].color = sf::Color::Black;
+	testQuads[1].color = sf::Color::Magenta;
+	testQuads[2].color = sf::Color::Cyan;
+	testQuads[3].color = sf::Color::Blue;
 
 	//GAME LOOP: mainScreensENUM
 	sf::Event event;
@@ -335,6 +336,9 @@ int main() {
 
 								event.type = sf::Event::EventType::MouseButtonReleased;
 								
+								//REMEMBER
+								if (gameScreensENUM == rememberENUM) { playerPtr->setMovementSpeed(15); }
+
 								//IGNORE 
 								if (gameScreensENUM == ignoreENUM) {
 									dullBedPtr->play();
@@ -345,13 +349,7 @@ int main() {
 								}
 
 								//ACCEPT
-								if (gameScreensENUM == acceptENUM) {	
-									playerPtr->setMovementSpeed(5);
-									playerPtr->setPosition(sf::Vector2f(0 + playerPtr->getSprite().getGlobalBounds().width/2, window.getSize().y 
-										- playerPtr->getSprite().getGlobalBounds().height/2));
-								}
-
-								if (gameScreensENUM == rememberENUM) { playerPtr->setMovementSpeed(15);	}
+								if (gameScreensENUM == acceptENUM) {playerPtr->setMovementSpeed(2);	}
 							}
 						}
 					}
@@ -607,17 +605,30 @@ int main() {
 					break;
 					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
 						//need to make a spriteVector for the acceptSprites
-						//need to make wallSprite class for the maze? rect?
 						//broad and narrow collision detection: only check for detection if actually close enough
-						//create sf::Rect for walls? create a sf::lineStrip?
-						playerPtr->setSpriteRadiusCirclePosition(playerPtr->getSprite().getPosition());
-						playerPtr->setCollision(border);
-						playerPtr->handleCollision(border);
-						playerPtr->setMovement(window);
-						window.draw(border);
 
-						window.draw(playerPtr->getSprite()); 
-						//window.draw(wallSpritePtr->getSprite());
+						//need to create a vector of VertexArray for the walls
+						//check for a collision only if the player is in the area
+
+						//playerPtr->setMovement(window);
+						//playerPtr->setSpriteRadiusCirclePosition();
+						//playerPtr->setCollision(testQuads);
+						//playerPtr->handleCollision(testQuads);
+						
+						//newCirclePtr->handlePlayerCollision(testQuads);
+						newCirclePtr->handlePlayerInput(window);//moves the player
+						//Check for collision
+						window.draw(newCirclePtr->getCircle());
+
+						//works, need to stop collision
+						if (newCirclePtr->hasVertexArrayCollision(testQuads)) 
+							std::cout << "whoa ";
+
+						window.draw(testQuads);
+						//window.draw(border);
+						//window.draw(secondCirclePtr->getCircle());
+						//window.draw(playerPtr->getSpriteRadiusCircle());
+						//window.draw(playerPtr->getSprite()); 
 						drivePtr->drawScreen(window, timerTextPtr->getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
