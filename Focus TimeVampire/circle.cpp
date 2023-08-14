@@ -108,3 +108,20 @@ void Circle::handlePlayerCollision(sf::VertexArray vertexArray) {
 //void Circle::setRadius() {
 //	circle.setRadius(texture.getSize().x / 2);
 //}
+
+//bool PlayerSprite::hasCircleContactWithSprite(const sf::Sprite& sprite, int boundry) {
+//	float a, b, c, minDist;
+//
+//	minDist = getRadius() + boundry + sprite.getGlobalBounds().height / 2;
+//	a = getSprite().getPosition().y - sprite.getPosition().y;
+//	if (a < 0) { a = a * -1; }
+//	b = getSprite().getPosition().x - sprite.getPosition().x;
+//	if (b < 0) { b = b * -1; }
+//	c = sqrt(a * a + b * b);
+//	if (c < minDist) {
+//		return hasContact = true;
+//	}
+//	else {
+//		return hasContact = false;
+//	}
+//}

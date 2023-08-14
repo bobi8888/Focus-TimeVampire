@@ -57,7 +57,6 @@ int main() {
 	ignorePromptTextPtr->setTextPosition(sf::Vector2f(50, 125));
 
 	//GAME SPRITES
-
 	GameSprite* startButtonPtr = new GameSprite("startSprite.png", 0.5, 0.5);
 	startButtonPtr->setPosition(getCenterOfWindow(window));
 	GameSprite* questionButtonPtr = new GameSprite("questionButton.png", 0.4, 0.4);
@@ -201,6 +200,8 @@ int main() {
 	ignorePromptTextPtr = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
 	// ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
 	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, 25, window);
+	Wall newWall(250, 250, true, 7, 80);
+
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, 25, window);
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
@@ -215,18 +216,6 @@ int main() {
 	enum gameScreens { rememberENUM, countENUM, assembleENUM, discussENUM, ignoreENUM, acceptENUM, retainENUM, pushENUM, bonusENUM, mainENUM };
 	mainScreens mainScreensENUM = startMAIN;
 	gameScreens gameScreensENUM = mainENUM;
-
-	sf::VertexArray testQuads(sf::Quads,5);
-	testQuads[0].position = sf::Vector2f(200, 200);
-	testQuads[1].position = sf::Vector2f(300, 200);
-	testQuads[2].position = sf::Vector2f(300, 300);
-	testQuads[3].position = sf::Vector2f(200, 300);
-	testQuads[4].position = sf::Vector2f(200, 200);
-
-	testQuads[0].color = sf::Color::Black;
-	testQuads[1].color = sf::Color::Magenta;
-	testQuads[2].color = sf::Color::Cyan;
-	testQuads[3].color = sf::Color::Blue;
 
 	//GAME LOOP: mainScreensENUM
 	sf::Event event;
@@ -312,17 +301,13 @@ int main() {
 					if (event.type == sf::Event::EventType::MouseButtonPressed) {
 						for (int i = 0; i < minigameDataSpriteVector.getDataSpriteVector().size(); i++) {
 							if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && minigameDataSpriteVector.getSingleSprite(i).getSprite().getGlobalBounds().contains(translatedMousePosition)) {
-								if (!minigameDataSpriteVector.getSingleSprite(i).getIsComplete()) { gameScreensENUM = static_cast<gameScreens>(i); }
-
-								event.type = sf::Event::EventType::MouseButtonReleased;
+								if (!minigameDataSpriteVector.getSingleSprite(i).getIsComplete()) gameScreensENUM = static_cast<gameScreens>(i);
 
 								//REMEMBER
 								if (gameScreensENUM == rememberENUM) { 
-									playerCirclePtr->setMovementSpeed(10); 
+									playerCirclePtr->setMovementSpeed(5); 
 									playerCirclePtr->setPosition(getCenterOfWindow(window));
-									//playerCirclePtr->setSpriteContactIndex(-1);
 								}
-
 								//IGNORE 
 								if (gameScreensENUM == ignoreENUM) {
 									dullBedPtr->play();
@@ -331,12 +316,13 @@ int main() {
 									bannerSpritePtr->setPosition(getCenterOfWindow(window));
 									acceptText = true;
 								}
-
 								//ACCEPT
 								if (gameScreensENUM == acceptENUM) { 
-									playerCirclePtr->setMovementSpeed(10); 
+									playerCirclePtr->setMovementSpeed(3); 
 									playerCirclePtr->setPosition(sf::Vector2f(playerCirclePtr->getCircle().getRadius(), window.getSize().y - playerCirclePtr->getCircle().getRadius()));
 								}
+
+								event.type = sf::Event::EventType::MouseButtonReleased;
 							}
 						}
 					}
@@ -608,8 +594,10 @@ int main() {
 						
 						playerCirclePtr->handlePlayerInput(window);//moves the player
 						playerCirclePtr->handlePlayerCollision(testQuads);//Check for collision
+						playerCirclePtr->handlePlayerCollision(newWall.getVertexArray());//Check for collision
 						window.draw(playerCirclePtr->getCircle());
 						window.draw(testQuads);
+						window.draw(newWall.getVertexArray());
 
 						drivePtr->drawScreen(window, timerTextPtr->getText());
 					break;

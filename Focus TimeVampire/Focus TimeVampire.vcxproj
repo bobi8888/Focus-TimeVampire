@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="acceptUtils.cpp" />
     <ClCompile Include="circle.cpp" />
     <ClCompile Include="discussText.cpp" />
     <ClCompile Include="Focus TimeVampire.cpp" />

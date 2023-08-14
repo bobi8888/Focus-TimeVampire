@@ -48,6 +48,9 @@
     <ClCompile Include="circle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="acceptUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gameText.h">
