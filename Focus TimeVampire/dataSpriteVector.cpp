@@ -56,12 +56,11 @@ void DataSpriteVector::setSpritePosition(int index, sf::Vector2f newPosition){
 	dataSpriteVector[index].setPosition(newPosition);
 }
 
-void DataSpriteVector::drawSprites(sf::RenderWindow &window, int skipIndex) {
-	if (skipIndex > 0)
-	window.draw(dataSpriteVector[skipIndex].getSprite());
+void DataSpriteVector::drawSprites(sf::RenderWindow &window, int skipIndex) {//skipIndex is needed for the assemble
+	if (skipIndex > 0) window.draw(dataSpriteVector[skipIndex].getSprite());
+
 	for (int i = 0; i < dataSpriteVector.size(); i++) {
-		if (i != skipIndex) 
-		window.draw(dataSpriteVector[i].getSprite());	
+		if (i != skipIndex) window.draw(dataSpriteVector[i].getSprite());	
 	}
 }
 void DataSpriteVector::updateIndividualTexture(int index, string newTexture){
@@ -70,14 +69,8 @@ void DataSpriteVector::updateIndividualTexture(int index, string newTexture){
 
 void DataSpriteVector::checkForCompletion() {
 	int numComplete = 0;
-	for (int i = 0; i < dataSpriteVector.size(); i++) {
-		if (dataSpriteVector[i].getIsComplete()){
-			numComplete++;
-		}
-	}
-	if (numComplete == dataSpriteVector.size()){
-		vectorComplete = true;
-	}
+	for (int i = 0; i < dataSpriteVector.size(); i++) if (dataSpriteVector[i].getIsComplete()) numComplete++;
+	if (numComplete == dataSpriteVector.size()) vectorComplete = true;
 }
 bool DataSpriteVector::getVectorComplete(){
 	return vectorComplete;

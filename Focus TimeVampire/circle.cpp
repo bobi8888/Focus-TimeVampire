@@ -19,6 +19,15 @@ sf::CircleShape Circle::getCircle() {
 void Circle::setPosition(sf::Vector2f newPosition) {
 	circle.setPosition(newPosition);
 }
+void Circle::setMovementSpeed(float movement) {
+	movementSpeed = movement;
+}
+int Circle::getSpriteContactIndex() {
+	return spriteContactIndex;
+}
+void Circle::setSpriteContactIndex(int index){
+	spriteContactIndex = index;
+}
 
 bool Circle::hasVertexArrayCollision(sf::VertexArray vertexArray) {
 	float closestX = (circle.getPosition().x < vertexArray.getBounds().left ? vertexArray.getBounds().left : (circle.getPosition().x 
@@ -26,11 +35,23 @@ bool Circle::hasVertexArrayCollision(sf::VertexArray vertexArray) {
 
 	float closestY = (circle.getPosition().y < vertexArray.getBounds().top ? vertexArray.getBounds().top : (circle.getPosition().y 
 	> vertexArray.getBounds().top + vertexArray.getBounds().height ? vertexArray.getBounds().top + vertexArray.getBounds().height : circle.getPosition().y));
+
 	float dx = closestX - circle.getPosition().x;
 	float dy = closestY - circle.getPosition().y;
 	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
 }
 
+bool Circle::hasSpriteCollision(sf::Sprite sprite) {
+	float closestX = (circle.getPosition().x < sprite.getGlobalBounds().left ? sprite.getGlobalBounds().left : (circle.getPosition().x
+	> sprite.getGlobalBounds().left + sprite.getGlobalBounds().width ? sprite.getGlobalBounds().left + sprite.getGlobalBounds().width : circle.getPosition().x));
+
+	float closestY = (circle.getPosition().y < sprite.getGlobalBounds().top ? sprite.getGlobalBounds().top : (circle.getPosition().y
+	> sprite.getGlobalBounds().top + sprite.getGlobalBounds().height ? sprite.getGlobalBounds().top + sprite.getGlobalBounds().height : circle.getPosition().y));
+
+	float dx = closestX - circle.getPosition().x;
+	float dy = closestY - circle.getPosition().y;
+	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
+}
 
 void Circle::handlePlayerInput(sf::RenderWindow& window) {
 	previousPosition = circle.getPosition();
@@ -70,11 +91,13 @@ void Circle::handlePlayerInput(sf::RenderWindow& window) {
 		}
 	}
 }
+
 void Circle::handlePlayerCollision(sf::VertexArray vertexArray) {
-	if (getCircle().getGlobalBounds().intersects(vertexArray.getBounds())) {
+	if (hasVertexArrayCollision(vertexArray)) {
 		circle.setPosition(previousPosition);
 	}
 }
+
 //void Circle::load_and_setTexture(string newTexture) {
 //	texture.loadFromFile(newTexture);
 //	circle.setTexture(&texture);

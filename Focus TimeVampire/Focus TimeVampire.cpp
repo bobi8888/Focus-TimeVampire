@@ -86,17 +86,8 @@ int main() {
 
 	//TRANSFORMABLE SPRITES
 	//FIGURE OUT WHY THE SCALE MESSES UP THE CONTACT CIRCLE
-	PlayerSprite* playerPtr = new PlayerSprite("playerSprite.png", 1, 1);
-	playerPtr->setPosition(getCenterOfWindow(window));
-	playerPtr->setMovementSpeed(2);
-	playerPtr->setRadius(playerPtr->getSprite().getGlobalBounds().height/2);
-	playerPtr->initializeSpriteRadiusCircle(30);
-
-	Circle* newCirclePtr = new Circle("playerSprite.png", 3, 7, 1, 1);
-	newCirclePtr->setPosition(sf::Vector2f(400,400));
-	Circle* secondCirclePtr = new Circle("minigameSprite.png", 3, 7, 1, 1);
-	secondCirclePtr->setPosition(getCenterOfWindow(window));
-
+	Circle* playerCirclePtr = new Circle("playerSprite.png", 10, 7, 1, 1);
+	playerCirclePtr->setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y / 2));
 
 	//DATA SPRITES
 	DataSprite* minigameSpritePtr = new DataSprite("minigameSprite.png", 0.3, 0.3);
@@ -225,23 +216,12 @@ int main() {
 	mainScreens mainScreensENUM = startMAIN;
 	gameScreens gameScreensENUM = mainENUM;
 
-	sf::VertexArray border(sf::TriangleStrip, 4);
-	border[0].position = sf::Vector2f(200, 200);
-	border[1].position = sf::Vector2f(200, 300);
-	border[2].position = sf::Vector2f(300, 300);
-	border[3].position = sf::Vector2f(200, 300);
-
 	sf::VertexArray testQuads(sf::Quads,5);
 	testQuads[0].position = sf::Vector2f(200, 200);
 	testQuads[1].position = sf::Vector2f(300, 200);
 	testQuads[2].position = sf::Vector2f(300, 300);
 	testQuads[3].position = sf::Vector2f(200, 300);
 	testQuads[4].position = sf::Vector2f(200, 200);
-
-	border[0].color = sf::Color::Red;
-	border[1].color = sf::Color::Blue;
-	border[2].color = sf::Color::Green;
-	border[3].color = sf::Color::Yellow;
 
 	testQuads[0].color = sf::Color::Black;
 	testQuads[1].color = sf::Color::Magenta;
@@ -321,8 +301,8 @@ int main() {
 					} else window.draw(backButtonPtr->getSprite());
 				}
 
-				switch(gameScreensENUM){
-					case mainENUM:
+				switch (gameScreensENUM) {
+				case mainENUM:
 					gameScreenPtr->drawScreen(window, timerTextPtr->getText());
 					minigameDataSpriteVector.drawSprites(window, -1);
 					dullBedPtr->pause();
@@ -335,9 +315,13 @@ int main() {
 								if (!minigameDataSpriteVector.getSingleSprite(i).getIsComplete()) { gameScreensENUM = static_cast<gameScreens>(i); }
 
 								event.type = sf::Event::EventType::MouseButtonReleased;
-								
+
 								//REMEMBER
-								if (gameScreensENUM == rememberENUM) { playerPtr->setMovementSpeed(15); }
+								if (gameScreensENUM == rememberENUM) { 
+									playerCirclePtr->setMovementSpeed(10); 
+									playerCirclePtr->setPosition(getCenterOfWindow(window));
+									//playerCirclePtr->setSpriteContactIndex(-1);
+								}
 
 								//IGNORE 
 								if (gameScreensENUM == ignoreENUM) {
@@ -349,57 +333,69 @@ int main() {
 								}
 
 								//ACCEPT
-								if (gameScreensENUM == acceptENUM) {playerPtr->setMovementSpeed(2);	}
+								if (gameScreensENUM == acceptENUM) { 
+									playerCirclePtr->setMovementSpeed(10); 
+									playerCirclePtr->setPosition(sf::Vector2f(playerCirclePtr->getCircle().getRadius(), window.getSize().y - playerCirclePtr->getCircle().getRadius()));
+								}
 							}
 						}
 					}
 					break;
-					case rememberENUM://REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER 
+				case rememberENUM://REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER 
 					//swapping can be used to randomize vectors to increase difficulty
-					playerPtr->setMovement(window);
+					playerCirclePtr->handlePlayerInput(window);
 					window.draw(tipTextPtr->getText());
-					window.draw(playerPtr->getSprite());
+					window.draw(playerCirclePtr->getCircle());
 					rememberFullBubbles.drawSprites(window, -1);
 					rememberEmptyBubbles.drawSprites(window, -1);
 					rememberGameScreenPtr->drawScreen(window, timerTextPtr->getText());
 
 					for (int i = 0; i < rememberFullBubbles.getDataSpriteVector().size(); i++) {//contacting full sprites
-						if (playerPtr->hasCircleContactWithSprite(rememberFullBubbles.getDataSpriteVector()[i].getSprite(), 0) == true){
+						if (playerCirclePtr->hasSpriteCollision(rememberFullBubbles.getDataSpriteVector()[i].getSprite()) == true) {
 							bannerTextPtr->setTextString(rememberFullBubbles.getFullDataStrings(i));
 							bannerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(), 0, -5);
 							window.draw(bannerSpritePtr->getSprite());
 							window.draw(bannerTextPtr->getText());
 						}
-					}		
-					playerPtr->handleSpriteContactIndex(rememberEmptyBubbles, 0);
-					if (playerPtr->getSpriteContactIndex() >= 0) {
-						if (rememberEmptyBubbles.getSingleSprite(playerPtr->getSpriteContactIndex()).getIsComplete()) {//checking if contacted sprite is complete
-						} else {//sprite incomplete, check if text can be entered			
-							bannerTextPtr->setTextString("Enter " + rememberFullBubbles.getSingleSprite(playerPtr->getSpriteContactIndex()).getLetter());
+					}
+					
+					if (playerCirclePtr->getSpriteContactIndex() < 0) {
+						for (int i = 0; i < rememberEmptyBubbles.getDataSpriteVector().size(); i++) {
+							if (playerCirclePtr->hasSpriteCollision(rememberEmptyBubbles.getDataSpriteVector()[i].getSprite()) == true) {
+								playerCirclePtr->setSpriteContactIndex(i);
+								break;
+							}
+						}
+					}
+					else if (playerCirclePtr->hasSpriteCollision(rememberEmptyBubbles.getDataSpriteVector()[playerCirclePtr->getSpriteContactIndex()].getSprite()) == false) {
+						playerCirclePtr->setSpriteContactIndex(-1);
+						playerTextPtr->setTextString("");
+						acceptText = false;
+						
+					} else {	
+						if (!rememberEmptyBubbles.getSingleSprite(playerCirclePtr->getSpriteContactIndex()).getIsComplete()) {
+							bannerTextPtr->setTextString("Enter " + rememberFullBubbles.getSingleSprite(playerCirclePtr->getSpriteContactIndex()).getLetter());
 							bannerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(), 0, -20);
 							playerTextPtr->setTextToMoney(out);
 							playerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(), 0, +5);
 							window.draw(bannerSpritePtr->getSprite());
 							window.draw(bannerTextPtr->getText());
 							window.draw(playerTextPtr->getText());
-							if (playerTextPtr->getTextString().size() <= rememberFullBubbles.getSingleSprite(playerPtr->getSpriteContactIndex()).getStringValue().size() - 1) {
-								acceptText = true;
-							} else {
+							if (playerTextPtr->getTextString().size() <= rememberFullBubbles.getSingleSprite(playerCirclePtr->getSpriteContactIndex()).getStringValue().size() - 1) {
+								acceptText = true; 
+							}
+							else {
 								acceptText = false;
-								if (playerTextPtr->getTextString() == rememberFullBubbles.getSingleSprite(playerPtr->getSpriteContactIndex()).getStringValue()) {
-									rememberEmptyBubbles.updateIndividualTexture(playerPtr->getSpriteContactIndex(), "okBubbleSprite.png");
-									rememberEmptyBubbles.setSpriteToComplete(playerPtr->getSpriteContactIndex());
-								} 
 							}
 						}
-					} else {
-						playerTextPtr->setTextString("");
-						acceptText = false;
-					}
+						if (playerTextPtr->getTextString() == rememberFullBubbles.getSingleSprite(playerCirclePtr->getSpriteContactIndex()).getStringValue()) {
+							rememberEmptyBubbles.updateIndividualTexture(playerCirclePtr->getSpriteContactIndex(), "okBubbleSprite.png");
+							rememberEmptyBubbles.setSpriteToComplete(playerCirclePtr->getSpriteContactIndex());
+							rememberEmptyBubbles.checkForCompletion();
+						} 
+					}				
 					//win condition		
-					if (!rememberEmptyBubbles.getVectorComplete())
-						rememberEmptyBubbles.checkForCompletion();
-					else {
+					if (rememberEmptyBubbles.getVectorComplete()) {
 						playerTextPtr->setTextString("");
 						minigameDataSpriteVector.updateIndividualTexture(rememberENUM, "completedMinigameSprite.png");
 						minigameDataSpriteVector.setSpriteToComplete(rememberENUM);
@@ -609,26 +605,12 @@ int main() {
 
 						//need to create a vector of VertexArray for the walls
 						//check for a collision only if the player is in the area
-
-						//playerPtr->setMovement(window);
-						//playerPtr->setSpriteRadiusCirclePosition();
-						//playerPtr->setCollision(testQuads);
-						//playerPtr->handleCollision(testQuads);
 						
-						//newCirclePtr->handlePlayerCollision(testQuads);
-						newCirclePtr->handlePlayerInput(window);//moves the player
-						//Check for collision
-						window.draw(newCirclePtr->getCircle());
-
-						//works, need to stop collision
-						if (newCirclePtr->hasVertexArrayCollision(testQuads)) 
-							std::cout << "whoa ";
-
+						playerCirclePtr->handlePlayerInput(window);//moves the player
+						playerCirclePtr->handlePlayerCollision(testQuads);//Check for collision
+						window.draw(playerCirclePtr->getCircle());
 						window.draw(testQuads);
-						//window.draw(border);
-						//window.draw(secondCirclePtr->getCircle());
-						//window.draw(playerPtr->getSpriteRadiusCircle());
-						//window.draw(playerPtr->getSprite()); 
+
 						drivePtr->drawScreen(window, timerTextPtr->getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -645,7 +627,7 @@ int main() {
 				gameTimerPtr = gameTimerPtr->timeUp(gameTimerPtr);
 				timerTextPtr->getText().setString("Time Up!");
 				startScreenPtr->setAndCenterTitle("GAME OVER!");
-				playerPtr->setPosition(getCenterOfWindow(window));
+				playerCirclePtr->setPosition(getCenterOfWindow(window));
 				mainScreensENUM = startMAIN;
 				gameScreensENUM = mainENUM;
 			}

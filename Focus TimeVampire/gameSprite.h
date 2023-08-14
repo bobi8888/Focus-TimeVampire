@@ -84,36 +84,36 @@ class DataSpriteVector {
 		void setStringValues(std::stringstream& stream);
 };
 
-class PlayerSprite : public GameSprite {
-private:
-	int spriteContactIndex = -1;
-	float movementSpeed = 0, radius = 0;
-	bool hasContact = false, collision = false;
-	sf::CircleShape spriteRadiusCircle;
-	sf::CircleShape circle;
-	sf::Vector2f previousPosition = sf::Vector2f(250,250);
-public:
-	using GameSprite::GameSprite;
-	float getMovementSpeed();
-	void setMovementSpeed(float speed);
-	sf::Vector2f getPreviousPosition();
-	void setPreviousPosition(sf::Vector2f currentPosition);
-	float getRadius();
-	void setRadius(float newRadius);
-
-	sf::CircleShape getSpriteRadiusCircle();
-	void initializeSpriteRadiusCircle(size_t pointcount);
-	void setSpriteRadiusCirclePosition();
-
-	bool getCollision();
-	void setCollision(sf::VertexArray vertexArray);
-
-	sf::Sprite setMovement(sf::RenderWindow& window);
-
-	void handleCollision(sf::VertexArray vertexArray);
-
-	bool hasCircleContactWithSprite(const sf::Sprite& sprite, int boundry);
-	int getSpriteContactIndex();
-	void setSpriteContactIndex(int itr);
-	void handleSpriteContactIndex(DataSpriteVector dataSpriteVector, int boundry);
-};
+//class PlayerSprite : public GameSprite {
+//private:
+//	int spriteContactIndex = -1;
+//	float movementSpeed = 0, radius = 0;
+//	bool hasContact = false, collision = false;
+//	sf::CircleShape spriteRadiusCircle;
+//	sf::CircleShape circle;
+//	sf::Vector2f previousPosition = sf::Vector2f(250,250);
+//public:
+//	using GameSprite::GameSprite;
+//	float getMovementSpeed();
+//	void setMovementSpeed(float speed);
+//	sf::Vector2f getPreviousPosition();
+//	void setPreviousPosition(sf::Vector2f currentPosition);
+//	float getRadius();
+//	void setRadius(float newRadius);
+//
+//	sf::CircleShape getSpriteRadiusCircle();
+//	void initializeSpriteRadiusCircle(size_t pointcount);
+//	void setSpriteRadiusCirclePosition();
+//
+//	bool getCollision();
+//	void setCollision(sf::VertexArray vertexArray);
+//
+//	sf::Sprite setMovement(sf::RenderWindow& window);
+//
+//	void handleCollision(sf::VertexArray vertexArray);
+//
+//	bool hasCircleContactWithSprite(const sf::Sprite& sprite, int boundry);
+//	int getSpriteContactIndex();
+//	void setSpriteContactIndex(int itr);
+//	void handleSpriteContactIndex(DataSpriteVector dataSpriteVector, int boundry);
+//};
