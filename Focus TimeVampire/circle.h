@@ -9,7 +9,7 @@ private:
 	int spriteContactIndex = -1;
 
 public:
-	Circle(string newTexture, float movementSpeed, float rotationSpeed, float xScale, float yScale);
+	Circle(string newTexture, float movementSpeed, float rotationSpeed, float scale);
 	sf::CircleShape getCircle();
 	void setPosition(sf::Vector2f newPosition);
 	void setMovementSpeed(float movement);

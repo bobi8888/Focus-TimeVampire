@@ -84,8 +84,7 @@ int main() {
 //, bannerSpritePtr->getSprite().getPosition().y - bannerSpritePtr->getSprite().getGlobalBounds().height / 2 + 30));
 
 	//TRANSFORMABLE SPRITES
-	//FIGURE OUT WHY THE SCALE MESSES UP THE CONTACT CIRCLE
-	Circle* playerCirclePtr = new Circle("playerSprite.png", 10, 7, 1, 1);
+	Circle* playerCirclePtr = new Circle("playerSprite.png", 10, 7, 0.4);
 	playerCirclePtr->setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y / 2));
 
 	//DATA SPRITES
@@ -200,7 +199,12 @@ int main() {
 	ignorePromptTextPtr = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
 	// ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
 	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, 25, window);
-	Wall newWall(250, 250, true, 7, 80);
+	vector <Wall> AcceptWallsVector;
+	Wall newWall(250, 250, true, 10, 80);
+	Wall newWall2(250, 250, false,10,80);
+	AcceptWallsVector.push_back(newWall);
+	AcceptWallsVector.push_back(newWall2);
+
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, 25, window);
@@ -589,15 +593,14 @@ int main() {
 						//need to make a spriteVector for the acceptSprites
 						//broad and narrow collision detection: only check for detection if actually close enough
 
-						//need to create a vector of VertexArray for the walls
 						//check for a collision only if the player is in the area
 						
 						playerCirclePtr->handlePlayerInput(window);//moves the player
-						playerCirclePtr->handlePlayerCollision(testQuads);//Check for collision
-						playerCirclePtr->handlePlayerCollision(newWall.getVertexArray());//Check for collision
+						for (int i = 0; i < AcceptWallsVector.size(); i++) {
+							window.draw(AcceptWallsVector.at(i).getVertexArray());
+							playerCirclePtr->handlePlayerCollision(AcceptWallsVector.at(i).getVertexArray());//Check for collision
+						}
 						window.draw(playerCirclePtr->getCircle());
-						window.draw(testQuads);
-						window.draw(newWall.getVertexArray());
 
 						drivePtr->drawScreen(window, timerTextPtr->getText());
 					break;

@@ -1,17 +1,14 @@
 #include "utils.h"
 #include "circle.h"
 
-Circle::Circle(string newTexture, float movement, float rotation, float xScale, float yScale) {
+Circle::Circle(string newTexture, float movement, float rotation, float scale) {
+	//texture is not influenced by scale
 	texture.loadFromFile(newTexture);
+	circle.setRadius(texture.getSize().x * scale / 2);
 	circle.setTexture(&texture);
-	circle.setScale(xScale, yScale);
-	circle.setOrigin(texture.getSize().x / 2 * xScale, texture.getSize().y / 2 * yScale);
-	circle.setRadius(texture.getSize().x / 2 * xScale);
+	circle.setOrigin(texture.getSize().x / 2 * scale, texture.getSize().y / 2 * scale);
 	movementSpeed = movement;
 	rotationSpeed = rotation;
-	circle.setOutlineColor(sf::Color::Yellow);
-	circle.setFillColor(sf::Color::Green);
-	circle.setOutlineThickness(-4);
 }
 sf::CircleShape Circle::getCircle() {
 	return circle;
