@@ -92,8 +92,5 @@
     <ClInclude Include="circle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="acceptUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

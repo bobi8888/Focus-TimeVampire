@@ -13,7 +13,6 @@
 #include "wall.h"
 #include "circle.h"
 
-
 //ISSUES
 //reset random numbers each playthrough for Remember
 //add reset button
@@ -600,13 +599,14 @@ int main() {
 						//need to make a spriteVector for the acceptSprites
 						//broad and narrow collision detection: only check for detection if actually close enough
 						//check for a collision only if the player is in the area
-						
+
+						//std::cout<< Delta between previousPosition&currentPostion / timeInMilliseconds 
+						playerCirclePtr->handlePlayerMovement(window, acceptSpritePtr->getSprite());
+
 						for (int i = 0; i < AcceptWallsVector.size(); i++) {
 							window.draw(AcceptWallsVector.at(i).getVertexArray());
 							playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i).getVertexArray());//Check for collision
 						}
-
-						playerCirclePtr->handlePlayerMovement(window, acceptSpritePtr->getSprite());
 
 						window.draw(playerCirclePtr->getCircle());
 						window.draw(acceptSpritePtr->getSprite());

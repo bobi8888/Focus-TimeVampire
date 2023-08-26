@@ -153,7 +153,6 @@
     <ClCompile Include="playerSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="acceptUtils.h" />
     <ClInclude Include="wall.h" />
     <ClInclude Include="circle.h" />
     <ClInclude Include="discussUtils.h" />

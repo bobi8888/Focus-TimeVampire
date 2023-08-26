@@ -1,5 +1,4 @@
 #include"utils.h"
-
 # include "gameTimer.h"
 
 GameTimer::GameTimer(float newGameTimer) {
