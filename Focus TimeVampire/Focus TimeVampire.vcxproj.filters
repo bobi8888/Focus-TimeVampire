@@ -48,7 +48,7 @@
     <ClCompile Include="circle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="acceptUtils.cpp">
+    <ClCompile Include="wall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,10 +86,13 @@
     <ClInclude Include="ignoreUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="acceptUtils.h">
+    <ClInclude Include="wall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="circle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="acceptUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

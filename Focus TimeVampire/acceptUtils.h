@@ -1,16 +1,11 @@
 #pragma once
 
-//int playerCharge = 10;
-//int acceptCharge = 2;
-//float distance = 0;
+//A particle of charge q moving with a velocity v in an electric field E and a magnetic field B experiences a force(in SI units[1][2]) of
+//F=q(E+v*B)
+//F = Lorentz F in Newtons 
+//q = charge of particle in coulombs
+//E = elec field in V/m
+//v = velo of charge particle in m/s
+//B = mag field in teslas
 
-class Wall{
-private:
-	sf::Vector2f centerPosition;
-	bool horiztonal;
-	float thickness, length;
-	sf::VertexArray vertexArray;
-public:
-	Wall(float centerX, float centerY, bool isHorizontal, float thick, float len);
-	sf::VertexArray getVertexArray();
-};
+float xq_chargeOfParticle = 2, yq_chargeOfParticle = 2, v_veloOfParticle = 30, E_electFieldStr = 2, B_magFieldStr = 2, theta_magFieldAngle = 90;

@@ -1,5 +1,5 @@
 #include "utils.h"
-#include "acceptUtils.h"
+#include "wall.h"
 
 Wall::Wall(float centerX, float centerY, bool isHorizontal, float thick, float len) {
 	centerPosition = sf::Vector2f(centerX, centerY);

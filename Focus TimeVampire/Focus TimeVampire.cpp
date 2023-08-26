@@ -10,7 +10,7 @@
 #include "discussUtils.h"
 #include "gameScreen.h"
 #include "ignoreUtils.h"
-#include "acceptUtils.h"
+#include "wall.h"
 #include "circle.h"
 
 
@@ -77,14 +77,14 @@ int main() {
 	GameSprite* backButtonPtr = new GameSprite("backSprite.png", 0.18, 0.18);
 	backButtonPtr->setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
 	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
-	acceptSpritePtr->setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y/2));
+	acceptSpritePtr->setPosition(sf::Vector2f(400,400));
 
 	//GameSprite* x_outButtonPtr = new GameSprite("x_outSprite.png", 0.25, 0.25);
 //x_outButtonPtr->setPosition(sf::Vector2f(bannerSpritePtr->getSprite().getPosition().x + bannerSpritePtr->getSprite().getGlobalBounds().width/2 - 15
 //, bannerSpritePtr->getSprite().getPosition().y - bannerSpritePtr->getSprite().getGlobalBounds().height / 2 + 30));
 
 	//TRANSFORMABLE SPRITES
-	Circle* playerCirclePtr = new Circle("playerSprite.png", 10, 7, 0.4);
+	Circle* playerCirclePtr = new Circle("playerSprite.png",1, 7, 0.3);
 	playerCirclePtr->setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y / 2));
 
 	//DATA SPRITES
@@ -199,11 +199,16 @@ int main() {
 	ignorePromptTextPtr = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
 	// ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
 	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, 25, window);
+	float one_x = 50, one_y = 250, two_x = 150, two_y = 300, three_x = 400, three_y = 300, four_x = 400, four_y = 50;
 	vector <Wall> AcceptWallsVector;
-	Wall newWall(250, 250, true, 10, 80);
-	Wall newWall2(250, 250, false,10,80);
+	Wall newWall(one_x, one_y,false, 10, 80);
+	Wall newWall2(two_x, two_y, true, 10, 80);
+	Wall newWall3(three_x, three_y, true, 10, 150);
+	Wall newWall4(four_x, four_y, false,10,300);
 	AcceptWallsVector.push_back(newWall);
 	AcceptWallsVector.push_back(newWall2);
+	AcceptWallsVector.push_back(newWall3);
+	AcceptWallsVector.push_back(newWall4);
 
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -220,6 +225,8 @@ int main() {
 	enum gameScreens { rememberENUM, countENUM, assembleENUM, discussENUM, ignoreENUM, acceptENUM, retainENUM, pushENUM, bonusENUM, mainENUM };
 	mainScreens mainScreensENUM = startMAIN;
 	gameScreens gameScreensENUM = mainENUM;
+
+	int counterTest = 0;
 
 	//GAME LOOP: mainScreensENUM
 	sf::Event event;
@@ -592,16 +599,17 @@ int main() {
 					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
 						//need to make a spriteVector for the acceptSprites
 						//broad and narrow collision detection: only check for detection if actually close enough
-
 						//check for a collision only if the player is in the area
 						
-						playerCirclePtr->handlePlayerInput(window);//moves the player
 						for (int i = 0; i < AcceptWallsVector.size(); i++) {
 							window.draw(AcceptWallsVector.at(i).getVertexArray());
-							playerCirclePtr->handlePlayerCollision(AcceptWallsVector.at(i).getVertexArray());//Check for collision
+							playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i).getVertexArray());//Check for collision
 						}
-						window.draw(playerCirclePtr->getCircle());
 
+						playerCirclePtr->handlePlayerMovement(window, acceptSpritePtr->getSprite());
+
+						window.draw(playerCirclePtr->getCircle());
+						window.draw(acceptSpritePtr->getSprite());
 						drivePtr->drawScreen(window, timerTextPtr->getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 

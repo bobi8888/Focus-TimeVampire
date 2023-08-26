@@ -15,11 +15,15 @@ public:
 	void setMovementSpeed(float movement);
 	int getSpriteContactIndex();
 	void setSpriteContactIndex(int index);
+
+	bool isAnyArrowKeyDown();
 	void handlePlayerInput(sf::RenderWindow& window);
-	void handlePlayerCollision(sf::VertexArray vertexArray);
+
 	bool hasVertexArrayCollision(sf::VertexArray vertexArray);
 	bool hasSpriteCollision(sf::Sprite sprite);
-	//void load_and_setTexture(string texture);
-	//void setOrigin();
-	//void setRadius();
+	void handleScreenBoundsCollision(sf::RenderWindow& window);
+	void handleVertexArrayCollision(sf::VertexArray vertexArray);
+
+	sf::Vector2f handleRepulsion(const sf::Sprite& acceptSprite);
+	void handlePlayerMovement(sf::RenderWindow& window, const sf::Sprite& acceptSprite);
 };

@@ -1,8 +1,8 @@
 #include "utils.h"
 #include "circle.h"
+#include "acceptUtils.h"
 
 Circle::Circle(string newTexture, float movement, float rotation, float scale) {
-	//texture is not influenced by scale
 	texture.loadFromFile(newTexture);
 	circle.setRadius(texture.getSize().x * scale / 2);
 	circle.setTexture(&texture);
@@ -26,18 +26,37 @@ void Circle::setSpriteContactIndex(int index){
 	spriteContactIndex = index;
 }
 
+bool Circle::isAnyArrowKeyDown() {
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
+		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) 
+		return true;
+}
+void Circle::handlePlayerInput(sf::RenderWindow& window) {
+	previousPosition = circle.getPosition();
+	if (isAnyArrowKeyDown()) {
+		//rotation
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) circle.setRotation(circle.getRotation() + rotationSpeed);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) circle.setRotation(circle.getRotation() - rotationSpeed);
+
+		//movement
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) circle.setPosition(circle.getPosition().x - movementSpeed, circle.getPosition().y);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) circle.setPosition(circle.getPosition().x + movementSpeed, circle.getPosition().y);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) circle.setPosition(circle.getPosition().x, circle.getPosition().y - movementSpeed);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) circle.setPosition(circle.getPosition().x, circle.getPosition().y + movementSpeed);
+	}
+}
+
 bool Circle::hasVertexArrayCollision(sf::VertexArray vertexArray) {
-	float closestX = (circle.getPosition().x < vertexArray.getBounds().left ? vertexArray.getBounds().left : (circle.getPosition().x 
+	float closestX = (circle.getPosition().x < vertexArray.getBounds().left ? vertexArray.getBounds().left : (circle.getPosition().x
 	> vertexArray.getBounds().left + vertexArray.getBounds().width ? vertexArray.getBounds().left + vertexArray.getBounds().width : circle.getPosition().x));
 
-	float closestY = (circle.getPosition().y < vertexArray.getBounds().top ? vertexArray.getBounds().top : (circle.getPosition().y 
+	float closestY = (circle.getPosition().y < vertexArray.getBounds().top ? vertexArray.getBounds().top : (circle.getPosition().y
 	> vertexArray.getBounds().top + vertexArray.getBounds().height ? vertexArray.getBounds().top + vertexArray.getBounds().height : circle.getPosition().y));
 
 	float dx = closestX - circle.getPosition().x;
 	float dy = closestY - circle.getPosition().y;
 	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
 }
-
 bool Circle::hasSpriteCollision(sf::Sprite sprite) {
 	float closestX = (circle.getPosition().x < sprite.getGlobalBounds().left ? sprite.getGlobalBounds().left : (circle.getPosition().x
 	> sprite.getGlobalBounds().left + sprite.getGlobalBounds().width ? sprite.getGlobalBounds().left + sprite.getGlobalBounds().width : circle.getPosition().x));
@@ -49,62 +68,31 @@ bool Circle::hasSpriteCollision(sf::Sprite sprite) {
 	float dy = closestY - circle.getPosition().y;
 	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
 }
-
-void Circle::handlePlayerInput(sf::RenderWindow& window) {
-	previousPosition = circle.getPosition();
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
-		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-			circle.setRotation(circle.getRotation() + rotationSpeed);
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-			circle.setRotation(circle.getRotation() - rotationSpeed);
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-			circle.setPosition(circle.getPosition().x - movementSpeed, circle.getPosition().y);
-			if (circle.getPosition().x - circle.getRadius() < 0) {
-				circle.setPosition(circle.getRadius(), circle.getPosition().y);
-			}
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-			circle.setPosition(circle.getPosition().x + movementSpeed, circle.getPosition().y);
-			if (circle.getPosition().x + circle.getRadius() > window.getSize().x) {
-				circle.setPosition(window.getSize().x - circle.getRadius(), circle.getPosition().y);
-			}
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-			circle.setPosition(circle.getPosition().x, circle.getPosition().y - movementSpeed);
-			if (circle.getPosition().y - circle.getRadius() < 0) {
-				circle.setPosition(circle.getPosition().x, circle.getRadius());
-			}
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-			circle.setPosition(circle.getPosition().x, circle.getPosition().y + movementSpeed);
-			if (circle.getPosition().y + circle.getRadius() > window.getSize().y) {
-				circle.setPosition(circle.getPosition().x, window.getSize().y - circle.getRadius());
-			}
-		}
-	}
+void Circle::handleScreenBoundsCollision(sf::RenderWindow& window) {
+	if (circle.getPosition().x - circle.getRadius() < 0) circle.setPosition(circle.getRadius(), circle.getPosition().y);
+	if (circle.getPosition().x + circle.getRadius() > window.getSize().x) circle.setPosition(window.getSize().x - circle.getRadius(), circle.getPosition().y);
+	if (circle.getPosition().y - circle.getRadius() < 0) circle.setPosition(circle.getPosition().x, circle.getRadius());
+	if (circle.getPosition().y + circle.getRadius() > window.getSize().y) circle.setPosition(circle.getPosition().x, window.getSize().y - circle.getRadius());
 }
-
-void Circle::handlePlayerCollision(sf::VertexArray vertexArray) {
+void Circle::handleVertexArrayCollision(sf::VertexArray vertexArray) {
 	if (hasVertexArrayCollision(vertexArray)) {
 		circle.setPosition(previousPosition);
 	}
 }
 
-//void Circle::load_and_setTexture(string newTexture) {
-//	texture.loadFromFile(newTexture);
-//	circle.setTexture(&texture);
-//}
-//void Circle::setOrigin() {
-//	circle.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
-//}
-//void Circle::setRadius() {
-//	circle.setRadius(texture.getSize().x / 2);
-//}
+sf::Vector2f Circle::handleRepulsion(const sf::Sprite& acceptSprite) {
+	float x = circle.getPosition().x < acceptSprite.getPosition().x ? xq_chargeOfParticle = xq_chargeOfParticle * -1 : xq_chargeOfParticle;
+	float y = circle.getPosition().y < acceptSprite.getPosition().y ? yq_chargeOfParticle = yq_chargeOfParticle * -1 : yq_chargeOfParticle;
+
+	sf::Vector2f forceVector(circle.getPosition().x, circle.getPosition().y);
+	forceVector = sf::Vector2f(circle.getPosition().x + xq_chargeOfParticle, circle.getPosition().y + yq_chargeOfParticle);
+	return forceVector;
+}
+void Circle::handlePlayerMovement(sf::RenderWindow& window, const sf::Sprite& acceptSprite) {
+	handlePlayerInput(window);
+	setPosition(handleRepulsion(acceptSprite));
+	handleScreenBoundsCollision(window);
+}
 
 //bool PlayerSprite::hasCircleContactWithSprite(const sf::Sprite& sprite, int boundry) {
 //	float a, b, c, minDist;
