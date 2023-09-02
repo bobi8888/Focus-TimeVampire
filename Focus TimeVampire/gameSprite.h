@@ -5,8 +5,14 @@ class GameSprite {
 		sf::Sprite sprite;
 		sf::Texture texture;
 		int boundry = 40;
-		//float xScale = 1, yScale = 1;
 		bool isVisible = true, isComplete = false, canMove = false;
+
+		//FORCE
+		float direction = 0, magnitude = 0.25;
+		float calc_Dir_x = 0, calc_Dir_y = 0;
+		int quadrant = 0;
+		sf::Vector2f forceOnPlayer;
+
 		friend class DataSpriteVector;
 	public:
 		GameSprite(string spritePNG, float x, float y);
@@ -23,13 +29,17 @@ class GameSprite {
 		bool getCanMove();
 		void handleCanMove(sf::Event event,sf::Vector2f translatedMousePosition);
 		int getBoundry();
+
+		float returnQuadrantDirectionInDegrees(sf::CircleShape circle);
+		void setQuadrant(sf::CircleShape circle);
+		sf::Vector2f getForceOnPlayer();
+		void setForceOnPlayer(sf::CircleShape circle);
 };
 
 class DataSprite : public GameSprite{
 	private: 
 		string letter, valueAsString, fullDataString;
 		long value;
-		bool isComplete = false;
 	public:
 		using GameSprite::GameSprite;
 		string getLetter();
@@ -43,9 +53,6 @@ class DataSprite : public GameSprite{
 
 		string getFullDataString();
 		void setFullDataString(string string);
-
-		bool getIsComplete();
-		void setToComplete();
 };
 
 class DataSpriteVector {
@@ -99,11 +106,6 @@ private:
 	sf::Vector2f previousPosition;
 	int spriteContactIndex = -1;
 
-	//FORCE
-	float direction = 0;
-	float calc_Dir_x = 0, calc_Dir_y = 0;
-	int quadrant = 0;
-
 	//MAGNETISM
 	float E_electFieldStr = 2;
 	float B_magFieldStr = 2;
@@ -122,16 +124,21 @@ public:
 	void setPreviousPosition();
 	float getVelocity();
 	void calculateVelocity();
-	void setQuadrant(const sf::Sprite& acceptSprite);
-	float returnQuadrantDirectionInDegrees(const sf::Sprite& acceptSprite);
-	void applySpriteForce(float angle, float magnitude);
+
+	//Player movement and screen bounds
 	bool isAnyArrowKeyDown();
-	void handleArrowKeyInput(sf::RenderWindow& window);
+	void handleArrowKeyInput();
+	void handleScreenBoundsCollision(sf::RenderWindow& window);
+	void handlePlayerMovementWithinScreen(sf::RenderWindow& window);
+
+	//Vertex Array Collisions
 	bool hasVertexArrayCollision(sf::VertexArray vertexArray);
 	void handleVertexArrayCollision(sf::VertexArray vertexArray);	
+
+	//Sprite Collisions
 	bool hasSpriteCollision(sf::Sprite sprite);
-	void handleScreenBoundsCollision(sf::RenderWindow& window);
-	void handleAllPlayerForces(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite);
+
+	void handleAllCollisions(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite);
 
 	//sf::Vector2f handleRepulsion(const sf::Sprite& acceptSprite);
 	//sf::Vector2f applyForces(DataSpriteVector test);

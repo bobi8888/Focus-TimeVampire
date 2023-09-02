@@ -345,7 +345,7 @@ int main() {
 					break;
 				case rememberENUM://REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER 
 					//swapping can be used to randomize vectors to increase difficulty
-					playerCirclePtr->handleArrowKeyInput(window);
+					playerCirclePtr->handleArrowKeyInput();
 					window.draw(tipTextPtr->getText());
 					window.draw(playerCirclePtr->getCircle());
 					rememberFullBubbles.drawSprites(window, -1);
@@ -606,18 +606,24 @@ int main() {
 						//broad and narrow collision detection: only check for detection if actually close enough
 						//check for a collision only if the player is in the area
 						
-						playerCirclePtr->handleAllPlayerForces(window, acceptDataSpriteVector, acceptSpritePtr->getSprite());
+						playerCirclePtr->handlePlayerMovementWithinScreen(window);
 
-						playerCirclePtr->applySpriteForce(playerCirclePtr->returnQuadrantDirectionInDegrees(acceptSpritePtr->getSprite()), 0.25);
+						for (int i = 0; i < AcceptWallsVector.size(); i++) {
+							window.draw(AcceptWallsVector.at(i).getVertexArray());
+							playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i).getVertexArray());
+						}
+
+						acceptSpritePtr->setQuadrant(playerCirclePtr->getCircle());
+						acceptSpritePtr->setForceOnPlayer(playerCirclePtr->getCircle());
+						playerCirclePtr->setPlayerPosition(acceptSpritePtr->getForceOnPlayer());
+
+						//playerCirclePtr->applySpriteForce(playerCirclePtr->returnQuadrantDirectionInDegrees(acceptSpritePtr->getSprite()), 0.25);
 
 						//for (int i = 0; i < acceptDataSpriteVector.getDataSpriteVector().size(); i++) {
 						//	window.draw(acceptDataSpriteVector.getDataSpriteVector().at(i).getSprite());
 						//}
 					
-						//for (int i = 0; i < AcceptWallsVector.size(); i++) {
-						//	window.draw(AcceptWallsVector.at(i).getVertexArray());
-						//	playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i).getVertexArray());//Check for collision
-						//}
+
 
 						window.draw(playerCirclePtr->getCircle());
 						window.draw(acceptSpritePtr->getSprite());

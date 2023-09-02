@@ -1,5 +1,4 @@
 #include "utils.h"
-
 #include "gameSprite.h"
 
 GameSprite::GameSprite(string spritePNG, float x, float y) {
@@ -51,7 +50,51 @@ void GameSprite::handleCanMove(sf::Event event, sf::Vector2f translatedMousePosi
 		canMove = false;
 	}
 }
-
 int GameSprite::getBoundry() {
 	return boundry;
+}
+
+float GameSprite::returnQuadrantDirectionInDegrees(sf::CircleShape circle) {
+	calc_Dir_y = circle.getPosition().y < sprite.getPosition().y ? sprite.getPosition().y - circle.getPosition().y : circle.getPosition().y - sprite.getPosition().y;
+	calc_Dir_x = circle.getPosition().x < sprite.getPosition().x ? sprite.getPosition().x - circle.getPosition().x : circle.getPosition().x - sprite.getPosition().x;
+	setQuadrant(circle);
+	direction = atan(calc_Dir_y / calc_Dir_x) * 180 / std::_Pi;
+	return direction;
+}
+void GameSprite::setQuadrant(sf::CircleShape circle) {
+	if (circle.getPosition().x > sprite.getPosition().x && circle.getPosition().y < sprite.getPosition().y) {
+		quadrant = 1;
+	}
+	else if (circle.getPosition().x < sprite.getPosition().x && circle.getPosition().y < sprite.getPosition().y) {
+		quadrant = 2;
+	}
+	else if (circle.getPosition().x < sprite.getPosition().x && circle.getPosition().y > sprite.getPosition().y) {
+		quadrant = 3;
+	}
+	else {
+		quadrant = 4;
+	}
+}
+sf::Vector2f GameSprite::getForceOnPlayer() {
+	return forceOnPlayer;
+}
+void GameSprite::setForceOnPlayer(sf::CircleShape circle) {
+	direction = returnQuadrantDirectionInDegrees(circle);
+	float y = sin(direction * std::_Pi / 180) * magnitude;
+	float x = sqrt(pow(magnitude, 2) - pow(y, 2));
+
+	switch (quadrant) {
+	case 1:
+		forceOnPlayer = sf::Vector2f(circle.getPosition().x + x, circle.getPosition().y - y);
+		break;
+	case 2:
+		forceOnPlayer = sf::Vector2f(circle.getPosition().x - x, circle.getPosition().y - y);
+		break;
+	case 3:
+		forceOnPlayer = sf::Vector2f(circle.getPosition().x - x, circle.getPosition().y + y);
+		break;
+	case 4:
+		forceOnPlayer = sf::Vector2f(circle.getPosition().x + x, circle.getPosition().y + y);
+		break;
+	}
 }

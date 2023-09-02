@@ -40,46 +40,8 @@ void Player::calculateVelocity() {
 	velocity = std::round((distance / elapsedMilli) * 100.f) / 100.f;
 	clock.restart();
 }
-void Player::setQuadrant(const sf::Sprite& acceptSprite) {
-	if (circle.getPosition().x > acceptSprite.getPosition().x && circle.getPosition().y < acceptSprite.getPosition().y) {
-		quadrant = 1;
-	}
-	else if (circle.getPosition().x < acceptSprite.getPosition().x && circle.getPosition().y < acceptSprite.getPosition().y) {
-		quadrant = 2;
-	}
-	else if (circle.getPosition().x < acceptSprite.getPosition().x && circle.getPosition().y > acceptSprite.getPosition().y) {
-		quadrant = 3;
-	}
-	else {
-		quadrant = 4;
-	}
-}
-float Player::returnQuadrantDirectionInDegrees(const sf::Sprite& acceptSprite){	
-	calc_Dir_y = circle.getPosition().y < acceptSprite.getPosition().y ? acceptSprite.getPosition().y - circle.getPosition().y : circle.getPosition().y - acceptSprite.getPosition().y;
-	calc_Dir_x = circle.getPosition().x < acceptSprite.getPosition().x ? acceptSprite.getPosition().x - circle.getPosition().x : circle.getPosition().x - acceptSprite.getPosition().x;
-	setQuadrant(acceptSprite);
-	direction = atan(calc_Dir_y / calc_Dir_x) * 180 / std::_Pi;
-	return direction;
-}
-void Player::applySpriteForce(float angle, float magnitude) {
-	float y = sin(angle * std::_Pi / 180) * magnitude;
-	float x = sqrt(pow(magnitude, 2) - pow(y, 2));
 
-	switch (quadrant) {
-	case 1:
-		circle.setPosition(sf::Vector2f(circle.getPosition().x + x, circle.getPosition().y - y));
-		break;
-	case 2:
-		circle.setPosition(sf::Vector2f(circle.getPosition().x - x, circle.getPosition().y - y));
-		break;
-	case 3:
-		circle.setPosition(sf::Vector2f(circle.getPosition().x - x, circle.getPosition().y + y));
-		break;
-	case 4:
-		circle.setPosition(sf::Vector2f(circle.getPosition().x + x, circle.getPosition().y + y));
-		break;
-	}
-}
+//Player movement and screen bounds
 bool Player::isAnyArrowKeyDown() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
@@ -87,7 +49,7 @@ bool Player::isAnyArrowKeyDown() {
 	}
 	else return false;
 }
-void Player::handleArrowKeyInput(sf::RenderWindow& window) {
+void Player::handleArrowKeyInput() {
 	setPreviousPosition();
 	if (isAnyArrowKeyDown()) {
 		//rotation
@@ -100,6 +62,18 @@ void Player::handleArrowKeyInput(sf::RenderWindow& window) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) circle.setPosition(circle.getPosition().x, circle.getPosition().y + movementSpeed);
 	}
 }
+void Player::handleScreenBoundsCollision(sf::RenderWindow& window) {
+	if (circle.getPosition().x - circle.getRadius() < 0) circle.setPosition(circle.getRadius(), circle.getPosition().y);
+	if (circle.getPosition().x + circle.getRadius() > window.getSize().x) circle.setPosition(window.getSize().x - circle.getRadius(), circle.getPosition().y);
+	if (circle.getPosition().y - circle.getRadius() < 0) circle.setPosition(circle.getPosition().x, circle.getRadius());
+	if (circle.getPosition().y + circle.getRadius() > window.getSize().y) circle.setPosition(circle.getPosition().x, window.getSize().y - circle.getRadius());
+}
+void Player::handlePlayerMovementWithinScreen(sf::RenderWindow& window) {
+	handleArrowKeyInput();
+	handleScreenBoundsCollision(window);
+}
+
+//Vertex Array Collisions
 bool Player::hasVertexArrayCollision(sf::VertexArray vertexArray) {
 	float closestX = (circle.getPosition().x < vertexArray.getBounds().left ? vertexArray.getBounds().left : (circle.getPosition().x
 	> vertexArray.getBounds().left + vertexArray.getBounds().width ? vertexArray.getBounds().left + vertexArray.getBounds().width : circle.getPosition().x));
@@ -116,6 +90,8 @@ void Player::handleVertexArrayCollision(sf::VertexArray vertexArray) {
 		circle.setPosition(previousPosition);
 	}
 }
+
+//Sprite Collisions
 bool Player::hasSpriteCollision(sf::Sprite sprite) {
 	float closestX = (circle.getPosition().x < sprite.getGlobalBounds().left ? sprite.getGlobalBounds().left : (circle.getPosition().x
 	> sprite.getGlobalBounds().left + sprite.getGlobalBounds().width ? sprite.getGlobalBounds().left + sprite.getGlobalBounds().width : circle.getPosition().x));
@@ -127,22 +103,13 @@ bool Player::hasSpriteCollision(sf::Sprite sprite) {
 	float dy = closestY - circle.getPosition().y;
 	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
 }
-void Player::handleScreenBoundsCollision(sf::RenderWindow& window) {
-	if (circle.getPosition().x - circle.getRadius() < 0) circle.setPosition(circle.getRadius(), circle.getPosition().y);
-	if (circle.getPosition().x + circle.getRadius() > window.getSize().x) circle.setPosition(window.getSize().x - circle.getRadius(), circle.getPosition().y);
-	if (circle.getPosition().y - circle.getRadius() < 0) circle.setPosition(circle.getPosition().x, circle.getRadius());
-	if (circle.getPosition().y + circle.getRadius() > window.getSize().y) circle.setPosition(circle.getPosition().x, window.getSize().y - circle.getRadius());
-}
-void Player::handleAllPlayerForces(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite) {
-	handleScreenBoundsCollision(window);
-	calculateVelocity();
-	handleArrowKeyInput(window);
-	//setPosition(handleRepulsion(acceptSprite));
-	//setPosition(applyForces(test));
+
+void Player::handleAllCollisions(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite) {
 }
 
-//handle all player input
-//handle collisions
+
+//handle sprite collisions
+//handle vertexArray collisions
 //handle forces
 
 //sf::Vector2f Player::handleRepulsion(const sf::Sprite& acceptSprite) {
