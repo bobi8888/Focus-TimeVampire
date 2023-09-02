@@ -87,94 +87,53 @@ class Player {
 private:
 	sf::CircleShape circle;
 	sf::Texture texture;
-	sf::Clock clock;
-	sf::Vector2f previousPosition;
+
+	//MOVEMENT
 	float movementSpeed = 0, rotationSpeed = 0;
+
+	//VELOCITY
+	sf::Clock clock;
+	float velocity = 0;
+
+	//COLLISION
+	sf::Vector2f previousPosition;
+	int spriteContactIndex = -1;
+
+	//FORCE
 	float direction = 0;
 	float calc_Dir_x = 0, calc_Dir_y = 0;
-	int spriteContactIndex = -1;
 	int quadrant = 0;
-	vector <sf::Vector2f> directionVector{ sf::Vector2f(0,0), sf::Vector2f(0,0) };
 
-	float charge = 1;
-	float velocity = 0;
+	//MAGNETISM
 	float E_electFieldStr = 2;
 	float B_magFieldStr = 2;
 	float theta_magFieldAngle = 90;
-	float xForce = 0, yForce = 0;
 	const double mu0 = 4 * 3.14 * 1e-7;
 	double strength;
 
 public:
 	Player(string newTexture, float movementSpeed, float rotationSpeed, float scale);
-
-	vector<double> calculateMagneticForce(Player magOne, Player magTwo);
-
 	sf::CircleShape getCircle();
-	void setPosition(sf::Vector2f newPosition);
+	void setPlayerPosition(sf::Vector2f newPosition);
 	void setMovementSpeed(float movement);
 	int getSpriteContactIndex();
 	void setSpriteContactIndex(int index);
-	float getPositiveCharge();
-	float getNegativeCharge();
-	void setCharge(float);
 	sf::Vector2f getPreviousPosition();
+	void setPreviousPosition();
 	float getVelocity();
-	void setVeloity(float);
 	void calculateVelocity();
-	int getQuadrant();
 	void setQuadrant(const sf::Sprite& acceptSprite);
-	float returnCalculatedDirection(const sf::Sprite& acceptSprite);
-	//cirlceVector + newVector = new position
-	void calculateDirectionVector();
-	void spriteForce(float angle, float magnitude);
-
+	float returnQuadrantDirectionInDegrees(const sf::Sprite& acceptSprite);
+	void applySpriteForce(float angle, float magnitude);
 	bool isAnyArrowKeyDown();
-	void handlePlayerInput(sf::RenderWindow& window);
-
+	void handleArrowKeyInput(sf::RenderWindow& window);
 	bool hasVertexArrayCollision(sf::VertexArray vertexArray);
+	void handleVertexArrayCollision(sf::VertexArray vertexArray);	
 	bool hasSpriteCollision(sf::Sprite sprite);
 	void handleScreenBoundsCollision(sf::RenderWindow& window);
-	void handleVertexArrayCollision(sf::VertexArray vertexArray);
+	void handleAllPlayerForces(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite);
 
-	sf::Vector2f handleRepulsion(const sf::Sprite& acceptSprite);
-	void handlePlayerMovement(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite);
-
-	sf::Vector2f applyForces(DataSpriteVector test);
-	void setXForce(float newForce);
-	void setYForce(float newForce);
+	//sf::Vector2f handleRepulsion(const sf::Sprite& acceptSprite);
+	//sf::Vector2f applyForces(DataSpriteVector test);
+	//vector<double> calculateMagneticForce(Player magOne, Player magTwo);
 };
-
-//class PlayerSprite : public GameSprite {
-//private:
-//	int spriteContactIndex = -1;
-//	float movementSpeed = 0, radius = 0;
-//	bool hasContact = false, collision = false;
-//	sf::CircleShape spriteRadiusCircle;
-//	sf::CircleShape circle;
-//	sf::Vector2f previousPosition = sf::Vector2f(250,250);
-//public:
-//	using GameSprite::GameSprite;
-//	float getMovementSpeed();
-//	void setMovementSpeed(float speed);
-//	sf::Vector2f getPreviousPosition();
-//	void setPreviousPosition(sf::Vector2f currentPosition);
-//	float getRadius();
-//	void setRadius(float newRadius);
-//
-//	sf::CircleShape getSpriteRadiusCircle();
-//	void initializeSpriteRadiusCircle(size_t pointcount);
-//	void setSpriteRadiusCirclePosition();
-//
-//	bool getCollision();
-//	void setCollision(sf::VertexArray vertexArray);
-//
-//	sf::Sprite setMovement(sf::RenderWindow& window);
-//
-//	void handleCollision(sf::VertexArray vertexArray);
-//
-//	bool hasCircleContactWithSprite(const sf::Sprite& sprite, int boundry);
-//	int getSpriteContactIndex();
-//	void setSpriteContactIndex(int itr);
-//	void handleSpriteContactIndex(DataSpriteVector dataSpriteVector, int boundry);
-//};

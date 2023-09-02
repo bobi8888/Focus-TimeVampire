@@ -30,9 +30,6 @@
     <ClCompile Include="dataSpriteVector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="playerSprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="gameSprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

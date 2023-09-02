@@ -85,7 +85,7 @@ int main() {
 
 	//TRANSFORMABLE SPRITES
 	Player* playerCirclePtr = new Player("playerSprite.png",1, 7, 0.3);
-	playerCirclePtr->setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y / 2));
+	playerCirclePtr->setPlayerPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y / 2));
 
 	//DATA SPRITES
 	DataSprite* minigameSpritePtr = new DataSprite("minigameSprite.png", 0.3, 0.3);
@@ -322,7 +322,7 @@ int main() {
 								//REMEMBER
 								if (gameScreensENUM == rememberENUM) { 
 									playerCirclePtr->setMovementSpeed(5); 
-									playerCirclePtr->setPosition(getCenterOfWindow(window));
+									playerCirclePtr->setPlayerPosition(getCenterOfWindow(window));
 								}
 								//IGNORE 
 								if (gameScreensENUM == ignoreENUM) {
@@ -335,7 +335,7 @@ int main() {
 								//ACCEPT
 								if (gameScreensENUM == acceptENUM) { 
 									playerCirclePtr->setMovementSpeed(3); 
-									playerCirclePtr->setPosition(sf::Vector2f(playerCirclePtr->getCircle().getRadius(), window.getSize().y - playerCirclePtr->getCircle().getRadius()));
+									playerCirclePtr->setPlayerPosition(sf::Vector2f(playerCirclePtr->getCircle().getRadius(), window.getSize().y - playerCirclePtr->getCircle().getRadius()));
 								}
 
 								event.type = sf::Event::EventType::MouseButtonReleased;
@@ -345,7 +345,7 @@ int main() {
 					break;
 				case rememberENUM://REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER 
 					//swapping can be used to randomize vectors to increase difficulty
-					playerCirclePtr->handlePlayerInput(window);
+					playerCirclePtr->handleArrowKeyInput(window);
 					window.draw(tipTextPtr->getText());
 					window.draw(playerCirclePtr->getCircle());
 					rememberFullBubbles.drawSprites(window, -1);
@@ -606,9 +606,9 @@ int main() {
 						//broad and narrow collision detection: only check for detection if actually close enough
 						//check for a collision only if the player is in the area
 						
-						//std::cout<< Delta between previousPosition&currentPostion / timeInMilliseconds 
-						playerCirclePtr->handlePlayerMovement(window, acceptDataSpriteVector, acceptSpritePtr->getSprite());
-						playerCirclePtr->spriteForce(playerCirclePtr->returnCalculatedDirection(acceptSpritePtr->getSprite()), 0.25);
+						playerCirclePtr->handleAllPlayerForces(window, acceptDataSpriteVector, acceptSpritePtr->getSprite());
+
+						playerCirclePtr->applySpriteForce(playerCirclePtr->returnQuadrantDirectionInDegrees(acceptSpritePtr->getSprite()), 0.25);
 
 						//for (int i = 0; i < acceptDataSpriteVector.getDataSpriteVector().size(); i++) {
 						//	window.draw(acceptDataSpriteVector.getDataSpriteVector().at(i).getSprite());
@@ -637,7 +637,7 @@ int main() {
 				gameTimerPtr = gameTimerPtr->timeUp(gameTimerPtr);
 				timerTextPtr->getText().setString("Time Up!");
 				startScreenPtr->setAndCenterTitle("GAME OVER!");
-				playerCirclePtr->setPosition(getCenterOfWindow(window));
+				playerCirclePtr->setPlayerPosition(getCenterOfWindow(window));
 				mainScreensENUM = startMAIN;
 				gameScreensENUM = mainENUM;
 			}

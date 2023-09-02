@@ -12,7 +12,7 @@ Player::Player(string newTexture, float movement, float rotation, float scale) {
 sf::CircleShape Player::getCircle() {
 	return circle;
 }
-void Player::setPosition(sf::Vector2f newPosition) {
+void Player::setPlayerPosition(sf::Vector2f newPosition) {
 	circle.setPosition(newPosition);
 }
 void Player::setMovementSpeed(float movement) {
@@ -24,25 +24,14 @@ int Player::getSpriteContactIndex() {
 void Player::setSpriteContactIndex(int index){
 	spriteContactIndex = index;
 }
-
-float Player::getPositiveCharge() {
-	return charge;
-}
-float Player::getNegativeCharge() {
-	return charge * -1;
-}
-void Player::setCharge(float newCharge) {
-	charge = newCharge;
-}
-
 sf::Vector2f Player::getPreviousPosition() {
 	return previousPosition;
 }
+void Player::setPreviousPosition() {
+	previousPosition = circle.getPosition();
+}
 float Player::getVelocity() {
 	return velocity;
-}
-void Player::setVeloity(float newVelo) {
-	velocity = newVelo;
 }
 void Player::calculateVelocity() {
 	float elapsedMilli = clock.getElapsedTime().asMilliseconds();
@@ -50,9 +39,6 @@ void Player::calculateVelocity() {
 		* 100.f) / 100.f;
 	velocity = std::round((distance / elapsedMilli) * 100.f) / 100.f;
 	clock.restart();
-}
-int Player::getQuadrant() {
-	return quadrant;
 }
 void Player::setQuadrant(const sf::Sprite& acceptSprite) {
 	if (circle.getPosition().x > acceptSprite.getPosition().x && circle.getPosition().y < acceptSprite.getPosition().y) {
@@ -68,18 +54,14 @@ void Player::setQuadrant(const sf::Sprite& acceptSprite) {
 		quadrant = 4;
 	}
 }
-
-float Player::returnCalculatedDirection(const sf::Sprite& acceptSprite){	
+float Player::returnQuadrantDirectionInDegrees(const sf::Sprite& acceptSprite){	
 	calc_Dir_y = circle.getPosition().y < acceptSprite.getPosition().y ? acceptSprite.getPosition().y - circle.getPosition().y : circle.getPosition().y - acceptSprite.getPosition().y;
 	calc_Dir_x = circle.getPosition().x < acceptSprite.getPosition().x ? acceptSprite.getPosition().x - circle.getPosition().x : circle.getPosition().x - acceptSprite.getPosition().x;
-	
 	setQuadrant(acceptSprite);
 	direction = atan(calc_Dir_y / calc_Dir_x) * 180 / std::_Pi;
 	return direction;
 }
-
-
-void Player::spriteForce(float angle, float magnitude) {
+void Player::applySpriteForce(float angle, float magnitude) {
 	float y = sin(angle * std::_Pi / 180) * magnitude;
 	float x = sqrt(pow(magnitude, 2) - pow(y, 2));
 
@@ -98,7 +80,6 @@ void Player::spriteForce(float angle, float magnitude) {
 		break;
 	}
 }
-
 bool Player::isAnyArrowKeyDown() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
@@ -106,8 +87,8 @@ bool Player::isAnyArrowKeyDown() {
 	}
 	else return false;
 }
-void Player::handlePlayerInput(sf::RenderWindow& window) {
-	previousPosition = circle.getPosition();
+void Player::handleArrowKeyInput(sf::RenderWindow& window) {
+	setPreviousPosition();
 	if (isAnyArrowKeyDown()) {
 		//rotation
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) circle.setRotation(circle.getRotation() + rotationSpeed);
@@ -119,7 +100,6 @@ void Player::handlePlayerInput(sf::RenderWindow& window) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) circle.setPosition(circle.getPosition().x, circle.getPosition().y + movementSpeed);
 	}
 }
-
 bool Player::hasVertexArrayCollision(sf::VertexArray vertexArray) {
 	float closestX = (circle.getPosition().x < vertexArray.getBounds().left ? vertexArray.getBounds().left : (circle.getPosition().x
 	> vertexArray.getBounds().left + vertexArray.getBounds().width ? vertexArray.getBounds().left + vertexArray.getBounds().width : circle.getPosition().x));
@@ -130,6 +110,11 @@ bool Player::hasVertexArrayCollision(sf::VertexArray vertexArray) {
 	float dx = closestX - circle.getPosition().x;
 	float dy = closestY - circle.getPosition().y;
 	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
+}
+void Player::handleVertexArrayCollision(sf::VertexArray vertexArray) {
+	if (hasVertexArrayCollision(vertexArray)) {
+		circle.setPosition(previousPosition);
+	}
 }
 bool Player::hasSpriteCollision(sf::Sprite sprite) {
 	float closestX = (circle.getPosition().x < sprite.getGlobalBounds().left ? sprite.getGlobalBounds().left : (circle.getPosition().x
@@ -148,71 +133,34 @@ void Player::handleScreenBoundsCollision(sf::RenderWindow& window) {
 	if (circle.getPosition().y - circle.getRadius() < 0) circle.setPosition(circle.getPosition().x, circle.getRadius());
 	if (circle.getPosition().y + circle.getRadius() > window.getSize().y) circle.setPosition(circle.getPosition().x, window.getSize().y - circle.getRadius());
 }
-void Player::handleVertexArrayCollision(sf::VertexArray vertexArray) {
-	if (hasVertexArrayCollision(vertexArray)) {
-		circle.setPosition(previousPosition);
-	}
+void Player::handleAllPlayerForces(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite) {
+	handleScreenBoundsCollision(window);
+	calculateVelocity();
+	handleArrowKeyInput(window);
+	//setPosition(handleRepulsion(acceptSprite));
+	//setPosition(applyForces(test));
 }
 
-sf::Vector2f Player::handleRepulsion(const sf::Sprite& acceptSprite) {
+//handle all player input
+//handle collisions
+//handle forces
+
+//sf::Vector2f Player::handleRepulsion(const sf::Sprite& acceptSprite) {
 //need x&yforces
 //A particle of charge q moving with a velocity v in an electric field E and a magnetic field B experiences a force(in SI units[1][2]) of
 //F=q(E+v*B)
 //F = Lorentz F in Newtons 
 //float q = 0.1;//charge of particle in coulombs 
-	float E = 1; //E = elec field in Volts/meter
-	float v = getVelocity();//velo of charge particle in pxl/ms
-	float B = 1;//mag field in teslas
-	float xCharge = circle.getPosition().x < acceptSprite.getPosition().x ? getNegativeCharge() : getPositiveCharge();
-	float yCharge = circle.getPosition().y < acceptSprite.getPosition().y ? getNegativeCharge() : getPositiveCharge();
-
-	float force = charge * (E + v * B);
-	sf::Vector2f forceVector(circle.getPosition().x + xCharge, circle.getPosition().y + yCharge);
-	//sf::Vector2f forceVector(circle.getPosition().x + force, circle.getPosition().y + force);
-	return forceVector;
-}
-
-void Player::setXForce(float newForce) {
-	xForce = newForce;
-}
-void Player::setYForce(float newForce) {
-	yForce = newForce;
-}
-
-sf::Vector2f Player::applyForces(DataSpriteVector test) {
-//for (int i = 0; i < particles.length; ++i) { //For each particle
-	for (int i = 0; i < test.getDataSpriteVector().size(); i++) { //For each second particle (no repeats)
-			float dx = circle.getPosition().x - test.getDataSpriteVector()[i].getSprite().getPosition().x;
-			float dy = circle.getPosition().y - test.getDataSpriteVector()[i].getSprite().getPosition().y;
-			float distance = sqrt(dx * dx + dy * dy);
-			float force = charge * charge / (distance * distance);
-			if (force > 1000) force = 1000; //Make sure the simulation doesn't explode
-			//Find the horizontal and vertical components of the force
-			float newXForce = force * (dx / distance);
-			float newYForce = force * (dy / distance);
-			//Apply forces to particles
-			xForce = newXForce;
-			yForce = newYForce;
-			sf::Vector2f forceVector(circle.getPosition().x + xForce, circle.getPosition().y + yForce);
-			return forceVector;
-		}
-	//}
-}
-
-//vector<double> Player::calculateMagneticForce(Player magOne, Player magTwo) {
-//	vector<double> force(2, 0.0);
+//	float E = 1; //E = elec field in Volts/meter
+//	float v = getVelocity();//velo of charge particle in pxl/ms
+//	float B = 1;//mag field in teslas
+//	float xCharge = circle.getPosition().x < acceptSprite.getPosition().x ? getNegativeCharge() : getPositiveCharge();
+//	float yCharge = circle.getPosition().y < acceptSprite.getPosition().y ? getNegativeCharge() : getPositiveCharge();
 //
-//	// Calculate the distance and squared distance between dipoles
-//	double dx =  magTwo.x - magOne.x;
-//	double dy = magTwo.y - magOne.y;
-//	double r_squared = dx * dx + dy * dy;
-//
-//	// Calculate the magnetic force components using the Biot-Savart law
-//	double forceMagnitude = (mu0 * magOne.strength * magTwo.strength) / (4 * 3.14 * r_squared);
-//	force[0] = forceMagnitude * dx / std::sqrt(r_squared);
-//	force[1] = forceMagnitude * dy / std::sqrt(r_squared);
-//
-//	return force;
+//	float force = charge * (E + v * B);
+//	sf::Vector2f forceVector(circle.getPosition().x + xCharge, circle.getPosition().y + yCharge);
+//	//sf::Vector2f forceVector(circle.getPosition().x + force, circle.getPosition().y + force);
+//	return forceVector;
 //}
 
 //#include <iostream>
@@ -351,13 +299,6 @@ sf::Vector2f Player::applyForces(DataSpriteVector test) {
 //E = elec field in V/m
 //v = velo of charge particle in m/s
 //B = mag field in teslas
-void Player::handlePlayerMovement(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite) {
-	handleScreenBoundsCollision(window);
-	calculateVelocity();
-	handlePlayerInput(window);
-	//setPosition(handleRepulsion(acceptSprite));
-	//setPosition(applyForces(test));
-}
 
 //bool PlayerSprite::hasCircleContactWithSprite(const sf::Sprite& sprite, int boundry) {
 //	float a, b, c, minDist;
@@ -374,4 +315,40 @@ void Player::handlePlayerMovement(sf::RenderWindow& window, DataSpriteVector tes
 //	else {
 //		return hasContact = false;
 //	}
+//}
+
+//vector<double> Player::calculateMagneticForce(Player magOne, Player magTwo) {
+//	vector<double> force(2, 0.0);
+//
+//	// Calculate the distance and squared distance between dipoles
+//	double dx =  magTwo.x - magOne.x;
+//	double dy = magTwo.y - magOne.y;
+//	double r_squared = dx * dx + dy * dy;
+//
+//	// Calculate the magnetic force components using the Biot-Savart law
+//	double forceMagnitude = (mu0 * magOne.strength * magTwo.strength) / (4 * 3.14 * r_squared);
+//	force[0] = forceMagnitude * dx / std::sqrt(r_squared);
+//	force[1] = forceMagnitude * dy / std::sqrt(r_squared);
+//
+//	return force;
+//}
+
+//sf::Vector2f Player::applyForces(DataSpriteVector test) {
+////for (int i = 0; i < particles.length; ++i) { //For each particle
+//	for (int i = 0; i < test.getDataSpriteVector().size(); i++) { //For each second particle (no repeats)
+//			float dx = circle.getPosition().x - test.getDataSpriteVector()[i].getSprite().getPosition().x;
+//			float dy = circle.getPosition().y - test.getDataSpriteVector()[i].getSprite().getPosition().y;
+//			float distance = sqrt(dx * dx + dy * dy);
+//			float force = charge * charge / (distance * distance);
+//			if (force > 1000) force = 1000; //Make sure the simulation doesn't explode
+//			//Find the horizontal and vertical components of the force
+//			float newXForce = force * (dx / distance);
+//			float newYForce = force * (dy / distance);
+//			//Apply forces to particles
+//			xForce = newXForce;
+//			yForce = newYForce;
+//			sf::Vector2f forceVector(circle.getPosition().x + xForce, circle.getPosition().y + yForce);
+//			return forceVector;
+//		}
+//	//}
 //}
