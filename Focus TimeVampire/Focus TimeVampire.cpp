@@ -11,7 +11,6 @@
 #include "gameScreen.h"
 #include "ignoreUtils.h"
 #include "wall.h"
-#include "circle.h"
 
 //ISSUES
 //reset random numbers each playthrough for Remember
@@ -21,6 +20,8 @@
 //sprite sizes should be relative the the window size at initialization
 
 //gameTimer = gameTimer.pause(gameTimerClock, gameTimer); so many game timers?
+
+
 
 int main() {	
 	//WINDOW
@@ -76,14 +77,14 @@ int main() {
 	GameSprite* backButtonPtr = new GameSprite("backSprite.png", 0.18, 0.18);
 	backButtonPtr->setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
 	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
-	acceptSpritePtr->setPosition(sf::Vector2f(400,400));
+	acceptSpritePtr->setPosition(sf::Vector2f(150,250));
 
 	//GameSprite* x_outButtonPtr = new GameSprite("x_outSprite.png", 0.25, 0.25);
 //x_outButtonPtr->setPosition(sf::Vector2f(bannerSpritePtr->getSprite().getPosition().x + bannerSpritePtr->getSprite().getGlobalBounds().width/2 - 15
 //, bannerSpritePtr->getSprite().getPosition().y - bannerSpritePtr->getSprite().getGlobalBounds().height / 2 + 30));
 
 	//TRANSFORMABLE SPRITES
-	Circle* playerCirclePtr = new Circle("playerSprite.png",1, 7, 0.3);
+	Player* playerCirclePtr = new Player("playerSprite.png",1, 7, 0.3);
 	playerCirclePtr->setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y / 2));
 
 	//DATA SPRITES
@@ -91,10 +92,15 @@ int main() {
 	DataSprite* fullBubblePtr = new DataSprite("fullBubbleSprite.png", 1, 1);
 	DataSprite* emptyBubblePtr = new DataSprite("emptyBubbleSprite.png", 1, 1);
 	DataSprite* countingSpritePtr = new DataSprite("countingSprite.png", 0.5, 0.5);
-	
+	DataSprite* dataAcceptSpritePtr = new DataSprite("acceptSprite.png", 0.3, 0.3);
+
 	//SPRITE VECTORS	
 	DataSpriteVector minigameDataSpriteVector(9,*minigameSpritePtr);
 	minigameDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 3, 3, 1, 1);
+
+	DataSpriteVector acceptDataSpriteVector(3, *dataAcceptSpritePtr);
+	acceptDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2),1,3,5,5);
+
 	int bubbleQTY = 3;
 	DataSpriteVector rememberFullBubbles(bubbleQTY,*fullBubblePtr);
 	rememberFullBubbles.setPositions(sf::Vector2f(80, 250), bubbleQTY, 1, 25, 0);
@@ -209,7 +215,6 @@ int main() {
 	AcceptWallsVector.push_back(newWall3);
 	AcceptWallsVector.push_back(newWall4);
 
-
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, 25, window);
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
@@ -225,7 +230,8 @@ int main() {
 	mainScreens mainScreensENUM = startMAIN;
 	gameScreens gameScreensENUM = mainENUM;
 
-	int counterTest = 0;
+
+
 
 	//GAME LOOP: mainScreensENUM
 	sf::Event event;
@@ -237,7 +243,7 @@ int main() {
 		while (window.pollEvent(event)) {//this includes the closed window event & entering text
 			if (event.type == sf::Event::Closed)
 				window.close();
-		
+	
 			switch (event.key.code) {
 				case sf::Keyboard::Delete://66
 				if(!deleteKeyWorkaround){
@@ -567,7 +573,7 @@ int main() {
 							}
 										
 							if (validSpriteClick(event, skipButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true || playerTextPtr->getTextString() == ignoreKeys[currentKey]) {
-								//for the last prompt,  should it progress even if the answer is wrong?
+								//for the last prompt, should it progress even if the answer is wrong?
 								ignoreScreen = 1;
 								ignorePromptTextPtr->setTextString("");
 								playerTextPtr->setTextString("");
@@ -595,18 +601,23 @@ int main() {
 							break;
 						}
 					break;
-					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
+					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
 						//need to make a spriteVector for the acceptSprites
 						//broad and narrow collision detection: only check for detection if actually close enough
 						//check for a collision only if the player is in the area
-
+						
 						//std::cout<< Delta between previousPosition&currentPostion / timeInMilliseconds 
-						playerCirclePtr->handlePlayerMovement(window, acceptSpritePtr->getSprite());
+						playerCirclePtr->handlePlayerMovement(window, acceptDataSpriteVector, acceptSpritePtr->getSprite());
+						playerCirclePtr->spriteForce(playerCirclePtr->returnCalculatedDirection(acceptSpritePtr->getSprite()), 0.25);
 
-						for (int i = 0; i < AcceptWallsVector.size(); i++) {
-							window.draw(AcceptWallsVector.at(i).getVertexArray());
-							playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i).getVertexArray());//Check for collision
-						}
+						//for (int i = 0; i < acceptDataSpriteVector.getDataSpriteVector().size(); i++) {
+						//	window.draw(acceptDataSpriteVector.getDataSpriteVector().at(i).getSprite());
+						//}
+					
+						//for (int i = 0; i < AcceptWallsVector.size(); i++) {
+						//	window.draw(AcceptWallsVector.at(i).getVertexArray());
+						//	playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i).getVertexArray());//Check for collision
+						//}
 
 						window.draw(playerCirclePtr->getCircle());
 						window.draw(acceptSpritePtr->getSprite());

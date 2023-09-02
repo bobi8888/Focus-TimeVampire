@@ -45,7 +45,7 @@
     <ClCompile Include="gameScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="circle.cpp">
+    <ClCompile Include="player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="wall.cpp">
@@ -87,9 +87,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wall.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="circle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

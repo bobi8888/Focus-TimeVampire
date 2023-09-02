@@ -140,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="wall.cpp" />
-    <ClCompile Include="circle.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="discussText.cpp" />
     <ClCompile Include="Focus TimeVampire.cpp" />
     <ClCompile Include="gameScreen.cpp" />
@@ -154,7 +154,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wall.h" />
-    <ClInclude Include="circle.h" />
     <ClInclude Include="discussUtils.h" />
     <ClInclude Include="gameSprite.h" />
     <ClInclude Include="assembleUtils.h" />
