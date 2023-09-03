@@ -76,12 +76,17 @@ int main() {
 	bannerTextPtr->getText().setPosition(sf::Vector2f(bannerSpritePtr->getSprite().getPosition().x, bannerSpritePtr->getSprite().getPosition().y - 20));
 	GameSprite* backButtonPtr = new GameSprite("backSprite.png", 0.18, 0.18);
 	backButtonPtr->setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
-	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
-	acceptSpritePtr->setPosition(sf::Vector2f(150,250));
-
 	//GameSprite* x_outButtonPtr = new GameSprite("x_outSprite.png", 0.25, 0.25);
 //x_outButtonPtr->setPosition(sf::Vector2f(bannerSpritePtr->getSprite().getPosition().x + bannerSpritePtr->getSprite().getGlobalBounds().width/2 - 15
 //, bannerSpritePtr->getSprite().getPosition().y - bannerSpritePtr->getSprite().getGlobalBounds().height / 2 + 30));
+
+	vector <GameSprite> acceptVector;
+	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
+	acceptSpritePtr->setPosition(sf::Vector2f(150, 250));
+	GameSprite* acceptSpritePtr2 = new GameSprite("acceptSprite.png", 0.3, 0.3);
+	acceptSpritePtr2->setPosition(sf::Vector2f(450, 250));
+	acceptVector.push_back(*acceptSpritePtr);
+	acceptVector.push_back(*acceptSpritePtr2);
 
 	//TRANSFORMABLE SPRITES
 	Player* playerCirclePtr = new Player("playerSprite.png",1, 7, 0.3);
@@ -97,9 +102,6 @@ int main() {
 	//SPRITE VECTORS	
 	DataSpriteVector minigameDataSpriteVector(9,*minigameSpritePtr);
 	minigameDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 3, 3, 1, 1);
-
-	DataSpriteVector acceptDataSpriteVector(3, *dataAcceptSpritePtr);
-	acceptDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2),1,3,5,5);
 
 	int bubbleQTY = 3;
 	DataSpriteVector rememberFullBubbles(bubbleQTY,*fullBubblePtr);
@@ -613,20 +615,14 @@ int main() {
 							playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i).getVertexArray());
 						}
 
-						acceptSpritePtr->setQuadrant(playerCirclePtr->getCircle());
-						acceptSpritePtr->setForceOnPlayer(playerCirclePtr->getCircle());
-						playerCirclePtr->setPlayerPosition(acceptSpritePtr->getForceOnPlayer());
-
-						//playerCirclePtr->applySpriteForce(playerCirclePtr->returnQuadrantDirectionInDegrees(acceptSpritePtr->getSprite()), 0.25);
-
-						//for (int i = 0; i < acceptDataSpriteVector.getDataSpriteVector().size(); i++) {
-						//	window.draw(acceptDataSpriteVector.getDataSpriteVector().at(i).getSprite());
-						//}
-					
-
-
+						for (int i = 0; i < acceptVector.size(); i++) {
+							acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
+							acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle());
+							playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());
+							window.draw(acceptVector.at(i).getSprite());
+						}
+					 
 						window.draw(playerCirclePtr->getCircle());
-						window.draw(acceptSpritePtr->getSprite());
 						drivePtr->drawScreen(window, timerTextPtr->getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
