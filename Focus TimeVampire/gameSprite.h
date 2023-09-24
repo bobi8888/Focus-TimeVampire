@@ -4,21 +4,26 @@ class GameSprite {
 	private:
 		sf::Sprite sprite;
 		sf::Texture texture;
-		int boundry = 40;
 		bool isVisible = true, isComplete = false, canMove = false;
 
 		//FORCE
-		float direction = 0, magnitude = 0.25;
+		float direction = 0, forceMagnitude = 0.25;
 		float calc_Dir_x = 0, calc_Dir_y = 0;
 		int quadrant = 0;
 		sf::Vector2f forceOnPlayer;
 
+		//MAGNETISM
+		float E_electFieldStr = 2;//E = elec field in Volts/meter
+		float B_magFieldStr = 2;//mag field in teslas
+
+		float theta_magFieldAngle = 90;
+		const double mu0 = 4 * 3.14 * 1e-7;
+		double strength;
+
 		friend class DataSpriteVector;
 	public:
 		GameSprite(string spritePNG, float x, float y);
-		const sf::Texture getTexture();
 		void setNewTexture(string spritePNG); 
-		void setSprite(sf::Sprite &newSprite);
 		sf::Sprite getSprite();
 		void setRotation(float angle);
 		void setPosition(sf::Vector2f newPosition);
@@ -28,12 +33,13 @@ class GameSprite {
 		void setToComplete();
 		bool getCanMove();
 		void handleCanMove(sf::Event event,sf::Vector2f translatedMousePosition);
-		int getBoundry();
 
-		float returnQuadrantDirectionInDegrees(sf::CircleShape circle);
+		float returnQuadrantDirectionTowardsPlayerInDegrees(sf::CircleShape circle);
 		void setQuadrant(sf::CircleShape circle);
 		sf::Vector2f getForceOnPlayer();
 		void setForceOnPlayer(sf::CircleShape circle);
+
+		void setForceMagnetude(float charge, float velo);
 };
 
 class DataSprite : public GameSprite{
@@ -96,40 +102,46 @@ private:
 	sf::Texture texture;
 
 	//MOVEMENT
-	float movementSpeed = 0, rotationSpeed = 0;
+	float rotationSpeed = 0, x = 0, y = 0;
+
+	//SPEED
+	sf::Clock clock;
+	float xSpeed = 0, ySpeed = 0, playerSpeed = 0.1;
+	float acceleration = 0;
 
 	//VELOCITY
-	sf::Clock clock;
-	float velocity = 0;
+	float calc_Dir_x = 0, calc_Dir_y = 0;
+	float direction = 0;
+	int quadrant = 0;
+	sf::Vector2f velocity;
+
+	//MAGNETISM
+	float charge = 0.1;
 
 	//COLLISION
 	sf::Vector2f previousPosition;
 	int spriteContactIndex = -1;
 
-	//MAGNETISM
-	float E_electFieldStr = 2;
-	float B_magFieldStr = 2;
-	float theta_magFieldAngle = 90;
-	const double mu0 = 4 * 3.14 * 1e-7;
-	double strength;
-
 public:
-	Player(string newTexture, float movementSpeed, float rotationSpeed, float scale);
+	Player(string newTexture, float speed, float rotationSpeed, float scale);
 	sf::CircleShape getCircle();
 	void setPlayerPosition(sf::Vector2f newPosition);
-	void setMovementSpeed(float movement);
+	void setSpeed(float movement);
 	int getSpriteContactIndex();
 	void setSpriteContactIndex(int index);
 	sf::Vector2f getPreviousPosition();
 	void setPreviousPosition();
-	float getVelocity();
-	void calculateVelocity();
+	void setVelocity(float deltaTime);
+	float getSpeed();
+	void handlePlayerMotion();
+	void calculateSpeed();
+	float getCharge();
 
 	//Player movement and screen bounds
 	bool isAnyArrowKeyDown();
 	void handleArrowKeyInput();
 	void handleScreenBoundsCollision(sf::RenderWindow& window);
-	void handlePlayerMovementWithinScreen(sf::RenderWindow& window);
+	void handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime);
 
 	//Vertex Array Collisions
 	bool hasVertexArrayCollision(sf::VertexArray vertexArray);
@@ -139,8 +151,9 @@ public:
 	bool hasSpriteCollision(sf::Sprite sprite);
 
 	void handleAllCollisions(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite);
-
-	//sf::Vector2f handleRepulsion(const sf::Sprite& acceptSprite);
+	void printVeloVector();
+	void setQuadrant();
+	void setDirectionInDegrees();
 	//sf::Vector2f applyForces(DataSpriteVector test);
 	//vector<double> calculateMagneticForce(Player magOne, Player magTwo);
 };

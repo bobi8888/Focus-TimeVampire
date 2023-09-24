@@ -6,7 +6,7 @@ Player::Player(string newTexture, float movement, float rotation, float scale) {
 	circle.setRadius(texture.getSize().x * scale / 2);
 	circle.setTexture(&texture);
 	circle.setOrigin(texture.getSize().x / 2 * scale, texture.getSize().y / 2 * scale);
-	movementSpeed = movement;
+	//speed = movement;
 	rotationSpeed = rotation;
 }
 sf::CircleShape Player::getCircle() {
@@ -15,9 +15,13 @@ sf::CircleShape Player::getCircle() {
 void Player::setPlayerPosition(sf::Vector2f newPosition) {
 	circle.setPosition(newPosition);
 }
-void Player::setMovementSpeed(float movement) {
-	movementSpeed = movement;
-}
+//float Player::getSpeed() {
+//	return speed;
+//}
+ 
+//void Player::setSpeed(float movement) {
+//	speed = movement;
+//}
 int Player::getSpriteContactIndex() {
 	return spriteContactIndex;
 }
@@ -30,15 +34,20 @@ sf::Vector2f Player::getPreviousPosition() {
 void Player::setPreviousPosition() {
 	previousPosition = circle.getPosition();
 }
-float Player::getVelocity() {
-	return velocity;
+void Player::setVelocity(float deltaTime) {
+	velocity = sf::Vector2f((previousPosition.x - circle.getPosition().x)/deltaTime, (previousPosition.y - circle.getPosition().y)/deltaTime);
 }
-void Player::calculateVelocity() {
+
+void Player::calculateSpeed() {
 	float elapsedMilli = clock.getElapsedTime().asMilliseconds();
 	float distance = std::round(sqrt(pow(abs(abs(circle.getPosition().x) - abs(getPreviousPosition().x)), 2) + pow(abs(abs(circle.getPosition().y) - abs(getPreviousPosition().y)), 2))
 		* 100.f) / 100.f;
-	velocity = std::round((distance / elapsedMilli) * 100.f) / 100.f;
+	//speed = std::round((distance / elapsedMilli) * 100.f) / 100.f;
 	clock.restart();
+}
+
+float Player::getCharge() {
+	return charge;
 }
 
 //Player movement and screen bounds
@@ -50,17 +59,65 @@ bool Player::isAnyArrowKeyDown() {
 	else return false;
 }
 void Player::handleArrowKeyInput() {
-	setPreviousPosition();
 	if (isAnyArrowKeyDown()) {
 		//rotation
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) circle.setRotation(circle.getRotation() + rotationSpeed);
 		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) circle.setRotation(circle.getRotation() - rotationSpeed);
 		//movement
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) circle.setPosition(circle.getPosition().x - movementSpeed, circle.getPosition().y);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) circle.setPosition(circle.getPosition().x + movementSpeed, circle.getPosition().y);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) circle.setPosition(circle.getPosition().x, circle.getPosition().y - movementSpeed);
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) circle.setPosition(circle.getPosition().x, circle.getPosition().y + movementSpeed);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) xSpeed -= playerSpeed;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))  xSpeed += playerSpeed;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) ySpeed -= playerSpeed;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))  ySpeed += playerSpeed;
 	}
+	xSpeed = std::clamp(xSpeed, -3.f, 3.f);
+	ySpeed = std::clamp(ySpeed, -3.f, 3.f);
+}
+
+void Player::handlePlayerMotion() {
+	if (xSpeed < 0.05 && xSpeed > -0.05) { xSpeed = 0; }
+	if (xSpeed != 0) xSpeed = xSpeed > 0 ? xSpeed -= 0.05 : xSpeed += 0.05;		
+	if (ySpeed < 0.05 && ySpeed > -0.05) { ySpeed = 0; }
+	if (ySpeed != 0) ySpeed = ySpeed > 0 ? ySpeed -= 0.05 : ySpeed += 0.05;
+	circle.setPosition(circle.getPosition().x + xSpeed, circle.getPosition().y + ySpeed);
+}
+
+void Player::setQuadrant() {
+	if (circle.getPosition().x > previousPosition.x && circle.getPosition().y < previousPosition.y 
+		|| circle.getPosition().x > previousPosition.x && circle.getPosition().y == previousPosition.y) {
+		quadrant = 1;
+	}
+	else if (circle.getPosition().x < previousPosition.x && circle.getPosition().y < previousPosition.y
+		|| circle.getPosition().x == previousPosition.x && circle.getPosition().y < previousPosition.y) {
+		quadrant = 2;
+	}
+	else if (circle.getPosition().x <  previousPosition.x && circle.getPosition().y >  previousPosition.y
+		|| circle.getPosition().x <  previousPosition.x && circle.getPosition().y ==  previousPosition.y) {
+		quadrant = 3;
+	}
+	else {
+		quadrant = 4;
+	}
+}
+void Player::setDirectionInDegrees() {
+	calc_Dir_y = circle.getPosition().y < previousPosition.y ? previousPosition.y - circle.getPosition().y : circle.getPosition().y - previousPosition.y;
+	calc_Dir_x = circle.getPosition().x < previousPosition.x ? previousPosition.x - circle.getPosition().x : circle.getPosition().x - previousPosition.x;
+	setQuadrant();
+	direction = atan(calc_Dir_y / calc_Dir_x) * 180 / std::_Pi;
+	switch (quadrant) {
+	case 2:
+		direction = 180 - direction;
+		break;
+	case 3:
+		direction += 180;
+		break;
+	case 4:
+		direction = 360 - direction;
+		break;
+	}
+}
+
+void Player::printVeloVector() {
+	// with the start point & end point available, print out the magnetude and direction
 }
 void Player::handleScreenBoundsCollision(sf::RenderWindow& window) {
 	if (circle.getPosition().x - circle.getRadius() < 0) circle.setPosition(circle.getRadius(), circle.getPosition().y);
@@ -68,9 +125,12 @@ void Player::handleScreenBoundsCollision(sf::RenderWindow& window) {
 	if (circle.getPosition().y - circle.getRadius() < 0) circle.setPosition(circle.getPosition().x, circle.getRadius());
 	if (circle.getPosition().y + circle.getRadius() > window.getSize().y) circle.setPosition(circle.getPosition().x, window.getSize().y - circle.getRadius());
 }
-void Player::handlePlayerMovementWithinScreen(sf::RenderWindow& window) {
-	handleArrowKeyInput();
+void Player::handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime) {
 	handleScreenBoundsCollision(window);
+	setPreviousPosition();
+	//setVelocity(deltaTime);
+	handlePlayerMotion();
+	handleArrowKeyInput();
 }
 
 //Vertex Array Collisions
@@ -103,32 +163,13 @@ bool Player::hasSpriteCollision(sf::Sprite sprite) {
 	float dy = closestY - circle.getPosition().y;
 	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
 }
-
 void Player::handleAllCollisions(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite) {
 }
 
 
-//handle sprite collisions
-//handle vertexArray collisions
-//handle forces
 
-//sf::Vector2f Player::handleRepulsion(const sf::Sprite& acceptSprite) {
-//need x&yforces
-//A particle of charge q moving with a velocity v in an electric field E and a magnetic field B experiences a force(in SI units[1][2]) of
-//F=q(E+v*B)
-//F = Lorentz F in Newtons 
-//float q = 0.1;//charge of particle in coulombs 
-//	float E = 1; //E = elec field in Volts/meter
-//	float v = getVelocity();//velo of charge particle in pxl/ms
-//	float B = 1;//mag field in teslas
-//	float xCharge = circle.getPosition().x < acceptSprite.getPosition().x ? getNegativeCharge() : getPositiveCharge();
-//	float yCharge = circle.getPosition().y < acceptSprite.getPosition().y ? getNegativeCharge() : getPositiveCharge();
-//
-//	float force = charge * (E + v * B);
-//	sf::Vector2f forceVector(circle.getPosition().x + xCharge, circle.getPosition().y + yCharge);
-//	//sf::Vector2f forceVector(circle.getPosition().x + force, circle.getPosition().y + force);
-//	return forceVector;
-//}
+
+
 
 //#include <iostream>
 //#include <vector>

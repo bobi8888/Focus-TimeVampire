@@ -76,17 +76,6 @@ int main() {
 	bannerTextPtr->getText().setPosition(sf::Vector2f(bannerSpritePtr->getSprite().getPosition().x, bannerSpritePtr->getSprite().getPosition().y - 20));
 	GameSprite* backButtonPtr = new GameSprite("backSprite.png", 0.18, 0.18);
 	backButtonPtr->setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
-	//GameSprite* x_outButtonPtr = new GameSprite("x_outSprite.png", 0.25, 0.25);
-//x_outButtonPtr->setPosition(sf::Vector2f(bannerSpritePtr->getSprite().getPosition().x + bannerSpritePtr->getSprite().getGlobalBounds().width/2 - 15
-//, bannerSpritePtr->getSprite().getPosition().y - bannerSpritePtr->getSprite().getGlobalBounds().height / 2 + 30));
-
-	vector <GameSprite> acceptVector;
-	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
-	acceptSpritePtr->setPosition(sf::Vector2f(150, 250));
-	GameSprite* acceptSpritePtr2 = new GameSprite("acceptSprite.png", 0.3, 0.3);
-	acceptSpritePtr2->setPosition(sf::Vector2f(450, 250));
-	acceptVector.push_back(*acceptSpritePtr);
-	acceptVector.push_back(*acceptSpritePtr2);
 
 	//TRANSFORMABLE SPRITES
 	Player* playerCirclePtr = new Player("playerSprite.png",1, 7, 0.3);
@@ -217,6 +206,15 @@ int main() {
 	AcceptWallsVector.push_back(newWall3);
 	AcceptWallsVector.push_back(newWall4);
 
+	vector <GameSprite> acceptVector;
+	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
+	acceptSpritePtr->setPosition(sf::Vector2f(150, 250));
+	acceptVector.push_back(*acceptSpritePtr);
+
+	GameSprite* acceptSpritePtr2 = new GameSprite("acceptSprite.png", 0.3, 0.3);
+	acceptSpritePtr2->setPosition(sf::Vector2f(450, 250));
+	acceptVector.push_back(*acceptSpritePtr2);
+
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, 25, window);
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
@@ -232,12 +230,13 @@ int main() {
 	mainScreens mainScreensENUM = startMAIN;
 	gameScreens gameScreensENUM = mainENUM;
 
-
-
+	float previousFrame = 0;
+	float deltaTime = 0;
 
 	//GAME LOOP: mainScreensENUM
 	sf::Event event;
 	while (window.isOpen()) {
+		previousFrame = gameTimerPtr->getElapsedSeconds();
 		window.display();
 		window.clear();
 		translatedMousePosition = setMousePosition(window);
@@ -246,6 +245,7 @@ int main() {
 			if (event.type == sf::Event::Closed)
 				window.close();
 	
+
 			switch (event.key.code) {
 				case sf::Keyboard::Delete://66
 				if(!deleteKeyWorkaround){
@@ -323,7 +323,7 @@ int main() {
 
 								//REMEMBER
 								if (gameScreensENUM == rememberENUM) { 
-									playerCirclePtr->setMovementSpeed(5); 
+									//playerCirclePtr->setSpeed(5); 
 									playerCirclePtr->setPlayerPosition(getCenterOfWindow(window));
 								}
 								//IGNORE 
@@ -336,8 +336,9 @@ int main() {
 								}
 								//ACCEPT
 								if (gameScreensENUM == acceptENUM) { 
-									playerCirclePtr->setMovementSpeed(3); 
-									playerCirclePtr->setPlayerPosition(sf::Vector2f(playerCirclePtr->getCircle().getRadius(), window.getSize().y - playerCirclePtr->getCircle().getRadius()));
+									//playerCirclePtr->setSpeed(0.5); 
+									playerCirclePtr->setPlayerPosition(getCenterOfWindow(window));
+									//playerCirclePtr->setPlayerPosition(sf::Vector2f(playerCirclePtr->getCircle().getRadius(), window.getSize().y - playerCirclePtr->getCircle().getRadius()));
 								}
 
 								event.type = sf::Event::EventType::MouseButtonReleased;
@@ -608,19 +609,20 @@ int main() {
 						//broad and narrow collision detection: only check for detection if actually close enough
 						//check for a collision only if the player is in the area
 						
-						playerCirclePtr->handlePlayerMovementWithinScreen(window);
+						playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime);
+						//for (int i = 0; i < AcceptWallsVector.size(); i++) {
+						//	window.draw(AcceptWallsVector.at(i).getVertexArray());
+						//	playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i).getVertexArray());
+						//}
 
-						for (int i = 0; i < AcceptWallsVector.size(); i++) {
-							window.draw(AcceptWallsVector.at(i).getVertexArray());
-							playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i).getVertexArray());
-						}
 
-						for (int i = 0; i < acceptVector.size(); i++) {
-							acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
-							acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle());
-							playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());
-							window.draw(acceptVector.at(i).getSprite());
-						}
+						//for (int i = 0; i < acceptVector.size(); i++) {
+						//	acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
+						//	acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle());
+						//	playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());
+						//	//acceptVector.at(i).setForceMagnetude(playerCirclePtr->getCharge(), playerCirclePtr->getSpeed());
+						//	window.draw(acceptVector.at(i).getSprite());
+						//}
 					 
 						window.draw(playerCirclePtr->getCircle());
 						drivePtr->drawScreen(window, timerTextPtr->getText());
@@ -654,6 +656,8 @@ int main() {
 			} else resumeScreenPtr->drawScreen(window, timerTextPtr->getText());
 			event.type = sf::Event::EventType::MouseButtonReleased;//this stops clicking through sprites
 			break;
-		}		
+		}	
+
+		deltaTime = gameTimerPtr->getElapsedSeconds() - previousFrame;
 	}
 }

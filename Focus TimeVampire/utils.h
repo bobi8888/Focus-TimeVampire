@@ -5,6 +5,7 @@
 #include <SFML/OpenGL.hpp>
 #include <SFML/Audio.hpp>
 
+#include <algorithm>
 #include <iostream>
 #include <cmath>
 #include <iomanip>
