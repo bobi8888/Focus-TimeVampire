@@ -212,7 +212,7 @@ int main() {
 	acceptVector.push_back(*acceptSpritePtr);
 
 	GameSprite* acceptSpritePtr2 = new GameSprite("acceptSprite.png", 0.3, 0.3);
-	acceptSpritePtr2->setPosition(sf::Vector2f(450, 250));
+	acceptSpritePtr2->setPosition(sf::Vector2f(250, 250));
 	acceptVector.push_back(*acceptSpritePtr2);
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -337,8 +337,8 @@ int main() {
 								//ACCEPT
 								if (gameScreensENUM == acceptENUM) { 
 									//playerCirclePtr->setSpeed(0.5); 
-									playerCirclePtr->setPlayerPosition(getCenterOfWindow(window));
-									//playerCirclePtr->setPlayerPosition(sf::Vector2f(playerCirclePtr->getCircle().getRadius(), window.getSize().y - playerCirclePtr->getCircle().getRadius()));
+									//playerCirclePtr->setPlayerPosition(getCenterOfWindow(window));
+									playerCirclePtr->setPlayerPosition(sf::Vector2f(playerCirclePtr->getCircle().getRadius(), window.getSize().y - playerCirclePtr->getCircle().getRadius()));
 								}
 
 								event.type = sf::Event::EventType::MouseButtonReleased;
@@ -605,24 +605,30 @@ int main() {
 						}
 					break;
 					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
-						//need to make a spriteVector for the acceptSprites
 						//broad and narrow collision detection: only check for detection if actually close enough
-						//check for a collision only if the player is in the area
 						
 						playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime);
+
 						//for (int i = 0; i < AcceptWallsVector.size(); i++) {
 						//	window.draw(AcceptWallsVector.at(i).getVertexArray());
 						//	playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i).getVertexArray());
 						//}
 
+						for (int i = 1; i < acceptVector.size(); i++) {
+							acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
+							acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
 
-						//for (int i = 0; i < acceptVector.size(); i++) {
-						//	acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
-						//	acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle());
-						//	playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());
-						//	//acceptVector.at(i).setForceMagnetude(playerCirclePtr->getCharge(), playerCirclePtr->getSpeed());
-						//	window.draw(acceptVector.at(i).getSprite());
-						//}
+							//this is causing the player to move at the beginnign of accept
+							playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());
+							playerCirclePtr->printVeloVector(acceptVector.at(i).getSprite());
+
+							//playerCirclePtr->setPlayerPosition(sf::Vector2f(playerCirclePtr->getCircle().getPosition().x + playerCirclePtr->getGrav()
+							//	, playerCirclePtr->getCircle().getPosition().y + playerCirclePtr->getGrav()));
+							
+
+							//acceptVector.at(i).setForceMagnetude(playerCirclePtr->getCharge(), playerCirclePtr->getSpeed());
+							window.draw(acceptVector.at(i).getSprite());
+						}
 					 
 						window.draw(playerCirclePtr->getCircle());
 						drivePtr->drawScreen(window, timerTextPtr->getText());

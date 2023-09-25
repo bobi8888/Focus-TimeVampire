@@ -7,18 +7,13 @@ class GameSprite {
 		bool isVisible = true, isComplete = false, canMove = false;
 
 		//FORCE
-		float direction = 0, forceMagnitude = 0.25;
+		float direction = 0;
 		float calc_Dir_x = 0, calc_Dir_y = 0;
 		int quadrant = 0;
 		sf::Vector2f forceOnPlayer;
-
-		//MAGNETISM
-		float E_electFieldStr = 2;//E = elec field in Volts/meter
-		float B_magFieldStr = 2;//mag field in teslas
-
-		float theta_magFieldAngle = 90;
-		const double mu0 = 4 * 3.14 * 1e-7;
-		double strength;
+		float gravConst = 0.00000000006;
+		float mass = 600000, distance = 0;
+		float gravitationalForce = 0;
 
 		friend class DataSpriteVector;
 	public:
@@ -37,7 +32,7 @@ class GameSprite {
 		float returnQuadrantDirectionTowardsPlayerInDegrees(sf::CircleShape circle);
 		void setQuadrant(sf::CircleShape circle);
 		sf::Vector2f getForceOnPlayer();
-		void setForceOnPlayer(sf::CircleShape circle);
+		void setForceOnPlayer(sf::CircleShape circle, float playerMass);
 
 		void setForceMagnetude(float charge, float velo);
 };
@@ -101,6 +96,9 @@ private:
 	sf::CircleShape circle;
 	sf::Texture texture;
 
+	//Gravity
+	float mass = 6000000;
+
 	//MOVEMENT
 	float rotationSpeed = 0, x = 0, y = 0;
 
@@ -113,10 +111,7 @@ private:
 	float calc_Dir_x = 0, calc_Dir_y = 0;
 	float direction = 0;
 	int quadrant = 0;
-	sf::Vector2f velocity;
-
-	//MAGNETISM
-	float charge = 0.1;
+	float velocity = 0;
 
 	//COLLISION
 	sf::Vector2f previousPosition;
@@ -126,16 +121,11 @@ public:
 	Player(string newTexture, float speed, float rotationSpeed, float scale);
 	sf::CircleShape getCircle();
 	void setPlayerPosition(sf::Vector2f newPosition);
-	void setSpeed(float movement);
+	void setPreviousPosition();
+
 	int getSpriteContactIndex();
 	void setSpriteContactIndex(int index);
-	sf::Vector2f getPreviousPosition();
-	void setPreviousPosition();
-	void setVelocity(float deltaTime);
-	float getSpeed();
 	void handlePlayerMotion();
-	void calculateSpeed();
-	float getCharge();
 
 	//Player movement and screen bounds
 	bool isAnyArrowKeyDown();
@@ -150,10 +140,13 @@ public:
 	//Sprite Collisions
 	bool hasSpriteCollision(sf::Sprite sprite);
 
-	void handleAllCollisions(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite);
-	void printVeloVector();
+	//void handleAllCollisions(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite);
+
+	//Velocity & Gravity
+	void printVeloVector(sf::Sprite sprite);
+	float getMass();
+
+	//Direction
 	void setQuadrant();
 	void setDirectionInDegrees();
-	//sf::Vector2f applyForces(DataSpriteVector test);
-	//vector<double> calculateMagneticForce(Player magOne, Player magTwo);
 };

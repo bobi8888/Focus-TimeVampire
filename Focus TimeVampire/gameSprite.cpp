@@ -67,42 +67,30 @@ float GameSprite::returnQuadrantDirectionTowardsPlayerInDegrees(sf::CircleShape 
 	direction = atan(calc_Dir_y / calc_Dir_x) * 180 / std::_Pi;
 	return direction;
 }
-void GameSprite::setForceOnPlayer(sf::CircleShape circle) {
+void GameSprite::setForceOnPlayer(sf::CircleShape circle, float playerMass) {
 	direction = returnQuadrantDirectionTowardsPlayerInDegrees(circle);
-	float y = sin(direction * std::_Pi / 180) * forceMagnitude;
-	float x = sqrt(pow(forceMagnitude, 2) - pow(y, 2));
+	distance = sqrt(calc_Dir_x * calc_Dir_x + calc_Dir_y * calc_Dir_y);
+	gravitationalForce = (gravConst * mass * playerMass) / distance;
+	float y = sin(direction * std::_Pi / 180) * gravitationalForce;
+	float x = sqrt(pow(gravitationalForce, 2) - pow(y, 2));
 
+	//swap the - & + for x & y to change from gravity pulling, to gravity pushing
 	switch (quadrant) {
 	case 1:
-		forceOnPlayer = sf::Vector2f(circle.getPosition().x + x, circle.getPosition().y - y);
-		break;
-	case 2:
-		forceOnPlayer = sf::Vector2f(circle.getPosition().x - x, circle.getPosition().y - y);
-		break;
-	case 3:
 		forceOnPlayer = sf::Vector2f(circle.getPosition().x - x, circle.getPosition().y + y);
 		break;
-	case 4:
+	case 2:
 		forceOnPlayer = sf::Vector2f(circle.getPosition().x + x, circle.getPosition().y + y);
+		break;
+	case 3:
+		forceOnPlayer = sf::Vector2f(circle.getPosition().x + x, circle.getPosition().y - y);
+		break;
+	case 4:
+		forceOnPlayer = sf::Vector2f(circle.getPosition().x - x, circle.getPosition().y - y);
 		break;
 	}
 }
 
 sf::Vector2f GameSprite::getForceOnPlayer() {
 	return forceOnPlayer;
-}
-
-void GameSprite::setForceMagnetude(float charge, float velo) {
-
-	//Gravity: F=(G*m1*m2)/r^2
-
-/*A particle of charge q moving with a velocity v in an electric field E and a magnetic field B experiences a force(in SI units[1][2]) of
-F=q(E+v*B)
-F = Lorentz F in Newtons*/ 
-	float q = charge;//charge of particle in coulombs 
-	float E = E_electFieldStr; //E = elec field in Volts/meter
-	float v = velo;//velo of charge particle in pxl/ms
-	float B = B_magFieldStr;//mag field in teslas
-	forceMagnitude = q * (E + v * B);
-	//cout << forceMagnitude << "\n";
 }
