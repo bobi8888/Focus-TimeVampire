@@ -71,24 +71,36 @@ void GameSprite::setForceOnPlayer(sf::CircleShape circle, float playerMass) {
 	direction = returnQuadrantDirectionTowardsPlayerInDegrees(circle);
 	distance = sqrt(calc_Dir_x * calc_Dir_x + calc_Dir_y * calc_Dir_y);
 	gravitationalForce = (gravConst * mass * playerMass) / distance;
-	float y = sin(direction * std::_Pi / 180) * gravitationalForce;
-	float x = sqrt(pow(gravitationalForce, 2) - pow(y, 2));
+	forceY = sin(direction * std::_Pi / 180) * gravitationalForce;
+	forceX = sqrt(pow(gravitationalForce, 2) - pow(forceY, 2));
+
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+		forceX *= -1;
+		forceY *= -1;
+	}
+	else {
+		forceX = abs(forceX);
+		forceY = abs(forceY);
+	}
 
 	//swap the - & + for x & y to change from gravity pulling, to gravity pushing
 	switch (quadrant) {
 	case 1:
-		forceOnPlayer = sf::Vector2f(circle.getPosition().x - x, circle.getPosition().y + y);
+		forceOnPlayer = sf::Vector2f(circle.getPosition().x + forceX, circle.getPosition().y - forceY);
 		break;
 	case 2:
-		forceOnPlayer = sf::Vector2f(circle.getPosition().x + x, circle.getPosition().y + y);
+		forceOnPlayer = sf::Vector2f(circle.getPosition().x - forceX, circle.getPosition().y - forceY);
 		break;
 	case 3:
-		forceOnPlayer = sf::Vector2f(circle.getPosition().x + x, circle.getPosition().y - y);
+		forceOnPlayer = sf::Vector2f(circle.getPosition().x - forceX, circle.getPosition().y + forceY);
 		break;
 	case 4:
-		forceOnPlayer = sf::Vector2f(circle.getPosition().x - x, circle.getPosition().y - y);
+		forceOnPlayer = sf::Vector2f(circle.getPosition().x + forceX, circle.getPosition().y + forceY);
 		break;
 	}
+	cout << forceX << "\n";
+
 }
 
 sf::Vector2f GameSprite::getForceOnPlayer() {

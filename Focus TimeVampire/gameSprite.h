@@ -12,8 +12,9 @@ class GameSprite {
 		int quadrant = 0;
 		sf::Vector2f forceOnPlayer;
 		float gravConst = 0.00000000006;
-		float mass = 600000, distance = 0;
+		float mass = 700000, distance = 0;
 		float gravitationalForce = 0;
+		float forceX = 0, forceY = 0;
 
 		friend class DataSpriteVector;
 	public:
@@ -116,12 +117,14 @@ private:
 	//COLLISION
 	sf::Vector2f previousPosition;
 	int spriteContactIndex = -1;
+	friend class Wall;
 
 public:
 	Player(string newTexture, float speed, float rotationSpeed, float scale);
 	sf::CircleShape getCircle();
 	void setPlayerPosition(sf::Vector2f newPosition);
 	void setPreviousPosition();
+	void setPlayerSpeed(float newSpeed);
 
 	int getSpriteContactIndex();
 	void setSpriteContactIndex(int index);
@@ -134,8 +137,8 @@ public:
 	void handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime);
 
 	//Vertex Array Collisions
-	bool hasVertexArrayCollision(sf::VertexArray vertexArray);
-	void handleVertexArrayCollision(sf::VertexArray vertexArray);	
+	bool hasVertexArrayCollision(sf::Vector2f bisectOrigin, float wallAngle, float height);
+	void handleVertexArrayCollision(sf::Vector2f bisectOrigin, float wallAngle, float height);
 
 	//Sprite Collisions
 	bool hasSpriteCollision(sf::Sprite sprite);
@@ -143,10 +146,11 @@ public:
 	//void handleAllCollisions(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite);
 
 	//Velocity & Gravity
-	void printVeloVector(sf::Sprite sprite);
 	float getMass();
 
 	//Direction
 	void setQuadrant();
 	void setDirectionInDegrees();
+
+	bool hasRectangleCollision(sf::VertexArray vertexArray);
 };

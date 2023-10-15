@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "gameSprite.h"
+#include "wall.h"
 
 Player::Player(string newTexture, float movement, float rotation, float scale) {
 	texture.loadFromFile(newTexture);
@@ -17,6 +18,9 @@ void Player::setPlayerPosition(sf::Vector2f newPosition) {
 }
 void Player::setPreviousPosition() {
 	previousPosition = circle.getPosition();
+}
+void Player::setPlayerSpeed(float newSpeed) {
+	playerSpeed = newSpeed;
 }
 
 int Player::getSpriteContactIndex() {
@@ -70,7 +74,7 @@ void Player::handlePlayerMovementWithinScreen(sf::RenderWindow& window, float de
 }
 
 //Vertex Array Collisions
-bool Player::hasVertexArrayCollision(sf::VertexArray vertexArray) {
+bool Player::hasRectangleCollision(sf::VertexArray vertexArray) {
 	float closestX = (circle.getPosition().x < vertexArray.getBounds().left ? vertexArray.getBounds().left : (circle.getPosition().x
 	> vertexArray.getBounds().left + vertexArray.getBounds().width ? vertexArray.getBounds().left + vertexArray.getBounds().width : circle.getPosition().x));
 
@@ -81,10 +85,26 @@ bool Player::hasVertexArrayCollision(sf::VertexArray vertexArray) {
 	float dy = closestY - circle.getPosition().y;
 	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
 }
-void Player::handleVertexArrayCollision(sf::VertexArray vertexArray) {
-	if (hasVertexArrayCollision(vertexArray)) {
-		circle.setPosition(previousPosition);
+
+bool Player::hasVertexArrayCollision(sf::Vector2f bisectOrigin, float wallAngle, float height) {
+	//add check that if the player is too far left or right for collision first.
+	float absX = abs(circle.getPosition().x - bisectOrigin.x);
+	float absY = abs(circle.getPosition().y - bisectOrigin.y);
+	float hyp = sqrt(absX * absX + absY * absY);
+	float relativePlayerAngle = atan(absY / absX) * 57.29577951;
+	float wallToPlayerAngle = relativePlayerAngle + wallAngle;
+	float playerToWall = sin(wallToPlayerAngle * 0.01745329252) * hyp - height / 2;
+	if (playerToWall < circle.getRadius()) {
+		cout << "Too Close! \n";
+		return true;
 	}
+	return false;
+}
+
+void Player::handleVertexArrayCollision(sf::Vector2f bisectOrigin, float wallAngle, float height) {
+	if (hasVertexArrayCollision(bisectOrigin, wallAngle, height)) {
+		circle.setPosition(previousPosition);
+	}	
 }
 
 //Sprite Collisions
@@ -101,15 +121,6 @@ bool Player::hasSpriteCollision(sf::Sprite sprite) {
 }
 
 //Velocity
-void Player::printVeloVector(sf::Sprite sprite) {
-	//this isn't printing out the motion that sprites are enacting on the player
-	if (clock.getElapsedTime().asSeconds() > 1) {
-		clock.restart();
-		cout << "Direction is " << direction << "\n";
-		velocity = sqrt(calc_Dir_x * calc_Dir_x + calc_Dir_y * calc_Dir_y);
-		cout << "Velocity is " << velocity << " \n";
-	}
-}
 
 float Player::getMass() {
 	return mass;

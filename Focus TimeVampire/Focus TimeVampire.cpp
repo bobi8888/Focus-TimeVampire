@@ -78,7 +78,7 @@ int main() {
 	backButtonPtr->setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
 
 	//TRANSFORMABLE SPRITES
-	Player* playerCirclePtr = new Player("playerSprite.png",1, 7, 0.3);
+	Player* playerCirclePtr = new Player("playerSprite.png",1, 7, 0.2);
 	playerCirclePtr->setPlayerPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y / 2));
 
 	//DATA SPRITES
@@ -195,24 +195,34 @@ int main() {
 	ignorePromptTextPtr = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
 	// ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
 	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, 25, window);
-	float one_x = 50, one_y = 250, two_x = 150, two_y = 300, three_x = 400, three_y = 300, four_x = 400, four_y = 50;
 	vector <Wall> AcceptWallsVector;
-	Wall newWall(one_x, one_y,false, 10, 80);
-	Wall newWall2(two_x, two_y, true, 10, 80);
-	Wall newWall3(three_x, three_y, true, 10, 150);
-	Wall newWall4(four_x, four_y, false,10,300);
-	AcceptWallsVector.push_back(newWall);
-	AcceptWallsVector.push_back(newWall2);
-	AcceptWallsVector.push_back(newWall3);
-	AcceptWallsVector.push_back(newWall4);
+	//Wall newWall(175, 350,false, 10, 350);
+	//Wall newWall2(325, 150, false, 10, 300);
+	//Wall newWall3(325, 450, false, 10, 100);
+	//Wall newWall4(175, 50, false,10,100);
+	Wall testWall(77.5, 94, 75, 8, 16);
+
+	//Wall newWall5(0, 0, false, 0, 0);
+	//newWall5.setFourCorners(sf::Vector2f(320, 400), sf::Vector2f(500, 350), sf::Vector2f(500, 360), sf::Vector2f(320, 410));	
+	//
+	//Wall newWall6(0, 0, false, 0, 0);
+	//newWall6.setFourCorners(sf::Vector2f(320, 300), sf::Vector2f(400, 275), sf::Vector2f(400, 285), sf::Vector2f(320, 310));
+
+	//AcceptWallsVector.push_back(newWall);
+	//AcceptWallsVector.push_back(newWall2);
+	//AcceptWallsVector.push_back(newWall3);
+	//AcceptWallsVector.push_back(newWall4);
+	//AcceptWallsVector.push_back(newWall5);
+	//AcceptWallsVector.push_back(newWall6);
+	AcceptWallsVector.push_back(testWall);
 
 	vector <GameSprite> acceptVector;
 	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
 	acceptSpritePtr->setPosition(sf::Vector2f(150, 250));
 	acceptVector.push_back(*acceptSpritePtr);
 
-	GameSprite* acceptSpritePtr2 = new GameSprite("acceptSprite.png", 0.3, 0.3);
-	acceptSpritePtr2->setPosition(sf::Vector2f(250, 250));
+	GameSprite* acceptSpritePtr2 = new GameSprite("acceptSprite.png", 0.2, 0.2);
+	acceptSpritePtr2->setPosition(sf::Vector2f(250, 70));
 	acceptVector.push_back(*acceptSpritePtr2);
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -336,11 +346,8 @@ int main() {
 								}
 								//ACCEPT
 								if (gameScreensENUM == acceptENUM) { 
-									//playerCirclePtr->setSpeed(0.5); 
-									//playerCirclePtr->setPlayerPosition(getCenterOfWindow(window));
-									playerCirclePtr->setPlayerPosition(sf::Vector2f(playerCirclePtr->getCircle().getRadius(), window.getSize().y - playerCirclePtr->getCircle().getRadius()));
+									playerCirclePtr->setPlayerPosition(sf::Vector2f(250,475));
 								}
-
 								event.type = sf::Event::EventType::MouseButtonReleased;
 							}
 						}
@@ -607,29 +614,28 @@ int main() {
 					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
 						//broad and narrow collision detection: only check for detection if actually close enough
 						
-						playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime);
-
-						//for (int i = 0; i < AcceptWallsVector.size(); i++) {
-						//	window.draw(AcceptWallsVector.at(i).getVertexArray());
-						//	playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i).getVertexArray());
-						//}
-
 						for (int i = 1; i < acceptVector.size(); i++) {
-							acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
-							acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
+							//window.draw(acceptVector.at(i).getSprite());
+							//acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
+							//acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
 
-							//this is causing the player to move at the beginnign of accept
-							playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());
-							playerCirclePtr->printVeloVector(acceptVector.at(i).getSprite());
+							//this is applies gravity to the player and moves it toward the sprite
+							//This is pushing the player through walls, avoiding collision detection...
+/*							if (!playerCirclePtr->hasSpriteCollision(acceptVector.at(i).getSprite())) {
+								playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());
+							}*/		
 
-							//playerCirclePtr->setPlayerPosition(sf::Vector2f(playerCirclePtr->getCircle().getPosition().x + playerCirclePtr->getGrav()
-							//	, playerCirclePtr->getCircle().getPosition().y + playerCirclePtr->getGrav()));
-							
-
-							//acceptVector.at(i).setForceMagnetude(playerCirclePtr->getCharge(), playerCirclePtr->getSpeed());
-							window.draw(acceptVector.at(i).getSprite());
+							//should this be here?
+							playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime);
 						}
-					 
+
+						for (int i = 0; i < AcceptWallsVector.size(); i++) {
+							window.draw(AcceptWallsVector.at(i).getVertexArray());
+							playerCirclePtr->handleVertexArrayCollision(testWall.getBisectOrigin(), testWall.getAngle(), testWall.getHeight());
+						}
+
+						//playerCirclePtr->hasRectangleCollision(testWall.getBisectOrigin(), testWall.getAngle(), testWall.getHeight());
+
 						window.draw(playerCirclePtr->getCircle());
 						drivePtr->drawScreen(window, timerTextPtr->getText());
 					break;
