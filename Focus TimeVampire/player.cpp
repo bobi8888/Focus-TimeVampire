@@ -86,23 +86,32 @@ bool Player::hasRectangleCollision(sf::VertexArray vertexArray) {
 	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
 }
 
-bool Player::hasVertexArrayCollision(sf::Vector2f bisectOrigin, float wallAngle, float height) {
+bool Player::hasVertexArrayCollision(Wall testWall) {
 	//add check that if the player is too far left or right for collision first.
-	float absX = abs(circle.getPosition().x - bisectOrigin.x);
-	float absY = abs(circle.getPosition().y - bisectOrigin.y);
-	float hyp = sqrt(absX * absX + absY * absY);
-	float relativePlayerAngle = atan(absY / absX) * 57.29577951;
-	float wallToPlayerAngle = relativePlayerAngle + wallAngle;
-	float playerToWall = sin(wallToPlayerAngle * 0.01745329252) * hyp - height / 2;
-	if (playerToWall < circle.getRadius()) {
-		cout << "Too Close! \n";
-		return true;
+	if (testWall.getAngle() != 0 && testWall.getAngle() != 90) {
+		if (testWall.getCollisionY1() < circle.getPosition().y + circle.getRadius()//TOP
+			&& testWall.getCollisionX1() < circle.getPosition().x + circle.getRadius()//LEFT
+			&& testWall.getCollisionX2() > circle.getPosition().x - circle.getRadius()//RIGHT
+			&& testWall.getCollisionY2() > circle.getPosition().y - circle.getRadius())//BOTTOM 
+		{
+			cout << "INSIDE \n";
+			float absX = circle.getPosition().x - testWall.getBisectOrigin().x;
+			float absY = abs(circle.getPosition().y - testWall.getBisectOrigin().y);
+			float hyp = sqrt(absX * absX + absY * absY);
+			float relativePlayerAngle = atan(absY / absX) * 57.29577951;
+			float wallToPlayerAngle = circle.getPosition().y < testWall.getBisectOrigin().y ? relativePlayerAngle - testWall.getAngle() : relativePlayerAngle + testWall.getAngle();
+			float playerToWall = abs(sin(wallToPlayerAngle * 0.01745329252) * hyp - testWall.getHeight() / 2);
+
+			if (playerToWall < circle.getRadius()) {
+				return true;
+			}
+		}
 	}
 	return false;
 }
 
-void Player::handleVertexArrayCollision(sf::Vector2f bisectOrigin, float wallAngle, float height) {
-	if (hasVertexArrayCollision(bisectOrigin, wallAngle, height)) {
+void Player::handleVertexArrayCollision(Wall testWall) {
+	if (hasVertexArrayCollision(testWall)) {
 		circle.setPosition(previousPosition);
 	}	
 }

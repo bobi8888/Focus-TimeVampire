@@ -137,8 +137,8 @@ public:
 	void handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime);
 
 	//Vertex Array Collisions
-	bool hasVertexArrayCollision(sf::Vector2f bisectOrigin, float wallAngle, float height);
-	void handleVertexArrayCollision(sf::Vector2f bisectOrigin, float wallAngle, float height);
+	bool hasVertexArrayCollision(Wall testWall);
+	void handleVertexArrayCollision(Wall testWall);
 
 	//Sprite Collisions
 	bool hasSpriteCollision(sf::Sprite sprite);

@@ -196,25 +196,38 @@ int main() {
 	// ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
 	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, 25, window);
 	vector <Wall> AcceptWallsVector;
-	//Wall newWall(175, 350,false, 10, 350);
-	//Wall newWall2(325, 150, false, 10, 300);
-	//Wall newWall3(325, 450, false, 10, 100);
-	//Wall newWall4(175, 50, false,10,100);
-	Wall testWall(77.5, 94, 75, 8, 16);
+	//centerX, centerY, length, height, angle
+	//left side
+	Wall lowerLeftCenter(200, 350, 300, 10, 90);
+	//right side
+	Wall lowerRightCenter(300, 470, 70, 10, 90);
+	Wall lowerRightAngle(405, 385, 245, 10, 155);
+	Wall midRightCenter(300, 160, 320, 10, 90);
 
-	//Wall newWall5(0, 0, false, 0, 0);
-	//newWall5.setFourCorners(sf::Vector2f(320, 400), sf::Vector2f(500, 350), sf::Vector2f(500, 360), sf::Vector2f(320, 410));	
-	//
-	//Wall newWall6(0, 0, false, 0, 0);
-	//newWall6.setFourCorners(sf::Vector2f(320, 300), sf::Vector2f(400, 275), sf::Vector2f(400, 285), sf::Vector2f(320, 310));
+	//remove after collection
+	Wall upperRightAngle(340, 300, 100, 10, 155);
+	Wall upperRightHorizontal(450, 170, 120, 10, 0);
+	Wall upperRightVertical(385, 135, 80, 10, 90);
+	//remove after collection
 
-	//AcceptWallsVector.push_back(newWall);
-	//AcceptWallsVector.push_back(newWall2);
-	//AcceptWallsVector.push_back(newWall3);
-	//AcceptWallsVector.push_back(newWall4);
-	//AcceptWallsVector.push_back(newWall5);
-	//AcceptWallsVector.push_back(newWall6);
-	AcceptWallsVector.push_back(testWall);
+
+
+	AcceptWallsVector.push_back(lowerLeftCenter);
+
+	AcceptWallsVector.push_back(lowerRightCenter);
+	AcceptWallsVector.push_back(lowerRightAngle);
+	AcceptWallsVector.push_back(midRightCenter);
+	AcceptWallsVector.push_back(upperRightAngle);
+	AcceptWallsVector.push_back(upperRightHorizontal);
+	AcceptWallsVector.push_back(upperRightVertical);
+
+
+	//sf::Vertex line9[] =  { sf::Vertex(sf::Vector2f(testWall.getCollisionX1(), 0)),	sf::Vertex(sf::Vector2f(testWall.getCollisionX1(), 500))};
+	//sf::Vertex line10[] = { sf::Vertex(sf::Vector2f(testWall.getCollisionX2(), 0)),	sf::Vertex(sf::Vector2f(testWall.getCollisionX2(), 500))};
+	//sf::Vertex line11[] = { sf::Vertex(sf::Vector2f(0, testWall.getCollisionY1())),	sf::Vertex(sf::Vector2f(500, testWall.getCollisionY1()))};
+	//sf::Vertex line12[] = { sf::Vertex(sf::Vector2f(0, testWall.getCollisionY2())),	sf::Vertex(sf::Vector2f(500, testWall.getCollisionY2()))};
+
+	//AcceptWallsVector.push_back(testWall);
 
 	vector <GameSprite> acceptVector;
 	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
@@ -630,10 +643,15 @@ int main() {
 						}
 
 						for (int i = 0; i < AcceptWallsVector.size(); i++) {
-							window.draw(AcceptWallsVector.at(i).getVertexArray());
-							playerCirclePtr->handleVertexArrayCollision(testWall.getBisectOrigin(), testWall.getAngle(), testWall.getHeight());
+							window.draw(AcceptWallsVector.at(i).getVertexArray(), AcceptWallsVector.at(i).getTransform());
+							playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i));
 						}
 
+/*						window.draw(line9, 2, sf::Lines);
+						window.draw(line10, 2, sf::Lines);						
+						window.draw(line11, 2, sf::Lines);
+						window.draw(line12, 2, sf::Lines);	*/				
+							
 						//playerCirclePtr->hasRectangleCollision(testWall.getBisectOrigin(), testWall.getAngle(), testWall.getHeight());
 
 						window.draw(playerCirclePtr->getCircle());
