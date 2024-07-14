@@ -77,6 +77,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -111,6 +112,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,6 +141,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="movementVector.cpp" />
+    <ClCompile Include="wall.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="discussText.cpp" />
     <ClCompile Include="Focus TimeVampire.cpp" />
     <ClCompile Include="gameScreen.cpp" />
@@ -148,10 +153,10 @@
     <ClCompile Include="randomizedData.cpp" />
     <ClCompile Include="gameText.cpp" />
     <ClCompile Include="dataSpriteVector.cpp" />
-    <ClCompile Include="playerSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="acceptUtils.h" />
+    <ClInclude Include="movementVector.h" />
+    <ClInclude Include="wall.h" />
     <ClInclude Include="discussUtils.h" />
     <ClInclude Include="gameSprite.h" />
     <ClInclude Include="assembleUtils.h" />

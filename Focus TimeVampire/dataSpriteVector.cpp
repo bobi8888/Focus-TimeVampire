@@ -4,7 +4,7 @@
 #include "randomizedData.h"
 
 DataSpriteVector::DataSpriteVector(){};
-DataSpriteVector::DataSpriteVector(int qty, DataSprite& dataSprite){
+DataSpriteVector::DataSpriteVector(int qty, DataSprite dataSprite){
 	for (int i = 1; i <= qty; i++) {
 		dataSpriteVector.push_back(dataSprite);
 	}
@@ -30,7 +30,7 @@ void DataSpriteVector::setPositions(sf::Vector2f center, int rows, int columns, 
 				if (j > 0) {
 					newPosition.x += xC2C;//increment x
 				}
-				dataSpriteVector.at(qty).setPosition(newPosition);
+				dataSpriteVector[qty].setPosition(newPosition);
 				qty++;
 			}
 		}
@@ -41,11 +41,11 @@ vector <DataSprite> DataSpriteVector::getDataSpriteVector() {
 	return dataSpriteVector;
 }
 DataSprite DataSpriteVector::getSingleSprite(int index){
-	return dataSpriteVector[index];
+	return dataSpriteVector.at(index);
 }
-void DataSpriteVector::addSprite(DataSprite dataSprite, int qty) {
+void DataSpriteVector::addSprite(DataSprite dataSpritePtr, int qty) {
 	for (int i = 1; i <= qty; i++) {
-		dataSpriteVector.push_back(dataSprite);
+		dataSpriteVector.push_back(dataSpritePtr);
 	}
 }
 
@@ -56,12 +56,11 @@ void DataSpriteVector::setSpritePosition(int index, sf::Vector2f newPosition){
 	dataSpriteVector[index].setPosition(newPosition);
 }
 
-void DataSpriteVector::drawSprites(sf::RenderWindow &window, int skipIndex) {
-	if (skipIndex > 0)
-	window.draw(dataSpriteVector[skipIndex].getSprite());
+void DataSpriteVector::drawSprites(sf::RenderWindow &window, int skipIndex) {//skipIndex is needed for the assemble
+	if (skipIndex > 0) window.draw(dataSpriteVector[skipIndex].getSprite());
+
 	for (int i = 0; i < dataSpriteVector.size(); i++) {
-		if (i != skipIndex) 
-		window.draw(dataSpriteVector[i].getSprite());	
+		if (i != skipIndex) window.draw(dataSpriteVector[i].getSprite());	
 	}
 }
 void DataSpriteVector::updateIndividualTexture(int index, string newTexture){
@@ -70,14 +69,8 @@ void DataSpriteVector::updateIndividualTexture(int index, string newTexture){
 
 void DataSpriteVector::checkForCompletion() {
 	int numComplete = 0;
-	for (int i = 0; i < dataSpriteVector.size(); i++) {
-		if (dataSpriteVector[i].getIsComplete()){
-			numComplete++;
-		}
-	}
-	if (numComplete == dataSpriteVector.size()){
-		vectorComplete = true;
-	}
+	for (int i = 0; i < dataSpriteVector.size(); i++) if (dataSpriteVector[i].getIsComplete()) numComplete++;
+	if (numComplete == dataSpriteVector.size()) vectorComplete = true;
 }
 bool DataSpriteVector::getVectorComplete(){
 	return vectorComplete;

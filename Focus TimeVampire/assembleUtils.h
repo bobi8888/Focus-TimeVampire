@@ -24,7 +24,7 @@ DataSprite heatsinkSprite("heatsinkSprite.png", 0.02, 0.02);
 DataSprite usbPortSprite("usbPortSprite.png", 0.15, 0.15);
 DataSprite relaySprite("relaySprite.png", 0.024, 0.024);
 DataSprite jackSprite("jackSprite.png", 0.08, 0.08);
-vector <DataSprite> assemblePartsSpriteVector{ resistorSprite, capacitorSprite, microchipSprite, diodeSprite, pcbSprite, heatsinkSprite, usbPortSprite, relaySprite, jackSprite };
+vector <DataSprite> assemblePartsSpriteVector{ resistorSprite, capacitorSprite, microchipSprite, diodeSprite, pcbSprite, heatsinkSprite, usbPortSprite, relaySprite, jackSprite};
 
 DataSpriteVector assembleDataSpriteVector;
 GameSprite pcbSolvedSprite("pcbSolvedSprite.png", 0.75, 0.75);

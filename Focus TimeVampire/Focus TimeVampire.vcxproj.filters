@@ -30,9 +30,6 @@
     <ClCompile Include="dataSpriteVector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="playerSprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="gameSprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -43,6 +40,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="gameScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="movementVector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,7 +86,10 @@
     <ClInclude Include="ignoreUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="acceptUtils.h">
+    <ClInclude Include="wall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="movementVector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

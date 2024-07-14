@@ -28,10 +28,3 @@ string DataSprite::getFullDataString() {
 void DataSprite::setFullDataString(string string) {
 	fullDataString = string;
 }
-
-bool DataSprite::getIsComplete(){
-	return isComplete;
-}
-void DataSprite::setToComplete(){
-	isComplete = true;
-}
