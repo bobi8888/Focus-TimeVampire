@@ -21,7 +21,25 @@
 
 //gameTimer = gameTimer.pause(gameTimerClock, gameTimer); so many game timers?
 
-
+//At object creation,
+//-Store the global min & max XY of the wall in floats
+//- Store the relative min & max bX & bY in floats
+//
+//Durring game loop
+//- Check: If the player is in the bounding box of the wall,
+//(write test for cout true if in bounding box)
+//IF the player is in the wall's bounding box, 
+//- Check : for SAT OBB colision by :
+//--getting the players min & max bX & bY
+//- -ALL MUST BE TRUE
+//- -if player min X is less than the wall max X
+//- -if player max X is greater than the wall min X
+//- -if player max Y is greater than wall min Y
+//- -if player min Y is less than wall max Y
+//IF all are true: cout true SAT collision
+//
+//bx = cosTheta * Ax + sinTheta * Ay
+//by = -sinTheta * Ax + cosTheta * Ay
 
 int main() {	
 	//WINDOW
@@ -80,6 +98,8 @@ int main() {
 	//TRANSFORMABLE SPRITES
 	Player* playerCirclePtr = new Player("playerSprite.png",1, 7, 0.2);
 	playerCirclePtr->setPlayerPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y / 2));
+
+	std::cout << "radius: " << playerCirclePtr->getCircle().getRadius() << "\n";
 
 	//DATA SPRITES
 	DataSprite* minigameSpritePtr = new DataSprite("minigameSprite.png", 0.3, 0.3);
@@ -196,37 +216,54 @@ int main() {
 	// ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
 	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, 25, window);
 	vector <Wall> AcceptWallsVector;
-	//centerX, centerY, length, height, angle
+	//centerX, centerY, length(x), height(y), angle
 	//left side
-	Wall lowerLeftCenter(200, 350, 300, 10, 90);
+	Wall lowerLeftCenter(200, 350, 300, 10, 90, playerCirclePtr);
+	Wall upperLeftCenter(200, 40, 80, 10, 90, playerCirclePtr);
+
+	Wall upperLeftAngle(157, 35, 120, 10, 45, playerCirclePtr);
+	Wall upperLowerLeftAngle(159, 165, 120, 10, 45, playerCirclePtr);
+
+	Wall leftRightSplit(100, 250, 28.9, 28.9, 60, playerCirclePtr);
+	Wall leftLeftSplit(80, 250, 40, 10, 120, playerCirclePtr);
+	Wall leftRightSplitStraight(70, 300, 70, 10, 90, playerCirclePtr);
+	Wall leftLeftSplitStraight(110, 300, 70, 10, 90, playerCirclePtr);
 	//right side
-	Wall lowerRightCenter(300, 470, 70, 10, 90);
-	Wall lowerRightAngle(405, 385, 245, 10, 155);
-	Wall midRightCenter(300, 160, 320, 10, 90);
+	Wall lowerRightCenter(100, 250, 100, 20, 90, playerCirclePtr);
+	Wall lowerRightAngle(200, 250, 80, 20, 0, playerCirclePtr);
+
+	Wall midRightCenter(340, 300, 100, 20, 115, playerCirclePtr);
 
 	//remove after collection
-	Wall upperRightAngle(340, 300, 100, 10, 155);
-	Wall upperRightHorizontal(450, 170, 120, 10, 0);
-	Wall upperRightVertical(385, 135, 80, 10, 90);
-	//remove after collection
 
+	Wall upperRightAngle(400, 250, 100, 20, 30, playerCirclePtr);
 
+	Wall upperRightHorizontal(450, 170, 120, 10, 0, playerCirclePtr);
+	Wall upperRightVertical(385, 135, 80, 10, 90, playerCirclePtr);
+	////remove after collection
 
 	AcceptWallsVector.push_back(lowerLeftCenter);
-
 	AcceptWallsVector.push_back(lowerRightCenter);
 	AcceptWallsVector.push_back(lowerRightAngle);
 	AcceptWallsVector.push_back(midRightCenter);
 	AcceptWallsVector.push_back(upperRightAngle);
 	AcceptWallsVector.push_back(upperRightHorizontal);
 	AcceptWallsVector.push_back(upperRightVertical);
+	AcceptWallsVector.push_back(upperLeftCenter);
+	AcceptWallsVector.push_back(upperLeftAngle);
+	AcceptWallsVector.push_back(upperLowerLeftAngle);
+	AcceptWallsVector.push_back(leftLeftSplit);
+	AcceptWallsVector.push_back(leftRightSplit);
+	AcceptWallsVector.push_back(leftRightSplitStraight);
+	AcceptWallsVector.push_back(leftLeftSplitStraight);
 
+
+	//TESTING COLLISIONS
 
 	//sf::Vertex line9[] =  { sf::Vertex(sf::Vector2f(testWall.getCollisionX1(), 0)),	sf::Vertex(sf::Vector2f(testWall.getCollisionX1(), 500))};
 	//sf::Vertex line10[] = { sf::Vertex(sf::Vector2f(testWall.getCollisionX2(), 0)),	sf::Vertex(sf::Vector2f(testWall.getCollisionX2(), 500))};
 	//sf::Vertex line11[] = { sf::Vertex(sf::Vector2f(0, testWall.getCollisionY1())),	sf::Vertex(sf::Vector2f(500, testWall.getCollisionY1()))};
 	//sf::Vertex line12[] = { sf::Vertex(sf::Vector2f(0, testWall.getCollisionY2())),	sf::Vertex(sf::Vector2f(500, testWall.getCollisionY2()))};
-
 	//AcceptWallsVector.push_back(testWall);
 
 	vector <GameSprite> acceptVector;
@@ -359,7 +396,7 @@ int main() {
 								}
 								//ACCEPT
 								if (gameScreensENUM == acceptENUM) { 
-									playerCirclePtr->setPlayerPosition(sf::Vector2f(250,475));
+									playerCirclePtr->setPlayerPosition(sf::Vector2f(50,70));
 								}
 								event.type = sf::Event::EventType::MouseButtonReleased;
 							}
@@ -628,9 +665,12 @@ int main() {
 						//broad and narrow collision detection: only check for detection if actually close enough
 						
 						for (int i = 1; i < acceptVector.size(); i++) {
-							//window.draw(acceptVector.at(i).getSprite());
+							window.draw(acceptVector.at(i).getSprite());
+
+							//what does this do?
 							//acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
-							//acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
+
+							acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
 
 							//this is applies gravity to the player and moves it toward the sprite
 							//This is pushing the player through walls, avoiding collision detection...
@@ -638,13 +678,16 @@ int main() {
 								playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());
 							}*/		
 
-							//should this be here?
-							playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime);
+							//should this be here? if it is in the acceptwallvector loop, movement breaks, but collision detection isn't working
+							playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, AcceptWallsVector.at(i).checkSATCollision(playerCirclePtr));
 						}
 
 						for (int i = 0; i < AcceptWallsVector.size(); i++) {
-							window.draw(AcceptWallsVector.at(i).getVertexArray(), AcceptWallsVector.at(i).getTransform());
-							playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i));
+							window.draw(AcceptWallsVector.at(i).getVertexArray());
+
+							AcceptWallsVector.at(i).setPlayerRelativeMinMaxXY(playerCirclePtr);
+							AcceptWallsVector.at(i).checkSATCollision(playerCirclePtr);
+							//playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i));
 						}
 
 /*						window.draw(line9, 2, sf::Lines);
@@ -653,6 +696,7 @@ int main() {
 						window.draw(line12, 2, sf::Lines);	*/				
 							
 						//playerCirclePtr->hasRectangleCollision(testWall.getBisectOrigin(), testWall.getAngle(), testWall.getHeight());
+						//playerCirclePtr->hasVertexArrayCollision(AcceptWallsVector.at(0));
 
 						window.draw(playerCirclePtr->getCircle());
 						drivePtr->drawScreen(window, timerTextPtr->getText());

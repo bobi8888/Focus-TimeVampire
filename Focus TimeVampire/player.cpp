@@ -19,6 +19,9 @@ void Player::setPlayerPosition(sf::Vector2f newPosition) {
 void Player::setPreviousPosition() {
 	previousPosition = circle.getPosition();
 }
+sf::Vector2f Player::getPreviousPosition() {
+	return previousPosition;
+}
 void Player::setPlayerSpeed(float newSpeed) {
 	playerSpeed = newSpeed;
 }
@@ -29,12 +32,22 @@ int Player::getSpriteContactIndex() {
 void Player::setSpriteContactIndex(int index) {
 	spriteContactIndex = index;
 }
+sf::Vector2f Player::getNormalAxisMinCoords() {
+	return normalAxisMinCoords;
+}
+sf::Vector2f Player::getNormalAxisMaxCoords() {
+	return normalAxisMaxCoords;
+}
 void Player::handlePlayerMotion() {
 	if (xSpeed < 0.05 && xSpeed > -0.05) { xSpeed = 0; }
 	if (xSpeed != 0) xSpeed = xSpeed > 0 ? xSpeed -= 0.05 : xSpeed += 0.05;
 	if (ySpeed < 0.05 && ySpeed > -0.05) { ySpeed = 0; }
 	if (ySpeed != 0) ySpeed = ySpeed > 0 ? ySpeed -= 0.05 : ySpeed += 0.05;
-	circle.setPosition(circle.getPosition().x + xSpeed, circle.getPosition().y + ySpeed);
+	float currentX = circle.getPosition().x + xSpeed;
+	float currentY = circle.getPosition().y + ySpeed;
+	circle.setPosition(currentX, currentY);
+	normalAxisMinCoords = sf::Vector2f(currentX - circle.getRadius(), currentY - circle.getRadius());
+	normalAxisMaxCoords = sf::Vector2f(currentX + circle.getRadius(), currentY + circle.getRadius());
 }
 
 //Player movement and screen bounds
@@ -65,12 +78,25 @@ void Player::handleScreenBoundsCollision(sf::RenderWindow& window) {
 	if (circle.getPosition().y - circle.getRadius() < 0) circle.setPosition(circle.getPosition().x, circle.getRadius());
 	if (circle.getPosition().y + circle.getRadius() > window.getSize().y) circle.setPosition(circle.getPosition().x, window.getSize().y - circle.getRadius());
 }
-void Player::handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime) {
-	handleScreenBoundsCollision(window);
+void Player::handleWallCollision(bool isColliding) {
+	if (isColliding) {
+		//circle.setPosition(resetPosition.x, resetPosition.y);
+	}
+}
+void Player::handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime, bool isColliding) {
+	//handleScreenBoundsCollision(window);
+	//handleWallCollision(isColliding);
+	//setPreviousPosition();
+	//handlePlayerMotion();
+	//handleArrowKeyInput();
+	//setDirectionInDegrees();
+
 	setPreviousPosition();
 	handlePlayerMotion();
 	handleArrowKeyInput();
 	setDirectionInDegrees();
+	handleScreenBoundsCollision(window);
+	handleWallCollision(isColliding);//getting stuck in geometery
 }
 
 //Vertex Array Collisions
@@ -86,35 +112,35 @@ bool Player::hasRectangleCollision(sf::VertexArray vertexArray) {
 	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
 }
 
-bool Player::hasVertexArrayCollision(Wall testWall) {
-	//add check that if the player is too far left or right for collision first.
-	if (testWall.getAngle() != 0 && testWall.getAngle() != 90) {
-		if (testWall.getCollisionY1() < circle.getPosition().y + circle.getRadius()//TOP
-			&& testWall.getCollisionX1() < circle.getPosition().x + circle.getRadius()//LEFT
-			&& testWall.getCollisionX2() > circle.getPosition().x - circle.getRadius()//RIGHT
-			&& testWall.getCollisionY2() > circle.getPosition().y - circle.getRadius())//BOTTOM 
-		{
-			cout << "INSIDE \n";
-			float absX = circle.getPosition().x - testWall.getBisectOrigin().x;
-			float absY = abs(circle.getPosition().y - testWall.getBisectOrigin().y);
-			float hyp = sqrt(absX * absX + absY * absY);
-			float relativePlayerAngle = atan(absY / absX) * 57.29577951;
-			float wallToPlayerAngle = circle.getPosition().y < testWall.getBisectOrigin().y ? relativePlayerAngle - testWall.getAngle() : relativePlayerAngle + testWall.getAngle();
-			float playerToWall = abs(sin(wallToPlayerAngle * 0.01745329252) * hyp - testWall.getHeight() / 2);
+//bool Player::hasVertexArrayCollision(Wall testWall) {
+//	//add check that if the player is too far left or right for collision first.
+//	//if (testWall.getAngle() != 0 && testWall.getAngle() != 90) {
+//		if (testWall.getCollisionY1() < circle.getPosition().y + circle.getRadius()//TOP
+//			&& testWall.getCollisionX1() < circle.getPosition().x + circle.getRadius()//LEFT
+//			&& testWall.getCollisionX2() > circle.getPosition().x - circle.getRadius()//RIGHT
+//			&& testWall.getCollisionY2() > circle.getPosition().y - circle.getRadius())//BOTTOM 
+//		{
+//			//cout << "INSIDE \n";
+//			//float absX = circle.getPosition().x - testWall.getBisectOrigin().x;
+//			//float absY = abs(circle.getPosition().y - testWall.getBisectOrigin().y);
+//			//float hyp = sqrt(absX * absX + absY * absY);
+//			//float relativePlayerAngle = atan(absY / absX) * 57.29577951;
+//			//float wallToPlayerAngle = circle.getPosition().y < testWall.getBisectOrigin().y ? relativePlayerAngle - testWall.getAngle() : relativePlayerAngle + testWall.getAngle();
+//			//float playerToWall = abs(sin(wallToPlayerAngle * 0.01745329252) * hyp - testWall.getHeight() / 2);
+//
+//			//if (playerToWall < circle.getRadius()) {
+//			//	return true;
+//			//}
+//		//}
+//	}
+//	return false;
+//}
 
-			if (playerToWall < circle.getRadius()) {
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-void Player::handleVertexArrayCollision(Wall testWall) {
-	if (hasVertexArrayCollision(testWall)) {
-		circle.setPosition(previousPosition);
-	}	
-}
+//void Player::handleVertexArrayCollision(Wall testWall) {
+//	if (hasVertexArrayCollision(testWall)) {
+//		circle.setPosition(previousPosition);
+//	}	
+//}
 
 //Sprite Collisions
 bool Player::hasSpriteCollision(sf::Sprite sprite) {

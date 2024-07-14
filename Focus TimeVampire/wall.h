@@ -2,38 +2,33 @@
 
 class Wall{
 private:
-	sf::Vector2f centerPosition;
-	//bool horiztonal;
-	float length = 0, height = 0;
-	float angle = 0, radians = 0, oppo = 0, adj = 0, scaleFactor = 0;
-	sf::Vector2f bisectOrigin;
-	sf::Vector2f bisectEnd;
-
-	sf::VertexArray vertexArray;
-	sf::VertexArray collisionArray;
-	float collisionX1 = 0, collisionX2 = 0, collisionY1 = 0, collisionY2 = 0;
-
-	sf::Vector2f zeroPosition;
-	sf::Vector2f firstPosition;
-	sf::Vector2f secondPosition;
-	sf::Vector2f thirdPosition;
-	sf::Vector2f forthPosition;
-	sf::Transform rotation;
-	sf::Transform transform;
-
+	float length = 0, thickness = 0, hyp = 0;
+	float angleDegrees = 0, angleRadians = 0, degreeToRadians = M_PI/180;
+	float rX = 0, rY = 0, xPrime = 0, yPrime = 0, scaleFactor = 0;
+	float playerXPrime = 0, playerYPrime = 0, playerRadius = 0;
+	float wallMinX = 888888, wallMinY = 888888, wallMaxX = -888888, wallMaxY = -888888;
+	float relativeWallMinX = 888888, relativeWallMinY = 888888, relativeWallMaxX = -888888, relativeWallMaxY = -888888;
+	sf::Vector2f playerRelativeMinCoords, playerRelativeMaxCoords;
+	sf::Vector2f center;
+	sf::Vector2f zeroPosition, firstPosition, secondPosition, thirdPosition;
+	sf::Vector2f relativeZeroPosition, relativeFirstPosition, relativeSecondPosition, relativeThirdPosition;
+	sf::VertexArray vertexArray, relativeVertexArray;
 public:
-	Wall(float centerX, float centerY, float len, float hi, float ang);
+	Wall(float cenX, float cenY, float len, float hi, float ang, Player* player );
+	void setPlayerRelativeMinMaxXY(Player* player);
+	bool checkSATCollision(Player* player);
 	sf::VertexArray getVertexArray();
-	sf::Vector2f getCollisionArrayCorners(int corner);
-	sf::Vector2f getBisectOrigin();
-	sf::Vector2f getBisectEnd();
-	sf::Vector2f getCorners(int position);
-	sf::Transform getTransform();
+	sf::Vector2f getCornerCoords(int position);
+	sf::Vector2f getPlayerRelativeMinCoords();
+	sf::Vector2f getPlayerRelativeMaxCoords();
+	sf::Vector2f getCenter();
+	float getLength();
+	float getThickness();
 	float getAngle();
-	float getHeight();
-	void setFourCorners(sf::Vector2f zero, sf::Vector2f one, sf::Vector2f two, sf::Vector2f three);
-	float getCollisionX1();
-	float getCollisionX2();
-	float getCollisionY1();
-	float getCollisionY2();
+	//sf::Vector2f getZeroPosition();
+	//sf::Vector2f getFirstPosition();
+	//sf::Vector2f getSecondPosition();
+	//sf::Vector2f getThirdPosition();
+	//float getXPrime();
+	//float getYPrime();
 };

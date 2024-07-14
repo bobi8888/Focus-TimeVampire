@@ -96,34 +96,32 @@ class Player {
 private:
 	sf::CircleShape circle;
 	sf::Texture texture;
-
 	//Gravity
 	float mass = 6000000;
-
 	//MOVEMENT
 	float rotationSpeed = 0, x = 0, y = 0;
-
 	//SPEED
 	sf::Clock clock;
 	float xSpeed = 0, ySpeed = 0, playerSpeed = 0.1;
 	float acceleration = 0;
-
 	//VELOCITY
 	float calc_Dir_x = 0, calc_Dir_y = 0;
 	float direction = 0;
 	int quadrant = 0;
 	float velocity = 0;
-
 	//COLLISION
-	sf::Vector2f previousPosition;
+	sf::Vector2f previousPosition = sf::Vector2f(0,0);
+	sf::Vector2f resetPosition = sf::Vector2f(250, 450);
+	sf::Vector2f normalAxisMinCoords = sf::Vector2f(0, 0);
+	sf::Vector2f normalAxisMaxCoords = sf::Vector2f(0, 0);
 	int spriteContactIndex = -1;
 	friend class Wall;
-
 public:
 	Player(string newTexture, float speed, float rotationSpeed, float scale);
 	sf::CircleShape getCircle();
 	void setPlayerPosition(sf::Vector2f newPosition);
 	void setPreviousPosition();
+	sf::Vector2f getPreviousPosition();
 	void setPlayerSpeed(float newSpeed);
 
 	int getSpriteContactIndex();
@@ -134,11 +132,14 @@ public:
 	bool isAnyArrowKeyDown();
 	void handleArrowKeyInput();
 	void handleScreenBoundsCollision(sf::RenderWindow& window);
-	void handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime);
+	void handleWallCollision(bool isColliding);
+	void handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime, bool isColliding);
 
 	//Vertex Array Collisions
-	bool hasVertexArrayCollision(Wall testWall);
-	void handleVertexArrayCollision(Wall testWall);
+	sf::Vector2f getNormalAxisMinCoords();
+	sf::Vector2f getNormalAxisMaxCoords();
+	//bool hasVertexArrayCollision(Wall testWall);
+	//void handleVertexArrayCollision(Wall testWall);
 
 	//Sprite Collisions
 	bool hasSpriteCollision(sf::Sprite sprite);

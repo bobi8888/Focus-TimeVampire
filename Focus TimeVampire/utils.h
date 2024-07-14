@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <iostream>
 #include <cmath>
+#include <math.h>
 #include <iomanip>
 #include <cassert>
 #include <sstream>
@@ -16,7 +17,6 @@
 #include <ctime>
 #include <stdio.h>
 #include <stdlib.h>
-#include <algorithm>
 #include <random>
 #include <time.h>
 
@@ -29,3 +29,4 @@ using std::srand;
 using std::rand;
 using std::time;
 using std::random_device;
+# define M_PI 3.14159265358979323846 

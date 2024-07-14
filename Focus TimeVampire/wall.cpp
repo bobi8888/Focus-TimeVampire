@@ -1,115 +1,150 @@
 #include "utils.h"
+#include "gameSprite.h"
 #include "wall.h"
 
-Wall::Wall(float centerX, float centerY, float len, float hi, float ang) {
-	centerPosition = sf::Vector2f(centerX, centerY);
+Wall::Wall(float cenX, float cenY, float len, float thick, float ang, Player* player) {
+	center = sf::Vector2f(cenX, cenY);
 	length = len;
-	height = hi;
-	scaleFactor = height / 2 / length;
-	angle = ang;
-	radians = angle * 0.01745329252;
-	oppo = sin(radians) * length;
-	adj = cos(radians) * length;
-	bisectOrigin = sf::Vector2f(centerX - (length / 2), centerY);
-	bisectEnd = sf::Vector2f(bisectOrigin.x + adj, centerY - oppo);
-	
+	thickness = thick;
+	angleDegrees = ang;
+	angleRadians = angleDegrees * degreeToRadians;
+	hyp = sqrt(len * len + thick * thick);
+	float arcTan = atan(thick / len);
+	float angleRadiansMinusArcTan = angleRadians - arcTan;
+	rX = hyp * cos(angleRadiansMinusArcTan) / 2;
+	rY = hyp * sin(angleRadiansMinusArcTan) / 2;
+	xPrime = thickness * sin(angleRadians);
+	yPrime = thickness * cos(angleRadians);
+	scaleFactor = length / thickness;
 
-	zeroPosition = sf::Vector2f(centerX - length / 2, centerY + height / 2);
-	firstPosition = sf::Vector2f(centerX - length / 2, centerY - height / 2);
-	secondPosition = sf::Vector2f(centerX + length / 2, centerY - height / 2);
-	thirdPosition = sf::Vector2f(centerX + length / 2, centerY + height / 2);
-
-	//zeroPosition = sf::Vector2f(bisectOrigin.x - sin(radians) * height / 2, bisectOrigin.y - cos(radians) * height / 2);
-	//firstPosition = sf::Vector2f(bisectEnd.x - oppo * scaleFactor, bisectEnd.y - adj * scaleFactor);
-	//secondPosition = sf::Vector2f(bisectEnd.x + oppo * scaleFactor, bisectEnd.y + adj * scaleFactor);
-	//thirdPosition = sf::Vector2f(bisectOrigin.x + sin(radians) * height / 2, bisectOrigin.y + cos(radians) * height / 2);
-
+	zeroPosition = sf::Vector2f(center.x + rX, center.y - rY);
+	firstPosition = sf::Vector2f(zeroPosition.x - xPrime, zeroPosition.y - yPrime);
+	secondPosition = sf::Vector2f(center.x - rX, center.y + rY);
+	thirdPosition = sf::Vector2f(secondPosition.x + xPrime, secondPosition.y + yPrime);
 	sf::VertexArray newVertexArray(sf::Quads, 5);
 	newVertexArray[0].position = zeroPosition;
 	newVertexArray[1].position = firstPosition;
 	newVertexArray[2].position = secondPosition;
 	newVertexArray[3].position = thirdPosition;
 	newVertexArray[4].position = zeroPosition;
-	
-	newVertexArray[0].color = sf::Color::Green;
-	newVertexArray[1].color = sf::Color::Magenta;
-	newVertexArray[2].color = sf::Color::Cyan;
-	newVertexArray[3].color = sf::Color::Blue;
-
+	newVertexArray[0].color = sf::Color::Blue; //zero
+	newVertexArray[1].color = sf::Color::Yellow; //first
+	newVertexArray[2].color = sf::Color::Red; //second
+	newVertexArray[3].color = sf::Color::Green; //third
 	vertexArray = newVertexArray;
 
-	//zeroPosition = sf::Vector2f(newVertexArray[3].position.x, newVertexArray[2].position.y);
-	collisionX1 = newVertexArray[3].position.x;//LEFT
-	collisionY1 = newVertexArray[2].position.y;//TOP
+	float wallRelativeZeroX = zeroPosition.x * cos(angleRadians) - zeroPosition.y * sin(angleRadians);
+	float wallRelativeZeroY = zeroPosition.x * sin(angleRadians) + zeroPosition.y * cos(angleRadians);
+	relativeZeroPosition = sf::Vector2f(wallRelativeZeroX, wallRelativeZeroY);
+	relativeFirstPosition = sf::Vector2f(wallRelativeZeroX, wallRelativeZeroY - thickness);
+	relativeSecondPosition = sf::Vector2f(wallRelativeZeroX - length, wallRelativeZeroY - thickness);
+	relativeThirdPosition = sf::Vector2f(wallRelativeZeroX - length, wallRelativeZeroY);
+	sf::VertexArray relVertexArray(sf::Quads, 5);
+	relVertexArray[0].position = relativeZeroPosition;
+	relVertexArray[1].position = relativeFirstPosition;
+	relVertexArray[2].position = relativeSecondPosition;
+	relVertexArray[3].position = relativeThirdPosition;
+	relVertexArray[4].position = relativeZeroPosition;
+	relativeVertexArray = relVertexArray;
 
-
-	//firstPosition = sf::Vector2f(newVertexArray[1].position.x, newVertexArray[2].position.y);
-	//secondPosition = sf::Vector2f(newVertexArray[1].position.x, newVertexArray[0].position.y);
-	collisionX2 = newVertexArray[1].position.x;//RIGHT
-	collisionY2 = newVertexArray[0].position.y;//BOTTOM
-
-	//thirdPosition = sf::Vector2f(newVertexArray[3].position.x, newVertexArray[0].position.y);
-	//zeroPosition = sf::Vector2f(newVertexArray[3].position.x, newVertexArray[2].position.y);
-
-	//sf::VertexArray newCollisionArray(sf::Quads, 5);
-	//newCollisionArray[0].position = zeroPosition;
-	//newCollisionArray[1].position = firstPosition;
-	//newCollisionArray[2].position = secondPosition;
-	//newCollisionArray[3].position = thirdPosition;
-	//newCollisionArray[4].position = zeroPosition;
-	//collisionArray = newCollisionArray;
-	rotation.rotate(ang, centerX, centerY);
-	transform = rotation;	
-
+	float i = 0;
+	while (i <= vertexArray.getVertexCount() - 2) {
+		float minXTemp = 0, minYTemp = 0, maxXTemp = 0, maxYTemp = 0;
+		minXTemp = std::min(vertexArray[i].position.x, vertexArray[i + 1].position.x);
+		maxXTemp = std::max(vertexArray[i].position.x, vertexArray[i + 1].position.x);
+		minYTemp = std::min(vertexArray[i].position.y, vertexArray[i + 1].position.y);
+		maxYTemp = std::max(vertexArray[i].position.y, vertexArray[i + 1].position.y);
+		(minXTemp < wallMinX) ? wallMinX = minXTemp : true;
+		(maxXTemp > wallMaxX) ? wallMaxX = maxXTemp : true;
+		(minYTemp < wallMinY) ? wallMinY = minYTemp : true;
+		(maxYTemp > wallMaxY) ? wallMaxY = maxYTemp : true;
+		i++;
+	}
+	i = 0;
+	while (i <= relativeVertexArray.getVertexCount() - 2) {
+		float minXTemp = 0, minYTemp = 0, maxXTemp = 0, maxYTemp = 0;
+		minXTemp = std::min(relativeVertexArray[i].position.x, relativeVertexArray[i + 1].position.x);
+		maxXTemp = std::max(relativeVertexArray[i].position.x, relativeVertexArray[i + 1].position.x);
+		minYTemp = std::min(relativeVertexArray[i].position.y, relativeVertexArray[i + 1].position.y);
+		maxYTemp = std::max(relativeVertexArray[i].position.y, relativeVertexArray[i + 1].position.y);
+		(minXTemp < relativeWallMinX) ? relativeWallMinX = minXTemp : true;
+		(maxXTemp > relativeWallMaxX) ? relativeWallMaxX = maxXTemp : true;
+		(minYTemp < relativeWallMinY) ? relativeWallMinY = minYTemp : true;
+		(maxYTemp > relativeWallMaxY) ? relativeWallMaxY = maxYTemp : true;
+		i++;
+	}	
+	playerRadius = player->getCircle().getRadius();
+	playerXPrime = playerRadius * sin(angleRadians) + playerRadius * cos(angleRadians);
+	playerYPrime = playerRadius * cos(angleRadians) - playerRadius * sin(angleRadians);
 }
+void Wall::setPlayerRelativeMinMaxXY(Player* player) {
+	float relativeX = 0, relativeY = 0;	
+	relativeX = abs(playerXPrime - player->getPreviousPosition().x);
+	relativeY = abs(playerYPrime - player->getPreviousPosition().y);
 
+	float playerRelativeMinY = cos(angleRadians) * relativeY + sin(angleRadians) * relativeX;
+	float playerRelativeMinX = -sin(angleRadians) * relativeY + cos(angleRadians) * relativeX;
+	playerRelativeMinCoords = sf::Vector2f(playerRelativeMinX, playerRelativeMinY);
+
+	float playerRelativeMaxY = playerRelativeMinY + playerRadius * 2;
+	float playerRelativeMaxX = playerRelativeMinX + playerRadius * 2;
+	playerRelativeMaxCoords = sf::Vector2f(playerRelativeMaxX, playerRelativeMaxY);
+}
+bool Wall::checkSATCollision(Player* player) {
+	//All must be true
+	//if player min X is less than the wall max X 
+	bool playerMinXLTwallMaxX = (player->getNormalAxisMinCoords().x < wallMaxX && playerRelativeMinCoords.x < relativeWallMaxX);
+	//if player max X is greater than the wall min X
+	bool playerMaxXGTwallMinX = (player->getNormalAxisMaxCoords().x > wallMinX && playerRelativeMaxCoords.x > relativeWallMinX);
+	//if player max Y is greater than wall min Y
+	bool playerMaxYGTwallMinY = (player->getNormalAxisMaxCoords().y > wallMinY && playerRelativeMaxCoords.y > relativeWallMinY);
+	//if player min Y is less than wall max Y
+	bool playerMinYLTwallMaxY = (player->getNormalAxisMinCoords().y < wallMaxY && playerRelativeMinCoords.y < relativeWallMaxY);
+	if (playerMinXLTwallMaxX && playerMaxXGTwallMinX && playerMaxYGTwallMinY && playerMinYLTwallMaxY) {
+		std::cout << "Collision ";
+		return true;
+	}
+	return false;
+}
+sf::Vector2f Wall::getPlayerRelativeMinCoords() {
+	return playerRelativeMinCoords;
+}
+sf::Vector2f Wall::getPlayerRelativeMaxCoords() {
+	return playerRelativeMaxCoords;
+}
 sf::VertexArray Wall::getVertexArray() {
 	return vertexArray;
 }
-
-sf::Vector2f Wall::getCollisionArrayCorners(int corner) {
-	return collisionArray[corner].position;
-}
-
-sf::Vector2f Wall::getBisectOrigin() {
-	return bisectOrigin;
-}
-sf::Vector2f Wall::getBisectEnd() {
-	return bisectEnd;
-}
-sf::Vector2f Wall::getCorners(int position) {
+sf::Vector2f Wall::getCornerCoords(int position) {
 	return vertexArray[position].position;
 }
-sf::Transform Wall::getTransform() {
-	return transform;
+float Wall::getThickness() {
+	return thickness;
+}
+float Wall::getLength() {
+	return length;
+}
+sf::Vector2f Wall::getCenter() {
+	return center;
 }
 float Wall::getAngle() {
-	return angle;
+	return angleDegrees;
 }
-float Wall::getHeight() {
-	return height;
-}
-
-void Wall::setFourCorners(sf::Vector2f zero, sf::Vector2f one, sf::Vector2f two, sf::Vector2f three) {
-	zeroPosition = zero;
-	firstPosition = one;
-	secondPosition = two;
-	thirdPosition = three;
-	forthPosition = zero;
-
-	vertexArray[0].position = zero;
-	vertexArray[1].position = one;
-	vertexArray[2].position = two;
-	vertexArray[3].position = three;
-	vertexArray[4].position = zero;
-}
-
-float Wall::getCollisionX1() {
-	return collisionX1;
-}float Wall::getCollisionX2() {
-	return collisionX2;
-}float Wall::getCollisionY1() {
-	return collisionY1;
-}float Wall::getCollisionY2() {
-	return collisionY2;
-}
+//sf::Vector2f Wall::getZeroPosition() {
+//	return zeroPosition;
+//}
+//sf::Vector2f Wall::getFirstPosition() {
+//	return firstPosition;
+//}
+//sf::Vector2f Wall::getSecondPosition() {
+//	return secondPosition;
+//}
+//sf::Vector2f Wall::getThirdPosition() {
+//	return thirdPosition;
+//}
+//float Wall::getXPrime() {
+//	return xPrime;
+//}
+//float Wall::getYPrime() {
+//	return yPrime;
+//}

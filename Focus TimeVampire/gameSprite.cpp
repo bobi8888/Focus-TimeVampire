@@ -99,7 +99,7 @@ void GameSprite::setForceOnPlayer(sf::CircleShape circle, float playerMass) {
 		forceOnPlayer = sf::Vector2f(circle.getPosition().x + forceX, circle.getPosition().y + forceY);
 		break;
 	}
-	cout << forceX << "\n";
+	//cout << forceX << " here \n";
 
 }
 
