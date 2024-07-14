@@ -77,6 +77,12 @@ Wall::Wall(float cenX, float cenY, float len, float thick, float ang, Player* pl
 	playerXPrime = playerRadius * sin(angleRadians) + playerRadius * cos(angleRadians);
 	playerYPrime = playerRadius * cos(angleRadians) - playerRadius * sin(angleRadians);
 }
+bool Wall::playerIsInBoundingBox(Player* player) {
+	if (vertexArray.getBounds().intersects(player->getCircle().getGlobalBounds())) {
+		return true;
+	}
+	return false;
+}
 void Wall::setPlayerRelativeMinMaxXY(Player* player) {
 	float relativeX = 0, relativeY = 0;	
 	relativeX = abs(playerXPrime - player->getPreviousPosition().x);
@@ -90,7 +96,7 @@ void Wall::setPlayerRelativeMinMaxXY(Player* player) {
 	float playerRelativeMaxX = playerRelativeMinX + playerRadius * 2;
 	playerRelativeMaxCoords = sf::Vector2f(playerRelativeMaxX, playerRelativeMaxY);
 }
-bool Wall::checkSATCollision(Player* player) {
+bool Wall::hasSATCollision(Player* player) {
 	//All must be true
 	//if player min X is less than the wall max X 
 	bool playerMinXLTwallMaxX = (player->getNormalAxisMinCoords().x < wallMaxX && playerRelativeMinCoords.x < relativeWallMaxX);

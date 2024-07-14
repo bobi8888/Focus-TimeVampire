@@ -153,5 +153,5 @@ public:
 	void setQuadrant();
 	void setDirectionInDegrees();
 
-	bool hasRectangleCollision(sf::VertexArray vertexArray);
+	//bool hasRectangleCollision(sf::VertexArray vertexArray);
 };
