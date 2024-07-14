@@ -80,61 +80,39 @@ void Player::handleScreenBoundsCollision(sf::RenderWindow& window) {
 }
 void Player::handleWallCollision(bool isColliding) {
 	if (isColliding) {
-		//circle.setPosition(resetPosition.x, resetPosition.y);
+		circle.setPosition(resetPosition.x, resetPosition.y);
 	}
 }
 void Player::handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime, bool isColliding) {
-	//handleScreenBoundsCollision(window);
-	//handleWallCollision(isColliding);
-	//setPreviousPosition();
-	//handlePlayerMotion();
-	//handleArrowKeyInput();
-	//setDirectionInDegrees();
-
+	handleScreenBoundsCollision(window);
+	handleWallCollision(isColliding);
 	setPreviousPosition();
 	handlePlayerMotion();
 	handleArrowKeyInput();
 	setDirectionInDegrees();
-	handleScreenBoundsCollision(window);
-	handleWallCollision(isColliding);//getting stuck in geometery
+
+	//setPreviousPosition();
+	//handlePlayerMotion();
+	//handleArrowKeyInput();
+	//setDirectionInDegrees();
+	//handleScreenBoundsCollision(window);
+	//handleWallCollision(isColliding);//getting stuck in geometery
 }
 
 //Vertex Array Collisions
-bool Player::hasRectangleCollision(sf::VertexArray vertexArray) {
-	float closestX = (circle.getPosition().x < vertexArray.getBounds().left ? vertexArray.getBounds().left : (circle.getPosition().x
-	> vertexArray.getBounds().left + vertexArray.getBounds().width ? vertexArray.getBounds().left + vertexArray.getBounds().width : circle.getPosition().x));
-
-	float closestY = (circle.getPosition().y < vertexArray.getBounds().top ? vertexArray.getBounds().top : (circle.getPosition().y
-	> vertexArray.getBounds().top + vertexArray.getBounds().height ? vertexArray.getBounds().top + vertexArray.getBounds().height : circle.getPosition().y));
-
-	float dx = closestX - circle.getPosition().x;
-	float dy = closestY - circle.getPosition().y;
-	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
-}
-
-//bool Player::hasVertexArrayCollision(Wall testWall) {
-//	//add check that if the player is too far left or right for collision first.
-//	//if (testWall.getAngle() != 0 && testWall.getAngle() != 90) {
-//		if (testWall.getCollisionY1() < circle.getPosition().y + circle.getRadius()//TOP
-//			&& testWall.getCollisionX1() < circle.getPosition().x + circle.getRadius()//LEFT
-//			&& testWall.getCollisionX2() > circle.getPosition().x - circle.getRadius()//RIGHT
-//			&& testWall.getCollisionY2() > circle.getPosition().y - circle.getRadius())//BOTTOM 
-//		{
-//			//cout << "INSIDE \n";
-//			//float absX = circle.getPosition().x - testWall.getBisectOrigin().x;
-//			//float absY = abs(circle.getPosition().y - testWall.getBisectOrigin().y);
-//			//float hyp = sqrt(absX * absX + absY * absY);
-//			//float relativePlayerAngle = atan(absY / absX) * 57.29577951;
-//			//float wallToPlayerAngle = circle.getPosition().y < testWall.getBisectOrigin().y ? relativePlayerAngle - testWall.getAngle() : relativePlayerAngle + testWall.getAngle();
-//			//float playerToWall = abs(sin(wallToPlayerAngle * 0.01745329252) * hyp - testWall.getHeight() / 2);
+//bool Player::hasRectangleCollision(sf::VertexArray vertexArray) {
+//	float closestX = (circle.getPosition().x < vertexArray.getBounds().left ? vertexArray.getBounds().left : (circle.getPosition().x
+//	> vertexArray.getBounds().left + vertexArray.getBounds().width ? vertexArray.getBounds().left + vertexArray.getBounds().width : circle.getPosition().x));
 //
-//			//if (playerToWall < circle.getRadius()) {
-//			//	return true;
-//			//}
-//		//}
-//	}
-//	return false;
+//	float closestY = (circle.getPosition().y < vertexArray.getBounds().top ? vertexArray.getBounds().top : (circle.getPosition().y
+//	> vertexArray.getBounds().top + vertexArray.getBounds().height ? vertexArray.getBounds().top + vertexArray.getBounds().height : circle.getPosition().y));
+//
+//	float dx = closestX - circle.getPosition().x;
+//	float dy = closestY - circle.getPosition().y;
+//	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
 //}
+
+
 
 //void Player::handleVertexArrayCollision(Wall testWall) {
 //	if (hasVertexArrayCollision(testWall)) {
@@ -182,8 +160,6 @@ void Player::setQuadrant() {
 void Player::setDirectionInDegrees() {
 	calc_Dir_y = circle.getPosition().y < previousPosition.y ? previousPosition.y - circle.getPosition().y : circle.getPosition().y - previousPosition.y;
 	calc_Dir_x = circle.getPosition().x < previousPosition.x ? previousPosition.x - circle.getPosition().x : circle.getPosition().x - previousPosition.x;
-	
-	
 	setQuadrant();
 	direction = atan(calc_Dir_y / calc_Dir_x) * 180 / std::_Pi;
 	switch (quadrant) {

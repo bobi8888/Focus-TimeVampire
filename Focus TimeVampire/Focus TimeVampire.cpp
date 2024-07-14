@@ -211,60 +211,46 @@ int main() {
 	ignoreKeys[0] = std::to_string(ignoreKey_Int);
 	string ignoreKey_String = std::to_string(ignoreKey_Int);
 	string randomInt_String = std::to_string(randomIgnore_Int);
-
 	ignorePromptTextPtr = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
-	// ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
+
+	//ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
 	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, 25, window);
 	vector <Wall> AcceptWallsVector;
 	//centerX, centerY, length(x), height(y), angle
-	//left side
-	Wall lowerLeftCenter(200, 350, 300, 10, 90, playerCirclePtr);
-	Wall upperLeftCenter(200, 40, 80, 10, 90, playerCirclePtr);
 
-	Wall upperLeftAngle(157, 35, 120, 10, 45, playerCirclePtr);
-	Wall upperLowerLeftAngle(159, 165, 120, 10, 45, playerCirclePtr);
-
-	Wall leftRightSplit(100, 250, 28.9, 28.9, 60, playerCirclePtr);
-	Wall leftLeftSplit(80, 250, 40, 10, 120, playerCirclePtr);
-	Wall leftRightSplitStraight(70, 300, 70, 10, 90, playerCirclePtr);
-	Wall leftLeftSplitStraight(110, 300, 70, 10, 90, playerCirclePtr);
-	//right side
-	Wall lowerRightCenter(100, 250, 100, 20, 90, playerCirclePtr);
-	Wall lowerRightAngle(200, 250, 80, 20, 0, playerCirclePtr);
-
-	Wall midRightCenter(340, 300, 100, 20, 115, playerCirclePtr);
-
-	//remove after collection
-
-	Wall upperRightAngle(400, 250, 100, 20, 30, playerCirclePtr);
-
-	Wall upperRightHorizontal(450, 170, 120, 10, 0, playerCirclePtr);
-	Wall upperRightVertical(385, 135, 80, 10, 90, playerCirclePtr);
-	////remove after collection
-
-	AcceptWallsVector.push_back(lowerLeftCenter);
-	AcceptWallsVector.push_back(lowerRightCenter);
-	AcceptWallsVector.push_back(lowerRightAngle);
-	AcceptWallsVector.push_back(midRightCenter);
-	AcceptWallsVector.push_back(upperRightAngle);
-	AcceptWallsVector.push_back(upperRightHorizontal);
-	AcceptWallsVector.push_back(upperRightVertical);
-	AcceptWallsVector.push_back(upperLeftCenter);
-	AcceptWallsVector.push_back(upperLeftAngle);
-	AcceptWallsVector.push_back(upperLowerLeftAngle);
-	AcceptWallsVector.push_back(leftLeftSplit);
-	AcceptWallsVector.push_back(leftRightSplit);
-	AcceptWallsVector.push_back(leftRightSplitStraight);
-	AcceptWallsVector.push_back(leftLeftSplitStraight);
-
-
-	//TESTING COLLISIONS
-
-	//sf::Vertex line9[] =  { sf::Vertex(sf::Vector2f(testWall.getCollisionX1(), 0)),	sf::Vertex(sf::Vector2f(testWall.getCollisionX1(), 500))};
-	//sf::Vertex line10[] = { sf::Vertex(sf::Vector2f(testWall.getCollisionX2(), 0)),	sf::Vertex(sf::Vector2f(testWall.getCollisionX2(), 500))};
-	//sf::Vertex line11[] = { sf::Vertex(sf::Vector2f(0, testWall.getCollisionY1())),	sf::Vertex(sf::Vector2f(500, testWall.getCollisionY1()))};
-	//sf::Vertex line12[] = { sf::Vertex(sf::Vector2f(0, testWall.getCollisionY2())),	sf::Vertex(sf::Vector2f(500, testWall.getCollisionY2()))};
-	//AcceptWallsVector.push_back(testWall);
+	//Main Chute
+	Wall mainChuteLowerLeft(200, 350, 300, 10, 90, playerCirclePtr);
+	AcceptWallsVector.push_back(mainChuteLowerLeft);
+	Wall mainChuteUpperLeft(200, 40, 80, 10, 90, playerCirclePtr);
+	AcceptWallsVector.push_back(mainChuteUpperLeft);
+	Wall mainChutelowerRight(300, 470, 80, 10, 90, playerCirclePtr);
+	AcceptWallsVector.push_back(mainChutelowerRight);
+	Wall mainChuteUpperRight(300, 170, 340, 10, 90, playerCirclePtr);
+	AcceptWallsVector.push_back(mainChuteUpperRight);
+	//Right Chute
+	Wall rightChuteUpper(350, 320, 100, 10, 20, playerCirclePtr);
+	AcceptWallsVector.push_back(rightChuteUpper);
+	Wall rightChuteLower(400, 400, 200, 10, 20, playerCirclePtr);
+	AcceptWallsVector.push_back(rightChuteLower);
+	////Right Blocker
+	Wall rightBlockerVertical(390, 145, 60, 10, 90, playerCirclePtr);
+	AcceptWallsVector.push_back(rightBlockerVertical);
+	Wall rightBlockerHorizontal(450, 170, 120, 10, 0, playerCirclePtr);
+	AcceptWallsVector.push_back(rightBlockerHorizontal);
+	////Left Chute
+	Wall leftChuteUpper(157, 35, 120, 10, 135, playerCirclePtr);
+	AcceptWallsVector.push_back(leftChuteUpper);
+	Wall leftChuteLower(159, 165, 120, 10, 135, playerCirclePtr);
+	AcceptWallsVector.push_back(leftChuteLower);
+	////Left Blocker
+	Wall leftBlockerRightAngle(100, 250, 50, 10, 120, playerCirclePtr);
+	AcceptWallsVector.push_back(leftBlockerRightAngle);
+	Wall leftBlockerLeftAngle(80, 250, 50, 10, 60, playerCirclePtr);
+	AcceptWallsVector.push_back(leftBlockerLeftAngle);
+	Wall leftBlockerRightVertical(70, 300, 70, 10, 90, playerCirclePtr);
+	AcceptWallsVector.push_back(leftBlockerRightVertical);
+	Wall leftBlockerLeftVertical(110, 300, 70, 10, 90, playerCirclePtr);
+	AcceptWallsVector.push_back(leftBlockerLeftVertical);
 
 	vector <GameSprite> acceptVector;
 	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
@@ -664,10 +650,13 @@ int main() {
 					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
 						//broad and narrow collision detection: only check for detection if actually close enough
 						
+						playerCirclePtr->setPreviousPosition();
+						playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, false);
+
 						for (int i = 1; i < acceptVector.size(); i++) {
 							window.draw(acceptVector.at(i).getSprite());
 
-							//what does this do?
+							//what does this do? apply force to the player?
 							//acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
 
 							acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
@@ -679,22 +668,20 @@ int main() {
 							}*/		
 
 							//should this be here? if it is in the acceptwallvector loop, movement breaks, but collision detection isn't working
-							playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, AcceptWallsVector.at(i).checkSATCollision(playerCirclePtr));
+							//playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, AcceptWallsVector.at(i).checkSATCollision(playerCirclePtr));
 						}
 
 						for (int i = 0; i < AcceptWallsVector.size(); i++) {
 							window.draw(AcceptWallsVector.at(i).getVertexArray());
 
-							AcceptWallsVector.at(i).setPlayerRelativeMinMaxXY(playerCirclePtr);
-							AcceptWallsVector.at(i).checkSATCollision(playerCirclePtr);
+							//functions used for collision detections
+							if (AcceptWallsVector.at(i).playerIsInBoundingBox(playerCirclePtr)) {
+								AcceptWallsVector.at(i).setPlayerRelativeMinMaxXY(playerCirclePtr);
+								playerCirclePtr->handleWallCollision(AcceptWallsVector.at(i).hasSATCollision(playerCirclePtr));
+							}
+
 							//playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i));
 						}
-
-/*						window.draw(line9, 2, sf::Lines);
-						window.draw(line10, 2, sf::Lines);						
-						window.draw(line11, 2, sf::Lines);
-						window.draw(line12, 2, sf::Lines);	*/				
-							
 						//playerCirclePtr->hasRectangleCollision(testWall.getBisectOrigin(), testWall.getAngle(), testWall.getHeight());
 						//playerCirclePtr->hasVertexArrayCollision(AcceptWallsVector.at(0));
 

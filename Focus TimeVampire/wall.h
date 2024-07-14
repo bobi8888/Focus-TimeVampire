@@ -15,8 +15,9 @@ private:
 	sf::VertexArray vertexArray, relativeVertexArray;
 public:
 	Wall(float cenX, float cenY, float len, float hi, float ang, Player* player );
+	bool playerIsInBoundingBox(Player* player);
 	void setPlayerRelativeMinMaxXY(Player* player);
-	bool checkSATCollision(Player* player);
+	bool hasSATCollision(Player* player);
 	sf::VertexArray getVertexArray();
 	sf::Vector2f getCornerCoords(int position);
 	sf::Vector2f getPlayerRelativeMinCoords();
