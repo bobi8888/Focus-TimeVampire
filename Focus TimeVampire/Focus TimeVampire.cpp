@@ -253,13 +253,20 @@ int main() {
 	AcceptWallsVector.push_back(leftBlockerLeftVertical);
 
 	vector <GameSprite> acceptVector;
-	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.3, 0.3);
-	acceptSpritePtr->setPosition(sf::Vector2f(150, 250));
-	acceptVector.push_back(*acceptSpritePtr);
-
+	//PUSHING
 	GameSprite* acceptSpritePtr2 = new GameSprite("acceptSprite.png", 0.2, 0.2);
 	acceptSpritePtr2->setPosition(sf::Vector2f(250, 70));
 	acceptVector.push_back(*acceptSpritePtr2);
+
+	//PULLING
+	GameSprite* acceptSpritePtr = new GameSprite("acceptSprite.png", 0.2, 0.2);
+	acceptSpritePtr->setPosition(sf::Vector2f(100, 450));
+	acceptSpritePtr->setGravitationalPull(false);
+	acceptVector.push_back(*acceptSpritePtr);
+	GameSprite* acceptSpritePtr3 = new GameSprite("acceptSprite.png", 0.2, 0.2);
+	acceptSpritePtr3->setPosition(sf::Vector2f(450, 110));
+	acceptSpritePtr3->setGravitationalPull(false);
+	acceptVector.push_back(*acceptSpritePtr3);
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, 25, window);
@@ -382,7 +389,7 @@ int main() {
 								}
 								//ACCEPT
 								if (gameScreensENUM == acceptENUM) { 
-									playerCirclePtr->setPlayerPosition(sf::Vector2f(50,70));
+									playerCirclePtr->setPlayerPosition(sf::Vector2f(250,500));
 								}
 								event.type = sf::Event::EventType::MouseButtonReleased;
 							}
@@ -648,41 +655,24 @@ int main() {
 						}
 					break;
 					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
-						//broad and narrow collision detection: only check for detection if actually close enough
-						
-						playerCirclePtr->setPreviousPosition();
-						playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, false);
-
-						for (int i = 1; i < acceptVector.size(); i++) {
-							window.draw(acceptVector.at(i).getSprite());
-
-							//what does this do? apply force to the player?
-							//acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
-
-							acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
-
-							//this is applies gravity to the player and moves it toward the sprite
-							//This is pushing the player through walls, avoiding collision detection...
-/*							if (!playerCirclePtr->hasSpriteCollision(acceptVector.at(i).getSprite())) {
-								playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());
-							}*/		
-
-							//should this be here? if it is in the acceptwallvector loop, movement breaks, but collision detection isn't working
-							//playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, AcceptWallsVector.at(i).checkSATCollision(playerCirclePtr));
-						}
-
 						for (int i = 0; i < AcceptWallsVector.size(); i++) {
 							window.draw(AcceptWallsVector.at(i).getVertexArray());
-
-							//functions used for collision detections
 							if (AcceptWallsVector.at(i).playerIsInBoundingBox(playerCirclePtr)) {
 								AcceptWallsVector.at(i).setPlayerRelativeMinMaxXY(playerCirclePtr);
 								playerCirclePtr->handleWallCollision(AcceptWallsVector.at(i).hasSATCollision(playerCirclePtr));
 							}
-
-							//playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i));
 						}
-						//playerCirclePtr->hasRectangleCollision(testWall.getBisectOrigin(), testWall.getAngle(), testWall.getHeight());
+						playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, false);
+						//the side sprites should pull & the target should push
+						for (int i = 0; i < acceptVector.size(); i++) {
+							window.draw(acceptVector.at(i).getSprite());
+							acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
+							acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
+							//this is applies gravity to the player and moves it toward the sprite
+							//This is pushing the player through walls, avoiding collision detection...
+							playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());
+						}
+						//playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i));						
 						//playerCirclePtr->hasVertexArrayCollision(AcceptWallsVector.at(0));
 
 						window.draw(playerCirclePtr->getCircle());

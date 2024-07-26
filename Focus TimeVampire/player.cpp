@@ -39,10 +39,10 @@ sf::Vector2f Player::getNormalAxisMaxCoords() {
 	return normalAxisMaxCoords;
 }
 void Player::handlePlayerMotion() {
-	if (xSpeed < 0.05 && xSpeed > -0.05) { xSpeed = 0; }
-	if (xSpeed != 0) xSpeed = xSpeed > 0 ? xSpeed -= 0.05 : xSpeed += 0.05;
-	if (ySpeed < 0.05 && ySpeed > -0.05) { ySpeed = 0; }
-	if (ySpeed != 0) ySpeed = ySpeed > 0 ? ySpeed -= 0.05 : ySpeed += 0.05;
+	if (xSpeed < speedUnit && xSpeed > - speedUnit) { xSpeed = 0; }
+	if (xSpeed != 0) xSpeed = xSpeed > 0 ? xSpeed -= speedUnit : xSpeed += speedUnit;
+	if (ySpeed < speedUnit && ySpeed > - speedUnit) { ySpeed = 0; }
+	if (ySpeed != 0) ySpeed = ySpeed > 0 ? ySpeed -= speedUnit : ySpeed += speedUnit;
 	float currentX = circle.getPosition().x + xSpeed;
 	float currentY = circle.getPosition().y + ySpeed;
 	circle.setPosition(currentX, currentY);
@@ -69,8 +69,8 @@ void Player::handleArrowKeyInput() {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) ySpeed -= playerSpeed;
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))  ySpeed += playerSpeed;
 	}
-	xSpeed = std::clamp(xSpeed, -3.f, 3.f);
-	ySpeed = std::clamp(ySpeed, -3.f, 3.f);
+	xSpeed = std::clamp(xSpeed, -4.f, 4.f);
+	ySpeed = std::clamp(ySpeed, -4.f, 4.f);
 }
 void Player::handleScreenBoundsCollision(sf::RenderWindow& window) {
 	if (circle.getPosition().x - circle.getRadius() < 0) circle.setPosition(circle.getRadius(), circle.getPosition().y);
@@ -78,25 +78,25 @@ void Player::handleScreenBoundsCollision(sf::RenderWindow& window) {
 	if (circle.getPosition().y - circle.getRadius() < 0) circle.setPosition(circle.getPosition().x, circle.getRadius());
 	if (circle.getPosition().y + circle.getRadius() > window.getSize().y) circle.setPosition(circle.getPosition().x, window.getSize().y - circle.getRadius());
 }
-void Player::handleWallCollision(bool isColliding) {
+bool Player::handleWallCollision(bool isColliding) {
 	if (isColliding) {
-		circle.setPosition(resetPosition.x, resetPosition.y);
+		circle.setPosition(previousPosition.x, previousPosition.y);
+		xSpeed = 0;
+		ySpeed = 0;
+		return true;
+	}
+	else {
+		setPreviousPosition();
+		return false;
 	}
 }
 void Player::handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime, bool isColliding) {
-	handleScreenBoundsCollision(window);
-	handleWallCollision(isColliding);
-	setPreviousPosition();
-	handlePlayerMotion();
 	handleArrowKeyInput();
-	setDirectionInDegrees();
-
-	//setPreviousPosition();
-	//handlePlayerMotion();
-	//handleArrowKeyInput();
+	handlePlayerMotion();
+	handleWallCollision(isColliding);
+	handleScreenBoundsCollision(window);	
+	//This was used for applying force?
 	//setDirectionInDegrees();
-	//handleScreenBoundsCollision(window);
-	//handleWallCollision(isColliding);//getting stuck in geometery
 }
 
 //Vertex Array Collisions
@@ -157,20 +157,20 @@ void Player::setQuadrant() {
 		quadrant = 4;
 	}
 }
-void Player::setDirectionInDegrees() {
-	calc_Dir_y = circle.getPosition().y < previousPosition.y ? previousPosition.y - circle.getPosition().y : circle.getPosition().y - previousPosition.y;
-	calc_Dir_x = circle.getPosition().x < previousPosition.x ? previousPosition.x - circle.getPosition().x : circle.getPosition().x - previousPosition.x;
-	setQuadrant();
-	direction = atan(calc_Dir_y / calc_Dir_x) * 180 / std::_Pi;
-	switch (quadrant) {
-	case 2:
-		direction = 180 - direction;
-		break;
-	case 3:
-		direction += 180;
-		break;
-	case 4:
-		direction = 360 - direction;
-		break;
-	}
-}
+//void Player::setDirectionInDegrees() {
+//	calc_Dir_y = circle.getPosition().y < previousPosition.y ? previousPosition.y - circle.getPosition().y : circle.getPosition().y - previousPosition.y;
+//	calc_Dir_x = circle.getPosition().x < previousPosition.x ? previousPosition.x - circle.getPosition().x : circle.getPosition().x - previousPosition.x;
+//	setQuadrant();
+//	direction = atan(calc_Dir_y / calc_Dir_x) * 180 / std::_Pi;
+//	switch (quadrant) {
+//	case 2:
+//		direction = 180 - direction;
+//		break;
+//	case 3:
+//		direction += 180;
+//		break;
+//	case 4:
+//		direction = 360 - direction;
+//		break;
+//	}
+//}
