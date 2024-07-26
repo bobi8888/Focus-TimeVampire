@@ -107,7 +107,6 @@ bool Wall::hasSATCollision(Player* player) {
 	//if player min Y is less than wall max Y
 	bool playerMinYLTwallMaxY = (player->getNormalAxisMinCoords().y < wallMaxY && playerRelativeMinCoords.y < relativeWallMaxY);
 	if (playerMinXLTwallMaxX && playerMaxXGTwallMinX && playerMaxYGTwallMinY && playerMinYLTwallMaxY) {
-		std::cout << "Collision ";
 		return true;
 	}
 	return false;

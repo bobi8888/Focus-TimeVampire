@@ -15,6 +15,7 @@ class GameSprite {
 		float mass = 700000, distance = 0;
 		float gravitationalForce = 0;
 		float forceX = 0, forceY = 0;
+		bool gravitationalPull = true;
 
 		friend class DataSpriteVector;
 	public:
@@ -28,6 +29,7 @@ class GameSprite {
 		bool getIsComplete();
 		void setToComplete();
 		bool getCanMove();
+		void setGravitationalPull(bool pull);
 		void handleCanMove(sf::Event event,sf::Vector2f translatedMousePosition);
 
 		float returnQuadrantDirectionTowardsPlayerInDegrees(sf::CircleShape circle);
@@ -97,12 +99,12 @@ private:
 	sf::CircleShape circle;
 	sf::Texture texture;
 	//Gravity
-	float mass = 6000000;
+	float mass = 1000000;
 	//MOVEMENT
 	float rotationSpeed = 0, x = 0, y = 0;
 	//SPEED
 	sf::Clock clock;
-	float xSpeed = 0, ySpeed = 0, playerSpeed = 0.1;
+	float xSpeed = 0, ySpeed = 0, playerSpeed = 0.1, speedUnit = 0.03; //smaller speedUnit makes player faster? Huh...
 	float acceleration = 0;
 	//VELOCITY
 	float calc_Dir_x = 0, calc_Dir_y = 0;
@@ -132,7 +134,7 @@ public:
 	bool isAnyArrowKeyDown();
 	void handleArrowKeyInput();
 	void handleScreenBoundsCollision(sf::RenderWindow& window);
-	void handleWallCollision(bool isColliding);
+	bool handleWallCollision(bool isColliding);
 	void handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime, bool isColliding);
 
 	//Vertex Array Collisions
@@ -151,7 +153,7 @@ public:
 
 	//Direction
 	void setQuadrant();
-	void setDirectionInDegrees();
+	//void setDirectionInDegrees();
 
 	//bool hasRectangleCollision(sf::VertexArray vertexArray);
 };

@@ -36,6 +36,9 @@ void GameSprite::setToComplete() {
 bool GameSprite::getCanMove(){
 	return canMove;
 }
+void GameSprite::setGravitationalPull(bool pull) {
+	if (!pull) gravitationalPull = false;
+}
 void GameSprite::handleCanMove(sf::Event event, sf::Vector2f translatedMousePosition) {
 	if (event.type == sf::Event::EventType::MouseButtonPressed) {
 		if (getSprite().getGlobalBounds().contains(translatedMousePosition) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
@@ -73,16 +76,14 @@ void GameSprite::setForceOnPlayer(sf::CircleShape circle, float playerMass) {
 	gravitationalForce = (gravConst * mass * playerMass) / distance;
 	forceY = sin(direction * std::_Pi / 180) * gravitationalForce;
 	forceX = sqrt(pow(gravitationalForce, 2) - pow(forceY, 2));
-
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+	if (!gravitationalPull) {
 		forceX *= -1;
 		forceY *= -1;
 	}
-	else {
-		forceX = abs(forceX);
-		forceY = abs(forceY);
-	}
+	//else {
+	//	forceX = abs(forceX);
+	//	forceY = abs(forceY);
+	//}
 
 	//swap the - & + for x & y to change from gravity pulling, to gravity pushing
 	switch (quadrant) {
