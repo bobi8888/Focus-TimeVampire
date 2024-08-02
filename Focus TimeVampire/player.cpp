@@ -80,7 +80,7 @@ void Player::handleScreenBoundsCollision(sf::RenderWindow& window) {
 }
 bool Player::handleWallCollision(bool isColliding) {
 	if (isColliding) {
-		circle.setPosition(previousPosition.x, previousPosition.y);
+		circle.setPosition(resetPosition.x, resetPosition.y);
 		xSpeed = 0;
 		ySpeed = 0;
 		return true;
@@ -98,27 +98,6 @@ void Player::handlePlayerMovementWithinScreen(sf::RenderWindow& window, float de
 	//This was used for applying force?
 	//setDirectionInDegrees();
 }
-
-//Vertex Array Collisions
-//bool Player::hasRectangleCollision(sf::VertexArray vertexArray) {
-//	float closestX = (circle.getPosition().x < vertexArray.getBounds().left ? vertexArray.getBounds().left : (circle.getPosition().x
-//	> vertexArray.getBounds().left + vertexArray.getBounds().width ? vertexArray.getBounds().left + vertexArray.getBounds().width : circle.getPosition().x));
-//
-//	float closestY = (circle.getPosition().y < vertexArray.getBounds().top ? vertexArray.getBounds().top : (circle.getPosition().y
-//	> vertexArray.getBounds().top + vertexArray.getBounds().height ? vertexArray.getBounds().top + vertexArray.getBounds().height : circle.getPosition().y));
-//
-//	float dx = closestX - circle.getPosition().x;
-//	float dy = closestY - circle.getPosition().y;
-//	return (dx * dx + dy * dy) <= circle.getRadius() * circle.getRadius();
-//}
-
-
-
-//void Player::handleVertexArrayCollision(Wall testWall) {
-//	if (hasVertexArrayCollision(testWall)) {
-//		circle.setPosition(previousPosition);
-//	}	
-//}
 
 //Sprite Collisions
 bool Player::hasSpriteCollision(sf::Sprite sprite) {

@@ -43,6 +43,7 @@ vector <DataSprite> DataSpriteVector::getDataSpriteVector() {
 DataSprite DataSpriteVector::getSingleSprite(int index){
 	return dataSpriteVector.at(index);
 }
+//what it the int qty really doing?
 void DataSpriteVector::addSprite(DataSprite dataSpritePtr, int qty) {
 	for (int i = 1; i <= qty; i++) {
 		dataSpriteVector.push_back(dataSpritePtr);

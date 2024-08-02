@@ -149,7 +149,7 @@ int main() {
 	GameScreen* assembleSolutionGameScreenPtr = new GameScreen("ASSEMBLE Solution", generalFont, 25, 25, window);
 	pcbSolvedSprite.setPosition(getCenterOfWindow(window));
 	assembleSolutionGameScreenPtr->addSprite(pcbSolvedSprite.getSprite());
-	for (int i = 0; i < 9; i++) {assembleDataSpriteVector.addSprite( assemblePartsSpriteVector.at(i), 1); }
+	for (int i = 0; i < 9; i++) {assembleDataSpriteVector.addSprite(assemblePartsSpriteVector.at(i), 1); }
 	assembleDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2 - 10), 3, 3, 90, 120);
 	assembleDataSpriteVector.setSpriteToComplete(4);
 	assembleGoal.setOrigin(sf::Vector2f(assembleGoal.getGlobalBounds().width / 2, assembleGoal.getGlobalBounds().height / 2));
@@ -398,7 +398,7 @@ int main() {
 					break;
 				case rememberENUM://REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER 
 					//swapping can be used to randomize vectors to increase difficulty
-					playerCirclePtr->handleArrowKeyInput();
+					playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, false);
 					window.draw(tipTextPtr->getText());
 					window.draw(playerCirclePtr->getCircle());
 					rememberFullBubbles.drawSprites(window, -1);
@@ -659,22 +659,24 @@ int main() {
 							window.draw(AcceptWallsVector.at(i).getVertexArray());
 							if (AcceptWallsVector.at(i).playerIsInBoundingBox(playerCirclePtr)) {
 								AcceptWallsVector.at(i).setPlayerRelativeMinMaxXY(playerCirclePtr);
+								//If there is a wall collision, maybe reset the player's X to 250?
 								playerCirclePtr->handleWallCollision(AcceptWallsVector.at(i).hasSATCollision(playerCirclePtr));
 							}
 						}
-						playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, false);
-						//the side sprites should pull & the target should push
+						playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, false);						
 						for (int i = 0; i < acceptVector.size(); i++) {
-							window.draw(acceptVector.at(i).getSprite());
+							if(acceptVector.at(i).getIsVisible()) window.draw(acceptVector.at(i).getSprite());
 							acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
 							acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
 							//this is applies gravity to the player and moves it toward the sprite
-							//This is pushing the player through walls, avoiding collision detection...
-							playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());
+							playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());							
+							if (acceptVector.at(i).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+								if (acceptVector.at(i).getOverlap().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+									acceptVector.at(i).setVisibilty(false);
+									acceptVector.at(i).setCanMovePlayer(false);
+								}
+							}
 						}
-						//playerCirclePtr->handleVertexArrayCollision(AcceptWallsVector.at(i));						
-						//playerCirclePtr->hasVertexArrayCollision(AcceptWallsVector.at(0));
-
 						window.draw(playerCirclePtr->getCircle());
 						drivePtr->drawScreen(window, timerTextPtr->getText());
 					break;
