@@ -5,6 +5,9 @@ class GameSprite {
 		sf::Sprite sprite;
 		sf::Texture texture;
 		bool isVisible = true, isComplete = false, canMove = false;
+		//COLLISION
+		float xyOverlap = 20;
+		sf::RectangleShape overlap;
 
 		//FORCE
 		float direction = 0;
@@ -16,6 +19,7 @@ class GameSprite {
 		float gravitationalForce = 0;
 		float forceX = 0, forceY = 0;
 		bool gravitationalPull = true;
+		bool canMovePlayer = true;
 
 		friend class DataSpriteVector;
 	public:
@@ -31,13 +35,13 @@ class GameSprite {
 		bool getCanMove();
 		void setGravitationalPull(bool pull);
 		void handleCanMove(sf::Event event,sf::Vector2f translatedMousePosition);
-
 		float returnQuadrantDirectionTowardsPlayerInDegrees(sf::CircleShape circle);
 		void setQuadrant(sf::CircleShape circle);
 		sf::Vector2f getForceOnPlayer();
 		void setForceOnPlayer(sf::CircleShape circle, float playerMass);
-
-		void setForceMagnetude(float charge, float velo);
+		sf::RectangleShape getOverlap();
+		void setCanMovePlayer(bool movePlayer);
+		//void setForceMagnetude(float charge, float velo);
 };
 
 class DataSprite : public GameSprite{

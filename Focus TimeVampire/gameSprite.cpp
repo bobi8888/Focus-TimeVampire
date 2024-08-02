@@ -1,11 +1,12 @@
 #include "utils.h"
 #include "gameSprite.h"
 
-GameSprite::GameSprite(string spritePNG, float x, float y) {
-	sprite.setScale(x, y);
+GameSprite::GameSprite(string spritePNG, float xScale, float yScale) {
+	sprite.setScale(xScale, yScale);
 	texture.loadFromFile(spritePNG);
 	sprite.setTexture(texture);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
+	overlap.setSize(sf::Vector2f(xyOverlap, xyOverlap));
 }
 
 void GameSprite::setNewTexture(string spritePNG) {
@@ -20,6 +21,7 @@ void GameSprite::setRotation(float angle) {
 }
 void GameSprite::setPosition(sf::Vector2f newPosition) {
 	sprite.setPosition(newPosition);
+	overlap.setPosition(newPosition);
 }
 bool GameSprite::getIsVisible() {
 	return isVisible;
@@ -71,21 +73,25 @@ float GameSprite::returnQuadrantDirectionTowardsPlayerInDegrees(sf::CircleShape 
 	return direction;
 }
 void GameSprite::setForceOnPlayer(sf::CircleShape circle, float playerMass) {
-	direction = returnQuadrantDirectionTowardsPlayerInDegrees(circle);
-	distance = sqrt(calc_Dir_x * calc_Dir_x + calc_Dir_y * calc_Dir_y);
-	gravitationalForce = (gravConst * mass * playerMass) / distance;
-	forceY = sin(direction * std::_Pi / 180) * gravitationalForce;
-	forceX = sqrt(pow(gravitationalForce, 2) - pow(forceY, 2));
-	if (!gravitationalPull) {
-		forceX *= -1;
-		forceY *= -1;
+	if (!canMovePlayer) {
+		forceX = 0;
+		forceY = 0;
+	}
+	else {
+		direction = returnQuadrantDirectionTowardsPlayerInDegrees(circle);
+		distance = sqrt(calc_Dir_x * calc_Dir_x + calc_Dir_y * calc_Dir_y);
+		gravitationalForce = (gravConst * mass * playerMass) / distance;
+		forceY = sin(direction * std::_Pi / 180) * gravitationalForce;
+		forceX = sqrt(pow(gravitationalForce, 2) - pow(forceY, 2));
+		if (!gravitationalPull) {
+			forceX *= -1;
+			forceY *= -1;
+		}
 	}
 	//else {
 	//	forceX = abs(forceX);
 	//	forceY = abs(forceY);
 	//}
-
-	//swap the - & + for x & y to change from gravity pulling, to gravity pushing
 	switch (quadrant) {
 	case 1:
 		forceOnPlayer = sf::Vector2f(circle.getPosition().x + forceX, circle.getPosition().y - forceY);
@@ -100,10 +106,15 @@ void GameSprite::setForceOnPlayer(sf::CircleShape circle, float playerMass) {
 		forceOnPlayer = sf::Vector2f(circle.getPosition().x + forceX, circle.getPosition().y + forceY);
 		break;
 	}
-	//cout << forceX << " here \n";
-
 }
 
 sf::Vector2f GameSprite::getForceOnPlayer() {
 	return forceOnPlayer;
+}
+
+sf::RectangleShape GameSprite::getOverlap() {
+	return overlap;
+}
+void GameSprite::setCanMovePlayer(bool movePlayer) {
+	canMovePlayer = movePlayer;
 }
