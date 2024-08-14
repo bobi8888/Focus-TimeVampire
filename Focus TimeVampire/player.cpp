@@ -80,7 +80,7 @@ void Player::handleScreenBoundsCollision(sf::RenderWindow& window) {
 }
 bool Player::handleWallCollision(bool isColliding) {
 	if (isColliding) {
-		circle.setPosition(resetPosition.x, resetPosition.y);
+		circle.getPosition().y < 150 ? circle.setPosition(resetPosition.x, 150) : circle.setPosition(resetPosition.x, circle.getPosition().y);
 		xSpeed = 0;
 		ySpeed = 0;
 		return true;
@@ -136,20 +136,20 @@ void Player::setQuadrant() {
 		quadrant = 4;
 	}
 }
-//void Player::setDirectionInDegrees() {
-//	calc_Dir_y = circle.getPosition().y < previousPosition.y ? previousPosition.y - circle.getPosition().y : circle.getPosition().y - previousPosition.y;
-//	calc_Dir_x = circle.getPosition().x < previousPosition.x ? previousPosition.x - circle.getPosition().x : circle.getPosition().x - previousPosition.x;
-//	setQuadrant();
-//	direction = atan(calc_Dir_y / calc_Dir_x) * 180 / std::_Pi;
-//	switch (quadrant) {
-//	case 2:
-//		direction = 180 - direction;
-//		break;
-//	case 3:
-//		direction += 180;
-//		break;
-//	case 4:
-//		direction = 360 - direction;
-//		break;
-//	}
-//}
+void Player::setDirectionInDegrees() {
+	calc_Dir_y = circle.getPosition().y < previousPosition.y ? previousPosition.y - circle.getPosition().y : circle.getPosition().y - previousPosition.y;
+	calc_Dir_x = circle.getPosition().x < previousPosition.x ? previousPosition.x - circle.getPosition().x : circle.getPosition().x - previousPosition.x;
+	setQuadrant();
+	direction = atan(calc_Dir_y / calc_Dir_x) * 180 / std::_Pi;
+	switch (quadrant) {
+	case 2:
+		direction = 180 - direction;
+		break;
+	case 3:
+		direction += 180;
+		break;
+	case 4:
+		direction = 360 - direction;
+		break;
+	}
+}

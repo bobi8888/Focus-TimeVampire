@@ -7,6 +7,8 @@ GameSprite::GameSprite(string spritePNG, float xScale, float yScale) {
 	sprite.setTexture(texture);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
 	overlap.setSize(sf::Vector2f(xyOverlap, xyOverlap));
+	overlap.setOrigin(sf::Vector2f(xyOverlap / 2, xyOverlap / 2));
+	overlap.setFillColor(sf::Color::White);
 }
 
 void GameSprite::setNewTexture(string spritePNG) {
@@ -72,6 +74,7 @@ float GameSprite::returnQuadrantDirectionTowardsPlayerInDegrees(sf::CircleShape 
 	direction = atan(calc_Dir_y / calc_Dir_x) * 180 / std::_Pi;
 	return direction;
 }
+
 void GameSprite::setForceOnPlayer(sf::CircleShape circle, float playerMass) {
 	if (!canMovePlayer) {
 		forceX = 0;
@@ -88,10 +91,6 @@ void GameSprite::setForceOnPlayer(sf::CircleShape circle, float playerMass) {
 			forceY *= -1;
 		}
 	}
-	//else {
-	//	forceX = abs(forceX);
-	//	forceY = abs(forceY);
-	//}
 	switch (quadrant) {
 	case 1:
 		forceOnPlayer = sf::Vector2f(circle.getPosition().x + forceX, circle.getPosition().y - forceY);
@@ -117,4 +116,7 @@ sf::RectangleShape GameSprite::getOverlap() {
 }
 void GameSprite::setCanMovePlayer(bool movePlayer) {
 	canMovePlayer = movePlayer;
+}
+void GameSprite::setMass(float nuMass) {
+	mass = nuMass;
 }
