@@ -6,7 +6,7 @@ class GameSprite {
 		sf::Texture texture;
 		bool isVisible = true, isComplete = false, canMove = false;
 		//COLLISION
-		float xyOverlap = 20;
+		float xyOverlap = 40;
 		sf::RectangleShape overlap;
 
 		//FORCE
@@ -15,7 +15,9 @@ class GameSprite {
 		int quadrant = 0;
 		sf::Vector2f forceOnPlayer;
 		float gravConst = 0.00000000006;
-		float mass = 700000, distance = 0;
+		//mass = 700000 easy
+		//increase mass to effect the player more
+		float mass = 0, distance = 0;
 		float gravitationalForce = 0;
 		float forceX = 0, forceY = 0;
 		bool gravitationalPull = true;
@@ -41,6 +43,7 @@ class GameSprite {
 		void setForceOnPlayer(sf::CircleShape circle, float playerMass);
 		sf::RectangleShape getOverlap();
 		void setCanMovePlayer(bool movePlayer);
+		void setMass(float nuMass);
 		//void setForceMagnetude(float charge, float velo);
 };
 
@@ -103,6 +106,7 @@ private:
 	sf::CircleShape circle;
 	sf::Texture texture;
 	//Gravity
+	//1 000 000
 	float mass = 1000000;
 	//MOVEMENT
 	float rotationSpeed = 0, x = 0, y = 0;
@@ -144,8 +148,6 @@ public:
 	//Vertex Array Collisions
 	sf::Vector2f getNormalAxisMinCoords();
 	sf::Vector2f getNormalAxisMaxCoords();
-	//bool hasVertexArrayCollision(Wall testWall);
-	//void handleVertexArrayCollision(Wall testWall);
 
 	//Sprite Collisions
 	bool hasSpriteCollision(sf::Sprite sprite);
@@ -157,7 +159,7 @@ public:
 
 	//Direction
 	void setQuadrant();
-	//void setDirectionInDegrees();
+	void setDirectionInDegrees();
 
 	//bool hasRectangleCollision(sf::VertexArray vertexArray);
 };
