@@ -6,7 +6,7 @@ class GameSprite {
 		sf::Texture texture;
 		bool isVisible = true, isComplete = false, canMove = false;
 		//COLLISION
-		float xyOverlap = 40;
+		float xyOverlap = 30;
 		sf::RectangleShape overlap;
 
 		//FORCE
@@ -15,7 +15,7 @@ class GameSprite {
 		int quadrant = 0;
 		sf::Vector2f forceOnPlayer;
 		float gravConst = 0.00000000006;
-		//mass = 700000 easy
+		//mass = 700 000 easy
 		//increase mass to effect the player more
 		float mass = 0, distance = 0;
 		float gravitationalForce = 0;

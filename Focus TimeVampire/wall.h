@@ -26,6 +26,7 @@ public:
 	float getLength();
 	float getThickness();
 	float getAngle();
+	void clearVertexArray();
 	//sf::Vector2f getZeroPosition();
 	//sf::Vector2f getFirstPosition();
 	//sf::Vector2f getSecondPosition();

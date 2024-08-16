@@ -77,6 +77,9 @@ Wall::Wall(float cenX, float cenY, float len, float thick, float ang, Player* pl
 	playerXPrime = playerRadius * sin(angleRadians) + playerRadius * cos(angleRadians);
 	playerYPrime = playerRadius * cos(angleRadians) - playerRadius * sin(angleRadians);
 }
+void Wall::clearVertexArray() {
+	vertexArray.clear();
+}
 bool Wall::playerIsInBoundingBox(Player* player) {
 	if (vertexArray.getBounds().intersects(player->getCircle().getGlobalBounds())) {
 		return true;
