@@ -218,7 +218,7 @@ int main() {
 	vector <Wall> AcceptWallsVector;
 	//centerX, centerY, length(x), height(y), angle
 
-	//Main Chute
+	//Main Chute: Index 0 - 3
 	Wall mainChuteLowerLeft(200, 370, 260, 10, 90, playerCirclePtr);
 	AcceptWallsVector.push_back(mainChuteLowerLeft);
 	Wall mainChuteUpperLeft(200, 40, 80, 10, 90, playerCirclePtr);
@@ -227,22 +227,22 @@ int main() {
 	AcceptWallsVector.push_back(mainChutelowerRight);
 	Wall mainChuteUpperRight(300, 160, 310, 10, 90, playerCirclePtr);
 	AcceptWallsVector.push_back(mainChuteUpperRight);
-	//Right Chute
+	//Right Chute: Index 4 - 5
 	Wall rightChuteUpper(350, 290, 100, 10, 20, playerCirclePtr);
 	AcceptWallsVector.push_back(rightChuteUpper);
 	Wall rightChuteLower(400, 400, 200, 10, 20, playerCirclePtr);
 	AcceptWallsVector.push_back(rightChuteLower);
-	////Right Blocker
-	Wall rightBlockerVertical(410, 145, 60, 10, 90, playerCirclePtr);
+	////Right Blocker: Index 6 - 7
+	Wall rightBlockerVertical(440, 155, 30, 10, 90, playerCirclePtr);
 	AcceptWallsVector.push_back(rightBlockerVertical);
-	Wall rightBlockerHorizontal(460, 170, 100, 10, 0, playerCirclePtr);
+	Wall rightBlockerHorizontal(480, 165, 60, 10, 0, playerCirclePtr);
 	AcceptWallsVector.push_back(rightBlockerHorizontal);
-	////Left Chute
+	////Left Chute: Index 8 - 9
 	Wall leftChuteUpper(157, 35, 120, 10, 135, playerCirclePtr);
 	AcceptWallsVector.push_back(leftChuteUpper);
 	Wall leftChuteLower(159, 205, 120, 10, 135, playerCirclePtr);
 	AcceptWallsVector.push_back(leftChuteLower);
-	////Left Blocker
+	////Left Blocker: Index 10 - 13 
 	Wall leftBlockerRightAngle(100, 250, 50, 10, 120, playerCirclePtr);
 	AcceptWallsVector.push_back(leftBlockerRightAngle);
 	Wall leftBlockerLeftAngle(80, 250, 50, 10, 60, playerCirclePtr);
@@ -253,23 +253,26 @@ int main() {
 	AcceptWallsVector.push_back(leftBlockerLeftVertical);
 
 	vector <GameSprite> acceptVector;
-	int collectedAcceptSprites = 0;
-	//PUSHING
+	//PUSHING: Index 0
+	double pushingMass = 3500000;
 	GameSprite* finalAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2);
 	finalAcceptGoal->setPosition(sf::Vector2f(250, 70));
-	finalAcceptGoal->setMass(3500);//3 500 000 after right is collected
+	finalAcceptGoal->setMass(pushingMass * 2);//3 500 000 after right is collected
 	acceptVector.push_back(*finalAcceptGoal);
 
 	//PULLING
+	double pullingMass = 700000;
+	//Index 1
 	GameSprite* leftAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2);
 	leftAcceptGoal->setPosition(sf::Vector2f(100, 450));
 	leftAcceptGoal->setGravitationalPull(false);
-	leftAcceptGoal ->setMass(700);//700 000
+	leftAcceptGoal ->setMass(pullingMass);//700 000
 	acceptVector.push_back(*leftAcceptGoal);
+	//Index 2
 	GameSprite* rightAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2);
 	rightAcceptGoal->setPosition(sf::Vector2f(450, 110));
 	rightAcceptGoal->setGravitationalPull(false);
-	rightAcceptGoal->setMass(700);//700 00
+	rightAcceptGoal->setMass(pullingMass);//700 00
 	acceptVector.push_back(*rightAcceptGoal);
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -676,19 +679,37 @@ int main() {
 							if(acceptVector.at(i).getIsVisible()) window.draw(acceptVector.at(i).getSprite());
 
 							window.draw(acceptVector.at(i).getOverlap());
-
 							acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
-
-							if (collectedAcceptSprites == 1) {
-								std::cout << "Free your mind. \n";
-							}
-
 							acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
 							playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());	
-							if (acceptVector.at(i).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
-								if (acceptVector.at(i).getOverlap().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
-									acceptVector.at(i).setVisibilty(false);
-									acceptVector.at(i).setCanMovePlayer(false);
+
+							if (acceptVector.at(2).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+								if (acceptVector.at(2).getOverlap().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+									acceptVector.at(2).setVisibilty(false);
+									acceptVector.at(2).setCanMovePlayer(false);
+									acceptVector.at(1).setMass(pullingMass * 2);
+									acceptVector.at(1).setMass(pullingMass * 2);
+									acceptVector.at(0).setMass(pushingMass / 2);
+									AcceptWallsVector.at(4).clearVertexArray();
+									AcceptWallsVector.at(6).clearVertexArray();
+									AcceptWallsVector.at(7).clearVertexArray();
+								}
+							}
+							if (acceptVector.at(1).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+								if (acceptVector.at(1).getOverlap().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+									acceptVector.at(1).setVisibilty(false);
+									acceptVector.at(1).setCanMovePlayer(false);	
+									acceptVector.at(0).setMass(-500000);
+									AcceptWallsVector.at(10).clearVertexArray();
+									AcceptWallsVector.at(11).clearVertexArray();
+									AcceptWallsVector.at(12).clearVertexArray();
+									AcceptWallsVector.at(13).clearVertexArray();
+								}
+							}
+							if (acceptVector.at(0).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+								if (acceptVector.at(0).getOverlap().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+									acceptVector.at(0).setVisibilty(false);
+									acceptVector.at(0).setCanMovePlayer(false);
 									collectedAcceptSprites++;
 								}
 							}
