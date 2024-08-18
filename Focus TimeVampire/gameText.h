@@ -6,12 +6,15 @@ class GameText{
 	private:
 		sf::Text text;//used for display
 		string textString = "";//not to be mutated
+		int fade = 1;
+		int alpha = 255;
+		sf::Color textColor;
 		int charSize = 10; 
 		bool isFull = false;
 		friend class DiscussText;
 	public:
 		GameText(){};//used in gameScreen
-		GameText(sf::Font &font, int characterSize, string string, float spaceFromTop, sf::RenderWindow &window);
+		GameText(string string, sf::Font& font, int characterSize, sf::Color& color, sf::Vector2f position);
 		sf::Text& getText();
 		string getTextString();
 		void setTextString(sf::String string);
@@ -24,6 +27,8 @@ class GameText{
 		void setTextOrigin();
 		void setTextPosition(sf::Vector2f newPosition);
 		void setString_Origin_Position(string newString, sf::Vector2f newPosition);
+		void setColor(sf::Color newColor);
+		void fadeText();
 };
 
 class DiscussText: public GameText {
