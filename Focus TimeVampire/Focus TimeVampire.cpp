@@ -20,26 +20,7 @@
 //sprite sizes should be relative the the window size at initialization
 
 //gameTimer = gameTimer.pause(gameTimerClock, gameTimer); so many game timers?
-
-//At object creation,
-//-Store the global min & max XY of the wall in floats
-//- Store the relative min & max bX & bY in floats
-//
-//Durring game loop
-//- Check: If the player is in the bounding box of the wall,
-//(write test for cout true if in bounding box)
-//IF the player is in the wall's bounding box, 
-//- Check : for SAT OBB colision by :
-//--getting the players min & max bX & bY
-//- -ALL MUST BE TRUE
-//- -if player min X is less than the wall max X
-//- -if player max X is greater than the wall min X
-//- -if player max Y is greater than wall min Y
-//- -if player min Y is less than wall max Y
-//IF all are true: cout true SAT collision
-//
-//bx = cosTheta * Ax + sinTheta * Ay
-//by = -sinTheta * Ax + cosTheta * Ay
+//USE MULTI THREADING FOR MULTIPLE TIMERS?
 
 int main() {	
 	//WINDOW
@@ -62,16 +43,18 @@ int main() {
 	//FONT & TEXT
 	sf::Font generalFont;
 	loadFont(generalFont);
-
-	GameText* timerTextPtr = new GameText(generalFont, 20, "", 20, window);
+	sf::Color white(sf::Color::White);
+	sf::Vector2f miniGameTitlePosition(window.getSize().x / 2, 40);
+	//string string, sf::Font &font, int characterSize, sf::Color &color, sf::Vector2f position
+	GameText* timerTextPtr = new GameText("",generalFont, 20, white, miniGameTitlePosition);
 	timerTextPtr->getText().setPosition(sf::Vector2f(5,30));
-	GameText* bannerTextPtr = new GameText(generalFont, 30,"",0, window);
+	GameText* bannerTextPtr = new GameText("", generalFont, 30, white, miniGameTitlePosition);
 	bannerTextPtr->getText().setFillColor(sf::Color::Black);
-	GameText* playerTextPtr = new GameText(generalFont, 30, "", 400, window);
+	GameText* playerTextPtr = new GameText("", generalFont, 30, white, miniGameTitlePosition);
 	playerTextPtr->getText().setFillColor(sf::Color::White);
-	GameText* tipTextPtr = new GameText(generalFont, 25, "Enter the missing values!", 55, window);
+	GameText* tipTextPtr = new GameText("Enter the missing values!", generalFont, 25, white, miniGameTitlePosition);
 	playerTextPtr->getText().setFillColor(sf::Color::White);
-	GameText* ignorePromptTextPtr = new GameText(generalFont, 30, "",20, window);
+	GameText* ignorePromptTextPtr = new GameText("", generalFont, 30, white, miniGameTitlePosition);
 	ignorePromptTextPtr->setTextPosition(sf::Vector2f(50, 125));
 
 	//GAME SPRITES
@@ -159,7 +142,7 @@ int main() {
 	}
 	//DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
 	GameScreen* discussGameScreenPtr = new GameScreen("DISCUSS!", generalFont, 25, 25, window);
-	DiscussText* npcTextPtr = new DiscussText(generalFont, 25, question1, questionY, window);
+	DiscussText* npcTextPtr = new DiscussText(question1, generalFont, 25, white, miniGameTitlePosition);
 	npcTextPtr->setCharWidthsVector(question1);
 	for (int i = 0; i < npcTextPtr->getTextString().size(); i++) {
 		sf::RectangleShape textBlocker(sf::Vector2f(npcTextPtr->getCharWidthsVector()[i], npcTextPtr->getText().getCharacterSize() + 10));
@@ -173,12 +156,12 @@ int main() {
 	GameSprite* discussBannerSpritePtr = new GameSprite("bannerSprite.png", 1.3, 1.1);
 	discussBannerSpritePtr->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y - 150));
 
-	GameText* leftAnswerPtr = new GameText(generalFont, 32, response1A, 200, window);
+	GameText* leftAnswerPtr = new GameText(response1A, generalFont, 32, white, miniGameTitlePosition);
 	leftAnswerPtr->getText().setFillColor(sf::Color::Black);
 	leftAnswerPtr->setTextPosition(sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
 		, discussBannerSpritePtr->getSprite().getPosition().y));
 
-	GameText* rightAnswerPtr = new GameText(generalFont, 32, response1B, 200, window);
+	GameText* rightAnswerPtr = new GameText(response1B, generalFont, 32, white, miniGameTitlePosition);
 	rightAnswerPtr->getText().setFillColor(sf::Color::Black);
 	rightAnswerPtr->setTextPosition(sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
 		, discussBannerSpritePtr->getSprite().getPosition().y));
@@ -277,6 +260,10 @@ int main() {
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, 25, window);
+	GameText* fadeAlpha = new GameText("A long time ago...", generalFont, 32, white, miniGameTitlePosition);
+	sf::Color nC(255, 75, 45,255);
+	fadeAlpha->setColor(nC);
+	
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
 	GameScreen* pushPtr  = new GameScreen("PUSH!", generalFont, 25, 25, window);
 	// BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS
@@ -710,7 +697,6 @@ int main() {
 								if (acceptVector.at(0).getOverlap().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
 									acceptVector.at(0).setVisibilty(false);
 									acceptVector.at(0).setCanMovePlayer(false);
-									collectedAcceptSprites++;
 								}
 							}
 						}
@@ -719,6 +705,8 @@ int main() {
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 						retainPtr->drawScreen(window, timerTextPtr->getText());
+						window.draw(fadeAlpha->getText());
+						fadeAlpha->fadeText();
 					break;
 					case pushENUM://PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH 
 						pushPtr->drawScreen(window, timerTextPtr->getText());

@@ -8,13 +8,16 @@ void loadFont(sf::Font& font) {
 	}
 }
 
-GameText::GameText(sf::Font &font, int characterSize, string string, float spaceFromTop, sf::RenderWindow& window) {
-	text.setFont(font);
-	text.setCharacterSize(characterSize);
+GameText::GameText(string string, sf::Font &font, int characterSize, sf::Color &color, sf::Vector2f position) {
 	text.setString(string);
 	textString = string;
+	text.setFont(font);
+	text.setCharacterSize(characterSize);
+	textColor = color;
+	text.setFillColor(textColor);
+	text.setOutlineColor(textColor);
 	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2, characterSize / 2 + ((characterSize - text.getGlobalBounds().height) / 2)));
-	text.setPosition(sf::Vector2f(window.getSize().x / 2, spaceFromTop));
+	text.setPosition(position);
 }
 sf::Text& GameText::getText() {
 	return text;
@@ -66,4 +69,16 @@ void GameText::setString_Origin_Position(string newString, sf::Vector2f newPosit
 	setTextString(newString);
 	setTextOrigin();
 	setTextPosition(newPosition);
+}
+void GameText::setColor(sf::Color newColor) {
+	text.setFillColor(newColor);
+}
+void GameText::fadeText() {
+	if (text.getFillColor().a == 0) {
+		text.setFillColor(sf::Color::Transparent);
+		return;
+	}
+	alpha = alpha - fade;
+	textColor.a = alpha;
+	text.setFillColor(textColor);
 }
