@@ -92,5 +92,8 @@
     <ClInclude Include="movementVector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="retainUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

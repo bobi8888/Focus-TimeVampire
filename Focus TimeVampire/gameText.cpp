@@ -82,3 +82,12 @@ void GameText::fadeText() {
 	textColor.a = alpha;
 	text.setFillColor(textColor);
 }
+void GameText::moveText() {
+	text.setPosition(sf::Vector2f(text.getPosition().x + moveX, text.getPosition().y + moveY));
+}
+void GameText::handleFallingText(sf::Vector2f mousePosition) {
+	if (!text.getGlobalBounds().contains(mousePosition)) {
+		fadeText();
+		moveText();
+	}
+}

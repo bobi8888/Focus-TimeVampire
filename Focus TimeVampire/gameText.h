@@ -1,15 +1,13 @@
 #pragma once
 
 void loadFont(sf::Font& font);
-
 class GameText{
 	private:
 		sf::Text text;//used for display
 		string textString = "";//not to be mutated
-		int fade = 1;
-		int alpha = 255;
+		int fade = 1, alpha = 255, charSize = 10;
+		float moveX = 0, moveY = 0.75;
 		sf::Color textColor;
-		int charSize = 10; 
 		bool isFull = false;
 		friend class DiscussText;
 	public:
@@ -29,6 +27,8 @@ class GameText{
 		void setString_Origin_Position(string newString, sf::Vector2f newPosition);
 		void setColor(sf::Color newColor);
 		void fadeText();
+		void moveText();
+		void handleFallingText(sf::Vector2f mousePosition);
 };
 
 class DiscussText: public GameText {

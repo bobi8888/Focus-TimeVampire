@@ -1,5 +1,4 @@
 #include "utils.h"
-#include "window.h"
 #include "gameText.h"
 #include "mouse.h"
 #include "gameSprite.h"
@@ -10,7 +9,9 @@
 #include "discussUtils.h"
 #include "gameScreen.h"
 #include "ignoreUtils.h"
+#include "retainUtils.h"
 #include "wall.h"
+#include "window.h"
 
 //ISSUES
 //reset random numbers each playthrough for Remember
@@ -38,7 +39,7 @@ int main() {
 	//STREAM
 	std::ostringstream out;
 	std::stringstream stream;
-	srand(time(NULL));
+	//srand(time(NULL));
 
 	//FONT & TEXT
 	sf::Font generalFont;
@@ -81,8 +82,6 @@ int main() {
 	//TRANSFORMABLE SPRITES
 	Player* playerCirclePtr = new Player("playerSprite.png",1, 7, 0.2);
 	playerCirclePtr->setPlayerPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y / 2));
-
-	std::cout << "radius: " << playerCirclePtr->getCircle().getRadius() << "\n";
 
 	//DATA SPRITES
 	DataSprite* minigameSpritePtr = new DataSprite("minigameSprite.png", 0.3, 0.3);
@@ -255,7 +254,7 @@ int main() {
 	GameSprite* rightAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2);
 	rightAcceptGoal->setPosition(sf::Vector2f(450, 110));
 	rightAcceptGoal->setGravitationalPull(false);
-	rightAcceptGoal->setMass(pullingMass);//700 00
+	rightAcceptGoal->setMass(pullingMass);//700 000
 	acceptVector.push_back(*rightAcceptGoal);
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -263,6 +262,10 @@ int main() {
 	GameText* fadeAlpha = new GameText("A long time ago...", generalFont, 32, white, miniGameTitlePosition);
 	sf::Color nC(255, 75, 45,255);
 	fadeAlpha->setColor(nC);
+
+	//For_each needs to be of the same data type?
+	std::for_each(retainStrings.begin(), retainStrings.end(), [](string x) {
+		;});
 	
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
 	GameScreen* pushPtr  = new GameScreen("PUSH!", generalFont, 25, 25, window);
@@ -277,13 +280,9 @@ int main() {
 	mainScreens mainScreensENUM = startMAIN;
 	gameScreens gameScreensENUM = mainENUM;
 
-	float previousFrame = 0;
-	float deltaTime = 0;
-
 	//GAME LOOP: mainScreensENUM
 	sf::Event event;
 	while (window.isOpen()) {
-		previousFrame = gameTimerPtr->getElapsedSeconds();
 		window.display();
 		window.clear();
 		translatedMousePosition = setMousePosition(window);
@@ -336,7 +335,7 @@ int main() {
 			case gameMAIN://GAME SCREEN
 			window.draw(pauseButtonPtr->getSprite());
 			if (gameTimerPtr->getTimeRemaining() > 0) {//game timer
-				timerTextPtr->getText().setString(gameTimerPtr->getString(out));
+				timerTextPtr->getText().setString(gameTimerPtr->getTimerString(out));
 				gameTimerPtr = gameTimerPtr->manageGameTimer(gameTimerClock, gameTimerPtr);
 				
 				//PAUSE
@@ -392,7 +391,7 @@ int main() {
 					break;
 				case rememberENUM://REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER 
 					//swapping can be used to randomize vectors to increase difficulty
-					playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, false);
+					playerCirclePtr->handlePlayerMovementWithinScreen(window, false);
 					window.draw(tipTextPtr->getText());
 					window.draw(playerCirclePtr->getCircle());
 					rememberFullBubbles.drawSprites(window, -1);
@@ -594,7 +593,7 @@ int main() {
 						case 1:
 							//timer for the prompt screen
 							if (ignoreTimerPtr->getTimeRemaining() > 0.02) {
-								tipTextPtr->setString_Origin_Position("Time Left: " + ignoreTimerPtr->getString(out), sf::Vector2f(window.getSize().x / 2, 425));
+								tipTextPtr->setString_Origin_Position("Time Left: " + ignoreTimerPtr->getTimerString(out), sf::Vector2f(window.getSize().x / 2, 425));
 								ignoreTimerPtr = ignoreTimerPtr->manageGameTimer(ignoreTimerClock, ignoreTimerPtr);
 							} else { 
 								ignoreScreen = 2;
@@ -656,7 +655,7 @@ int main() {
 								playerCirclePtr->handleWallCollision(AcceptWallsVector.at(i).hasSATCollision(playerCirclePtr));
 							}
 						}
-						playerCirclePtr->handlePlayerMovementWithinScreen(window, deltaTime, false);
+						playerCirclePtr->handlePlayerMovementWithinScreen(window, false);
 						for (int i = 0; i < acceptVector.size(); i++) {
 							if (!acceptVector.at(0).getIsVisible()) {
 								minigameDataSpriteVector.updateIndividualTexture(acceptENUM, "completedMinigameSprite.png");
@@ -705,8 +704,15 @@ int main() {
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 						retainPtr->drawScreen(window, timerTextPtr->getText());
-						window.draw(fadeAlpha->getText());
-						fadeAlpha->fadeText();
+
+						//for_each(retainStrings.begin(), retainStrings.end(), void());
+						//std::for_each(retainStrings.begin(), retainStrings.end(), fadeAlpha->handleFallingText(translatedMousePosition));
+						for (int i = 0; i < retainStrings.size(); i++) {
+							fadeAlpha->handleFallingText(translatedMousePosition);
+							window.draw(fadeAlpha->getText());
+						}
+
+
 					break;
 					case pushENUM://PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH 
 						pushPtr->drawScreen(window, timerTextPtr->getText());
@@ -736,6 +742,5 @@ int main() {
 			break;
 		}	
 
-		deltaTime = gameTimerPtr->getElapsedSeconds() - previousFrame;
 	}
 }
