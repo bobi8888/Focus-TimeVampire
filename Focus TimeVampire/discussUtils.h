@@ -1,6 +1,5 @@
 #pragma once
 
-
 sf::Color blockerFill(0,0,0);
 sf::Color blockerBorder(0,0,0);
 vector <sf::RectangleShape> textBlockersVector; 

@@ -1,5 +1,4 @@
 #pragma once
-
 void loadFont(sf::Font& font);
 class GameText{
 	private:
