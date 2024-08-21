@@ -45,18 +45,16 @@ int main() {
 	sf::Font generalFont;
 	loadFont(generalFont);
 	sf::Color white(sf::Color::White);
+	sf::Color black(sf::Color::Black);
 	sf::Vector2f miniGameTitlePosition(window.getSize().x / 2, 40);
+	sf::Vector2f timerPosition(5, 30);
+	sf::Vector2f ignorePromptPosition(50, 125);
 	//string string, sf::Font &font, int characterSize, sf::Color &color, sf::Vector2f position
-	GameText* timerTextPtr = new GameText("",generalFont, 20, white, miniGameTitlePosition);
-	timerTextPtr->getText().setPosition(sf::Vector2f(5,30));
-	GameText* bannerTextPtr = new GameText("", generalFont, 30, white, miniGameTitlePosition);
-	bannerTextPtr->getText().setFillColor(sf::Color::Black);
+	GameText* timerTextPtr = new GameText("",generalFont, 20, white, timerPosition);
+	GameText* bannerTextPtr = new GameText("", generalFont, 30, black, miniGameTitlePosition);
 	GameText* playerTextPtr = new GameText("", generalFont, 30, white, miniGameTitlePosition);
-	playerTextPtr->getText().setFillColor(sf::Color::White);
 	GameText* tipTextPtr = new GameText("Enter the missing values!", generalFont, 25, white, miniGameTitlePosition);
-	playerTextPtr->getText().setFillColor(sf::Color::White);
-	GameText* ignorePromptTextPtr = new GameText("", generalFont, 30, white, miniGameTitlePosition);
-	ignorePromptTextPtr->setTextPosition(sf::Vector2f(50, 125));
+	GameText* ignorePromptTextPtr = new GameText("", generalFont, 30, white, ignorePromptPosition);
 
 	//GAME SPRITES
 	GameSprite* startButtonPtr = new GameSprite("startSprite.png", 0.5, 0.5);
