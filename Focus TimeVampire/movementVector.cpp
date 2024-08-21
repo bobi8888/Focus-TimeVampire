@@ -1,5 +1,5 @@
-#include "utils.h"
-#include "movementVector.h"
+//#include "utils.h"
+//#include "movementVector.h"
 
 //void MovementVector::setQuadrant(sf::CircleShape circle) {
 //	//need previousCoord and currentCoord

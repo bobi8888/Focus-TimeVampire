@@ -1,10 +1,10 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-using std::string;
+//#include <SFML/Graphics.hpp>
+//using std::string;
 
 class GameTimer {
 	private:
-		int precision = 2;
+		int timerPrecision = 2;
 		float elapsedSeconds = 0;
 		float timerLength = 1;
 		float timeRemaining = timerLength;
@@ -12,22 +12,18 @@ class GameTimer {
 		string timerString;
 
 	public:
+		GameTimer();
 		GameTimer(float newTimerLength);
-		int getPrecision();
 		void setPrecision();
 		float getTimeRemaining();
 		void setTimeRemaining(sf::Clock& clock);
 		void resetTimer();
-		float getElapsedSeconds();
-		void setElapsedSeconds(sf::Clock& clock);
-		float getTimerLength();
 		void setTimerLength(float time);
-		float getTimeTaken();
 		void setTimeTaken();
-		sf::Text setTimerString(std::ostringstream& out, static sf::Text &timerText);
+		//sf::Text setTimerString(std::ostringstream& out, static sf::Text &timerText);
 		GameTimer* manageGameTimer(sf::Clock &clock, GameTimer* gameTimerPtr);
 		GameTimer* pause(sf::Clock &clock, GameTimer* gameTimerPtr);
 		GameTimer* timeUp(GameTimer* gameTimerPtr);
-		string getString(std::ostringstream& out);
+		string getTimerString(std::ostringstream& out);
 		bool handleMinigamePace(float minigameTime, float minigameSpeed);
 };

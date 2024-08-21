@@ -143,7 +143,7 @@ public:
 	void handleArrowKeyInput();
 	void handleScreenBoundsCollision(sf::RenderWindow& window);
 	bool handleWallCollision(bool isColliding);
-	void handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime, bool isColliding);
+	void handlePlayerMovementWithinScreen(sf::RenderWindow& window, bool isColliding);
 
 	//Vertex Array Collisions
 	sf::Vector2f getNormalAxisMinCoords();

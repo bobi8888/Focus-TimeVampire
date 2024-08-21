@@ -90,7 +90,7 @@ bool Player::handleWallCollision(bool isColliding) {
 		return false;
 	}
 }
-void Player::handlePlayerMovementWithinScreen(sf::RenderWindow& window, float deltaTime, bool isColliding) {
+void Player::handlePlayerMovementWithinScreen(sf::RenderWindow& window, bool isColliding) {
 	handleArrowKeyInput();
 	handlePlayerMotion();
 	handleWallCollision(isColliding);

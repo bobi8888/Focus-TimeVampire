@@ -156,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="movementVector.h" />
+    <ClInclude Include="retainUtils.h" />
     <ClInclude Include="wall.h" />
     <ClInclude Include="discussUtils.h" />
     <ClInclude Include="gameSprite.h" />
