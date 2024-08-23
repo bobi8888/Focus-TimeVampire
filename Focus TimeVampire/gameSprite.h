@@ -6,7 +6,7 @@ class GameSprite {
 		sf::Texture texture;
 		bool isVisible = true, isComplete = false, canMove = false;
 		//COLLISION
-		float xyOverlap = 30;
+		float collision_xyOverlap = 30;
 		sf::RectangleShape overlap;
 
 		//FORCE
@@ -25,7 +25,7 @@ class GameSprite {
 
 		friend class DataSpriteVector;
 	public:
-		GameSprite(string spritePNG, float x, float y);
+		GameSprite(string spritePNG, float x, float y, sf::Vector2f spritePos);
 		void setNewTexture(string spritePNG); 
 		sf::Sprite getSprite();
 		void setRotation(float angle);

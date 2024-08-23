@@ -1,13 +1,14 @@
 #include "utils.h"
 #include "gameSprite.h"
 
-GameSprite::GameSprite(string spritePNG, float xScale, float yScale) {
-	sprite.setScale(xScale, yScale);
+GameSprite::GameSprite(string spritePNG, float xScale, float yScale, sf::Vector2f spritePos) {
 	texture.loadFromFile(spritePNG);
 	sprite.setTexture(texture);
+	sprite.setScale(xScale, yScale);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
-	overlap.setSize(sf::Vector2f(xyOverlap, xyOverlap));
-	overlap.setOrigin(sf::Vector2f(xyOverlap / 2, xyOverlap / 2));
+	overlap.setSize(sf::Vector2f(collision_xyOverlap, collision_xyOverlap));
+	overlap.setOrigin(sf::Vector2f(collision_xyOverlap / 2, collision_xyOverlap / 2));
+	sprite.setPosition(spritePos);
 	overlap.setFillColor(sf::Color::White);
 }
 

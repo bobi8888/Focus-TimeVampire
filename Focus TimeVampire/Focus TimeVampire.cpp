@@ -59,36 +59,27 @@ int main() {
 	GameText* ignorePromptTextPtr = new GameText("", generalFont, 30, white, ignorePromptPosition);
 
 	//GAME SPRITES
-	GameSprite* startButtonPtr = new GameSprite("startSprite.png", 0.5, 0.5);
-	startButtonPtr->setPosition(getCenterOfWindow(window));
-	GameSprite* questionButtonPtr = new GameSprite("questionButton.png", 0.4, 0.4);
-	questionButtonPtr ->setPosition(sf::Vector2f(window.getSize().x/2, 300));
-	GameSprite* gobackButtonPtr = new GameSprite("gobackButton.png", 0.35, 0.35);
-	gobackButtonPtr->setPosition(sf::Vector2f(window.getSize().x / 4, window.getSize().y - 100));
-	GameSprite* skipButtonPtr = new GameSprite ("skipButton.png", 0.35, 0.35);
-	skipButtonPtr->setPosition(sf::Vector2f(window.getSize().x / 4 * 3 , window.getSize().y - 100));
-	GameSprite* pauseButtonPtr = new GameSprite("pauseSprite.png", 0.25, 0.25);
-	pauseButtonPtr->setPosition(sf::Vector2f(window.getSize().x - 35, 40));
-	GameSprite* resumeButtonPtr = new GameSprite("resumeSprite.png", 0.5, 0.5);
-	resumeButtonPtr->setPosition(getCenterOfWindow(window));
-	GameSprite* solutionButtonPtr = new GameSprite("solutionSprite.png", 0.3, 0.3);
-	solutionButtonPtr->setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y - 50));
-	GameSprite* bannerSpritePtr = new GameSprite("bannerSprite.png", 1, 1);
-	bannerSpritePtr->setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y - 50));
+	GameSprite* startButtonPtr = new GameSprite("startSprite.png", 0.5, 0.5, centerOfScreen);
+	GameSprite* questionButtonPtr = new GameSprite("questionButton.png", 0.4, 0.4, sf::Vector2f(window.getSize().x / 2, 300));
+	GameSprite* gobackButtonPtr = new GameSprite("gobackButton.png", 0.35, 0.35, sf::Vector2f(window.getSize().x / 4, window.getSize().y - 100));
+	GameSprite* skipButtonPtr = new GameSprite ("skipButton.png", 0.35, 0.35, sf::Vector2f(window.getSize().x / 4 * 3, window.getSize().y - 100));
+	GameSprite* pauseButtonPtr = new GameSprite("pauseSprite.png", 0.25, 0.25, sf::Vector2f(window.getSize().x - 35, 40));
+	GameSprite* resumeButtonPtr = new GameSprite("resumeSprite.png", 0.5, 0.5, centerOfScreen);
+	GameSprite* solutionButtonPtr = new GameSprite("solutionSprite.png", 0.3, 0.3, sf::Vector2f(window.getSize().x / 2, window.getSize().y - 50));
+	GameSprite* bannerSpritePtr = new GameSprite("bannerSprite.png", 1, 1, sf::Vector2f(window.getSize().x / 2, window.getSize().y - 50));
 	bannerTextPtr->getText().setPosition(sf::Vector2f(bannerSpritePtr->getSprite().getPosition().x, bannerSpritePtr->getSprite().getPosition().y - 20));
-	GameSprite* backButtonPtr = new GameSprite("backSprite.png", 0.18, 0.18);
-	backButtonPtr->setPosition(sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
+	GameSprite* backButtonPtr = new GameSprite("backSprite.png", 0.18, 0.18, sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
 
 	//TRANSFORMABLE SPRITES
 	Player* playerCirclePtr = new Player("playerSprite.png",1, 7, 0.2);
 	playerCirclePtr->setPlayerPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y / 2));
 
 	//DATA SPRITES
-	DataSprite* minigameSpritePtr = new DataSprite("minigameSprite.png", 0.3, 0.3);
-	DataSprite* fullBubblePtr = new DataSprite("fullBubbleSprite.png", 1, 1);
-	DataSprite* emptyBubblePtr = new DataSprite("emptyBubbleSprite.png", 1, 1);
-	DataSprite* countingSpritePtr = new DataSprite("countingSprite.png", 0.5, 0.5);
-	DataSprite* dataAcceptSpritePtr = new DataSprite("acceptSprite.png", 0.3, 0.3);
+	DataSprite* minigameSpritePtr = new DataSprite("minigameSprite.png", 0.3, 0.3, partStart);
+	DataSprite* fullBubblePtr = new DataSprite("fullBubbleSprite.png", 1, 1, partStart);
+	DataSprite* emptyBubblePtr = new DataSprite("emptyBubbleSprite.png", 1, 1, partStart);
+	DataSprite* countingSpritePtr = new DataSprite("countingSprite.png", 0.5, 0.5, partStart);
+	DataSprite* dataAcceptSpritePtr = new DataSprite("acceptSprite.png", 0.3, 0.3, partStart);
 
 	//SPRITE VECTORS	
 	DataSpriteVector minigameDataSpriteVector(9,*minigameSpritePtr);
@@ -129,7 +120,7 @@ int main() {
 	GameScreen* assembleGameScreenPtr = new GameScreen("ASSEMBLE!", generalFont, 25, 25, window);
 	assembleGameScreenPtr->addSprite(solutionButtonPtr->getSprite());
 	GameScreen* assembleSolutionGameScreenPtr = new GameScreen("ASSEMBLE Solution", generalFont, 25, 25, window);
-	pcbSolvedSprite.setPosition(getCenterOfWindow(window));
+	pcbSolvedSprite.setPosition(centerOfScreen);
 	assembleSolutionGameScreenPtr->addSprite(pcbSolvedSprite.getSprite());
 	for (int i = 0; i < 9; i++) {assembleDataSpriteVector.addSprite(assemblePartsSpriteVector.at(i), 1); }
 	assembleDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2 - 10), 3, 3, 90, 120);
@@ -152,7 +143,7 @@ int main() {
 		textBlocker.setOutlineThickness(3);
 		textBlockersVector.push_back(textBlocker);
 	}
-	GameSprite* discussBannerSpritePtr = new GameSprite("bannerSprite.png", 1.3, 1.1);
+	GameSprite* discussBannerSpritePtr = new GameSprite("bannerSprite.png", 1.3, 1.1, partStart);
 	discussBannerSpritePtr->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y - 150));
 	discussLeftAnswerPosition = sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25, discussBannerSpritePtr->getSprite().getPosition().y);
 	discussRightAnswerPosition = sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25, discussBannerSpritePtr->getSprite().getPosition().y);
@@ -233,22 +224,19 @@ int main() {
 	vector <GameSprite> acceptVector;
 	//PUSHING: Index 0
 	double pushingMass = 3500000;
-	GameSprite* finalAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2);
-	finalAcceptGoal->setPosition(sf::Vector2f(250, 70));
+	GameSprite* finalAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2, sf::Vector2f(250, 70));
 	finalAcceptGoal->setMass(pushingMass * 2);//3 500 000 after right is collected
 	acceptVector.push_back(*finalAcceptGoal);
 
 	//PULLING
 	double pullingMass = 700000;
 	//Index 1
-	GameSprite* leftAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2);
-	leftAcceptGoal->setPosition(sf::Vector2f(100, 450));
+	GameSprite* leftAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2, sf::Vector2f(100, 450));
 	leftAcceptGoal->setGravitationalPull(false);
 	leftAcceptGoal ->setMass(pullingMass);//700 000
 	acceptVector.push_back(*leftAcceptGoal);
 	//Index 2
-	GameSprite* rightAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2);
-	rightAcceptGoal->setPosition(sf::Vector2f(450, 110));
+	GameSprite* rightAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2, sf::Vector2f(450, 110));
 	rightAcceptGoal->setGravitationalPull(false);
 	rightAcceptGoal->setMass(pullingMass);//700 000
 	acceptVector.push_back(*rightAcceptGoal);
