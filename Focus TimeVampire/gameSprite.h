@@ -127,7 +127,7 @@ private:
 	int spriteContactIndex = -1;
 	friend class Wall;
 public:
-	Player(string newTexture, float speed, float rotationSpeed, float scale);
+	Player(string newTexture, float rotationSpeed, float scale, sf::Vector2f startingPosition);
 	sf::CircleShape getCircle();
 	void setPlayerPosition(sf::Vector2f newPosition);
 	void setPreviousPosition();
