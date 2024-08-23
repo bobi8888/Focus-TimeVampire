@@ -2,13 +2,13 @@
 #include "gameSprite.h"
 #include "wall.h"
 
-Player::Player(string newTexture, float movement, float rotation, float scale) {
+Player::Player(string newTexture, float rotation, float scale, sf::Vector2f startingPosition) {
 	texture.loadFromFile(newTexture);
 	circle.setRadius(texture.getSize().x * scale / 2);
 	circle.setTexture(&texture);
 	circle.setOrigin(texture.getSize().x / 2 * scale, texture.getSize().y / 2 * scale);
-	//speed = movement;
 	rotationSpeed = rotation;
+	circle.setPosition(startingPosition);
 }
 sf::CircleShape Player::getCircle() {
 	return circle;

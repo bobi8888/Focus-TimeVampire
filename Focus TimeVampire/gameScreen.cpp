@@ -4,13 +4,13 @@
 
 #include"gameScreen.h"
 
-GameScreen::GameScreen(string string, sf::Font& font, int charSize, float titleSpaceFromTop, sf::RenderWindow& window) {
+GameScreen::GameScreen(string string, sf::Font& font, int charSize, sf::Vector2f titlePosition) {
 	screenText.getText().setFont(font);
 	screenText.getText().setCharacterSize(charSize);
 	screenText.getText().setString(string);
 	screenText.getText().setOrigin(sf::Vector2f(screenText.getText().getGlobalBounds().width / 2, screenText.getText().getCharacterSize() / 2
 		+ ((screenText.getText().getCharacterSize() - screenText.getText().getGlobalBounds().height) / 2)));
-	screenText.getText().setPosition(sf::Vector2f(window.getSize().x / 2, titleSpaceFromTop));
+	screenText.getText().setPosition(titlePosition);
 }
 void GameScreen::addSprite(const sf::Sprite& newSprite) {
 	vectorOfSprites.push_back(newSprite);

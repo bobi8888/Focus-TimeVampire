@@ -41,22 +41,12 @@ int main() {
 	std::stringstream stream;
 	//srand(time(NULL));
 
-	//FONT & TEXT
-	sf::Font generalFont;
-	loadFont(generalFont);
-	sf::Color white(sf::Color::White);
-	sf::Color black(sf::Color::Black);
+	//POSITIONS
 	sf::Vector2f centerOfScreen(window.getSize().x / 2, window.getSize().y / 2);
 	sf::Vector2f miniGameTitlePosition(window.getSize().x / 2, 40);
 	sf::Vector2f discussQuesitonPosition(window.getSize().x / 2, 200);
 	sf::Vector2f timerPosition(5, 30);
 	sf::Vector2f ignorePromptPosition(50, 125);
-	//string string, sf::Font &font, int characterSize, sf::Color &color, sf::Vector2f position
-	GameText* timerTextPtr = new GameText("",generalFont, 20, white, timerPosition);
-	GameText* bannerTextPtr = new GameText("", generalFont, 30, black, miniGameTitlePosition);
-	GameText* playerTextPtr = new GameText("", generalFont, 30, white, miniGameTitlePosition);
-	GameText* tipTextPtr = new GameText("Enter the missing values!", generalFont, 25, white, miniGameTitlePosition);
-	GameText* ignorePromptTextPtr = new GameText("", generalFont, 30, white, ignorePromptPosition);
 
 	//GAME SPRITES
 	GameSprite* startButtonPtr = new GameSprite("startSprite.png", 0.5, 0.5, centerOfScreen);
@@ -67,12 +57,24 @@ int main() {
 	GameSprite* resumeButtonPtr = new GameSprite("resumeSprite.png", 0.5, 0.5, centerOfScreen);
 	GameSprite* solutionButtonPtr = new GameSprite("solutionSprite.png", 0.3, 0.3, sf::Vector2f(window.getSize().x / 2, window.getSize().y - 50));
 	GameSprite* bannerSpritePtr = new GameSprite("bannerSprite.png", 1, 1, sf::Vector2f(window.getSize().x / 2, window.getSize().y - 50));
-	bannerTextPtr->getText().setPosition(sf::Vector2f(bannerSpritePtr->getSprite().getPosition().x, bannerSpritePtr->getSprite().getPosition().y - 20));
 	GameSprite* backButtonPtr = new GameSprite("backSprite.png", 0.18, 0.18, sf::Vector2f(window.getSize().x - 55, window.getSize().y - 30));
 
+	//FONT & TEXT
+	sf::Font generalFont;
+	loadFont(generalFont);
+	sf::Color white(sf::Color::White);
+	sf::Color black(sf::Color::Black);
+	//string string, sf::Font &font, int characterSize, sf::Color &color, sf::Vector2f position
+	GameText* timerTextPtr = new GameText("", generalFont, 20, white, timerPosition);
+	GameText* bannerTextPtr = new GameText("", generalFont, 30, black, miniGameTitlePosition);
+	bannerTextPtr->getText().setPosition(sf::Vector2f(bannerSpritePtr->getSprite().getPosition().x, bannerSpritePtr->getSprite().getPosition().y - 20));
+	GameText* playerTextPtr = new GameText("", generalFont, 30, white, miniGameTitlePosition);
+	GameText* tipTextPtr = new GameText("Enter the missing values!", generalFont, 25, white, miniGameTitlePosition);
+	GameText* ignorePromptTextPtr = new GameText("", generalFont, 30, white, ignorePromptPosition);
+
 	//TRANSFORMABLE SPRITES
-	Player* playerCirclePtr = new Player("playerSprite.png",1, 7, 0.2);
-	playerCirclePtr->setPlayerPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y / 2));
+	float playerRotationSpeed = 7;
+	Player* playerCirclePtr = new Player("playerSprite.png",playerRotationSpeed, 0.2, centerOfScreen);
 
 	//DATA SPRITES
 	DataSprite* minigameSpritePtr = new DataSprite("minigameSprite.png", 0.3, 0.3, partStart);
@@ -82,6 +84,7 @@ int main() {
 	DataSprite* dataAcceptSpritePtr = new DataSprite("acceptSprite.png", 0.3, 0.3, partStart);
 
 	//SPRITE VECTORS	
+	//add start position to datasprites and create their grid location at construction
 	DataSpriteVector minigameDataSpriteVector(9,*minigameSpritePtr);
 	minigameDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 3, 3, 1, 1);
 
@@ -91,6 +94,7 @@ int main() {
 
 	DataSpriteVector rememberEmptyBubbles(bubbleQTY, *emptyBubblePtr);
 	rememberEmptyBubbles.setPositions(sf::Vector2f(420, 250), bubbleQTY, 1, 25, 0);
+	//add to constructor or make its own function?
 	rememberFullBubbles.setLetters();
 	rememberFullBubbles.setLongValues();
 	rememberFullBubbles.setStringValues(stream);
@@ -101,37 +105,43 @@ int main() {
 	countingSprites.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 1, countingQTY, 0, 4);
 
 	//MAIN GAME SCREENS
-	GameScreen* startScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25, 25, window);
+	sf::Vector2f screenTitlePosition(centerOfScreen.x, 25);
+	GameScreen* startScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25,screenTitlePosition);
 	startScreenPtr->addSprite(startButtonPtr ->getSprite());
-	GameScreen* gameScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25, 25, window);
-	GameScreen* resumeScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25, 25, window);
+	GameScreen* gameScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25, screenTitlePosition);
+	GameScreen* resumeScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25, screenTitlePosition);
 	resumeScreenPtr->addSprite(resumeButtonPtr->getSprite());
 
 	//MINIGAMES
 	//REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER
-	GameScreen* rememberGameScreenPtr = new GameScreen("REMEMBER!", generalFont, 25, 25, window);
+	GameScreen* rememberGameScreenPtr = new GameScreen("REMEMBER!", generalFont, 25, screenTitlePosition);
 	bannerTextPtr->setTextString("Enter #");
 	bannerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(),0,0);
+
 	//COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT 
-	GameScreen* countGameScreenPtr = new GameScreen("COUNT!", generalFont, 25, 25, window);
+	GameScreen* countGameScreenPtr = new GameScreen("COUNT!", generalFont, 25, screenTitlePosition);
 	stream << countingQTY;
 	string countingString = stream.str();
+
 	//ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE ASSEMBLE 
-	GameScreen* assembleGameScreenPtr = new GameScreen("ASSEMBLE!", generalFont, 25, 25, window);
+	GameScreen* assembleGameScreenPtr = new GameScreen("ASSEMBLE!", generalFont, 25, screenTitlePosition);
 	assembleGameScreenPtr->addSprite(solutionButtonPtr->getSprite());
-	GameScreen* assembleSolutionGameScreenPtr = new GameScreen("ASSEMBLE Solution", generalFont, 25, 25, window);
+	GameScreen* assembleSolutionGameScreenPtr = new GameScreen("ASSEMBLE Solution", generalFont, 25, screenTitlePosition);
 	pcbSolvedSprite.setPosition(centerOfScreen);
 	assembleSolutionGameScreenPtr->addSprite(pcbSolvedSprite.getSprite());
 	for (int i = 0; i < 9; i++) {assembleDataSpriteVector.addSprite(assemblePartsSpriteVector.at(i), 1); }
 	assembleDataSpriteVector.setPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2 - 10), 3, 3, 90, 120);
 	assembleDataSpriteVector.setSpriteToComplete(4);
+	
+	//simplify this?
 	assembleGoal.setOrigin(sf::Vector2f(assembleGoal.getGlobalBounds().width / 2, assembleGoal.getGlobalBounds().height / 2));
 	for (int i = 0; i < assembleGoalPositions.size(); i++) {
 		assembleGoal.setPosition(assembleGoalPositions[i]);
 		assemblePartsGoals.push_back(assembleGoal);
 	}
+
 	//DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
-	GameScreen* discussGameScreenPtr = new GameScreen("DISCUSS!", generalFont, 25, 25, window);
+	GameScreen* discussGameScreenPtr = new GameScreen("DISCUSS!", generalFont, 25, screenTitlePosition);
 	DiscussText* npcTextPtr = new DiscussText(question1, generalFont, 25, white, discussQuesitonPosition);
 	npcTextPtr->setCharWidthsVector(question1);
 	for (int i = 0; i < npcTextPtr->getTextString().size(); i++) {
@@ -152,9 +162,9 @@ int main() {
 	rightAnswerPtr->getText().setFillColor(sf::Color::Black);
 
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
-	GameScreen* ignorePromptScreenPtr = new GameScreen("IGNORE!", generalFont, 25, 25, window);
+	GameScreen* ignorePromptScreenPtr = new GameScreen("IGNORE!", generalFont, 25, screenTitlePosition);
 	ignorePromptScreenPtr->addSprite(questionButtonPtr->getSprite());
-	GameScreen* ignoreQuestionScreenPtr = new GameScreen("IGNORE!", generalFont, 25, 25, window);
+	GameScreen* ignoreQuestionScreenPtr = new GameScreen("IGNORE!", generalFont, 25, screenTitlePosition);
 	ignoreQuestionScreenPtr->addSprite(gobackButtonPtr->getSprite());
 	ignoreQuestionScreenPtr->addSprite(skipButtonPtr->getSprite());
 
@@ -183,7 +193,7 @@ int main() {
 	ignorePromptTextPtr = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
 
 	//ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
-	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, 25, window);
+	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, screenTitlePosition);
 	vector <Wall> AcceptWallsVector;
 	//centerX, centerY, length(x), height(y), angle
 
@@ -242,7 +252,7 @@ int main() {
 	acceptVector.push_back(*rightAcceptGoal);
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
-	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, 25, window);
+	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, screenTitlePosition);
 	GameText* fadeAlpha = new GameText("A long time ago...", generalFont, 32, white, miniGameTitlePosition);
 	sf::Color nC(255, 75, 45,255);
 	fadeAlpha->setColor(nC);
@@ -252,9 +262,9 @@ int main() {
 		;});
 	
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
-	GameScreen* pushPtr  = new GameScreen("PUSH!", generalFont, 25, 25, window);
+	GameScreen* pushPtr  = new GameScreen("PUSH!", generalFont, 25, screenTitlePosition);
 	// BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS BONUS
-	GameScreen* bonusPtr = new GameScreen("BONUS!", generalFont, 25, 25, window);
+	GameScreen* bonusPtr = new GameScreen("BONUS!", generalFont, 25, screenTitlePosition);
 
 	bool deleteKeyWorkaround = false;//both needed for delete workaround
 	bool acceptTextInput = false;
