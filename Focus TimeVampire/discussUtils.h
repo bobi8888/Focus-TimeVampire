@@ -3,14 +3,16 @@
 sf::Color blockerFill(0,0,0);
 sf::Color blockerBorder(0,0,0);
 vector <sf::RectangleShape> textBlockersVector; 
+sf::Vector2f discussLeftAnswerPosition;
+sf::Vector2f discussRightAnswerPosition;
 float discussTime = 0;
 float* discussTimePtr = &discussTime;
 
 float discussSpeed = 0.02;
 float* discussSpeedPtr = &discussSpeed;
 
-float questionY = 200;
-float* questionYPtr = &questionY;
+float discussQuestionY = 200;
+float* questionYPtr = &discussQuestionY;
 
 int charToShow = 0;
 int* charToShowPtr = &charToShow;

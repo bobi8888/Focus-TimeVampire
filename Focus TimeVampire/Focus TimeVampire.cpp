@@ -46,7 +46,9 @@ int main() {
 	loadFont(generalFont);
 	sf::Color white(sf::Color::White);
 	sf::Color black(sf::Color::Black);
+	sf::Vector2f centerOfScreen(window.getSize().x / 2, window.getSize().y / 2);
 	sf::Vector2f miniGameTitlePosition(window.getSize().x / 2, 40);
+	sf::Vector2f discussQuesitonPosition(window.getSize().x / 2, 200);
 	sf::Vector2f timerPosition(5, 30);
 	sf::Vector2f ignorePromptPosition(50, 125);
 	//string string, sf::Font &font, int characterSize, sf::Color &color, sf::Vector2f position
@@ -139,7 +141,7 @@ int main() {
 	}
 	//DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS DISCUSS 
 	GameScreen* discussGameScreenPtr = new GameScreen("DISCUSS!", generalFont, 25, 25, window);
-	DiscussText* npcTextPtr = new DiscussText(question1, generalFont, 25, white, miniGameTitlePosition);
+	DiscussText* npcTextPtr = new DiscussText(question1, generalFont, 25, white, discussQuesitonPosition);
 	npcTextPtr->setCharWidthsVector(question1);
 	for (int i = 0; i < npcTextPtr->getTextString().size(); i++) {
 		sf::RectangleShape textBlocker(sf::Vector2f(npcTextPtr->getCharWidthsVector()[i], npcTextPtr->getText().getCharacterSize() + 10));
@@ -152,16 +154,12 @@ int main() {
 	}
 	GameSprite* discussBannerSpritePtr = new GameSprite("bannerSprite.png", 1.3, 1.1);
 	discussBannerSpritePtr->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y - 150));
-
-	GameText* leftAnswerPtr = new GameText(response1A, generalFont, 32, white, miniGameTitlePosition);
-	leftAnswerPtr->getText().setFillColor(sf::Color::Black);
-	leftAnswerPtr->setTextPosition(sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
-		, discussBannerSpritePtr->getSprite().getPosition().y));
-
-	GameText* rightAnswerPtr = new GameText(response1B, generalFont, 32, white, miniGameTitlePosition);
+	discussLeftAnswerPosition = sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25, discussBannerSpritePtr->getSprite().getPosition().y);
+	discussRightAnswerPosition = sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25, discussBannerSpritePtr->getSprite().getPosition().y);
+	GameText* leftAnswerPtr = new GameText(response1A, generalFont, 32, black, discussLeftAnswerPosition);
+	GameText* rightAnswerPtr = new GameText(response1B, generalFont, 32, black, discussRightAnswerPosition);
 	rightAnswerPtr->getText().setFillColor(sf::Color::Black);
-	rightAnswerPtr->setTextPosition(sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
-		, discussBannerSpritePtr->getSprite().getPosition().y));
+
 	//IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 	GameScreen* ignorePromptScreenPtr = new GameScreen("IGNORE!", generalFont, 25, 25, window);
 	ignorePromptScreenPtr->addSprite(questionButtonPtr->getSprite());
@@ -271,7 +269,7 @@ int main() {
 	GameScreen* bonusPtr = new GameScreen("BONUS!", generalFont, 25, 25, window);
 
 	bool deleteKeyWorkaround = false;//both needed for delete workaround
-	bool acceptText = false;
+	bool acceptTextInput = false;
 
 	enum mainScreens { startMAIN, gameMAIN, resumeMAIN };
 	enum gameScreens { rememberENUM, countENUM, assembleENUM, discussENUM, ignoreENUM, acceptENUM, retainENUM, pushENUM, bonusENUM, mainENUM };
@@ -289,7 +287,6 @@ int main() {
 			if (event.type == sf::Event::Closed)
 				window.close();
 	
-
 			switch (event.key.code) {
 				case sf::Keyboard::Delete://66
 				if(!deleteKeyWorkaround){
@@ -313,7 +310,7 @@ int main() {
 					break;					
 				}			
 			}
-			if (acceptText) {
+			if (acceptTextInput) {//not sure where setIsFull(true) takes place...
 				if(!playerTextPtr->getIsFull()) {
 					if (event.text.unicode < 58 && event.text.unicode >= 48 && event.type != sf::Event::MouseMoved)
 						playerTextPtr->appendTextString(event.text.unicode);
@@ -348,7 +345,7 @@ int main() {
 					if (validSpriteClick (event, backButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true) {
 						gameScreensENUM = mainENUM;
 						playerTextPtr->getText().setString("");
-						acceptText = false;						
+						acceptTextInput = false;						
 					} else window.draw(backButtonPtr->getSprite());
 				}
 
@@ -376,7 +373,7 @@ int main() {
 									convoPtr->play();
 									ignoreTimerClock.restart();
 									bannerSpritePtr->setPosition(getCenterOfWindow(window));
-									acceptText = true;
+									acceptTextInput = true;
 								}
 								//ACCEPT
 								if (gameScreensENUM == acceptENUM) { 
@@ -416,7 +413,7 @@ int main() {
 					else if (playerCirclePtr->hasSpriteCollision(rememberEmptyBubbles.getDataSpriteVector()[playerCirclePtr->getSpriteContactIndex()].getSprite()) == false) {
 						playerCirclePtr->setSpriteContactIndex(-1);
 						playerTextPtr->setTextString("");
-						acceptText = false;
+						acceptTextInput = false;
 						
 					} else {	
 						if (!rememberEmptyBubbles.getSingleSprite(playerCirclePtr->getSpriteContactIndex()).getIsComplete()) {
@@ -428,10 +425,10 @@ int main() {
 							window.draw(bannerTextPtr->getText());
 							window.draw(playerTextPtr->getText());
 							if (playerTextPtr->getTextString().size() <= rememberFullBubbles.getSingleSprite(playerCirclePtr->getSpriteContactIndex()).getStringValue().size() - 1) {
-								acceptText = true; 
+								acceptTextInput = true; 
 							}
 							else {
-								acceptText = false;
+								acceptTextInput = false;
 							}
 						}
 						if (playerTextPtr->getTextString() == rememberFullBubbles.getSingleSprite(playerCirclePtr->getSpriteContactIndex()).getStringValue()) {
@@ -449,7 +446,7 @@ int main() {
 					}							
 					break;
 					case countENUM://COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT 
-					//acceptText = true;
+					//acceptTextInput = true;
 					countGameScreenPtr->drawScreen(window, timerTextPtr->getText());
 					countingSprites.drawSprites(window, -1);							
 					bannerTextPtr->setTextString("How Many?");
@@ -459,8 +456,8 @@ int main() {
 					window.draw(bannerTextPtr->getText());
 					window.draw(playerTextPtr->getText());
 					if (playerTextPtr->getTextString().size() < countingString.size()) {
-						acceptText = true;
-					} else acceptText = false;
+						acceptTextInput = true;
+					} else acceptTextInput = false;
 
 					if (playerTextPtr->getText().getString() == countingString) {
 						playerTextPtr->setTextString("");
@@ -539,16 +536,13 @@ int main() {
 							event.type = sf::Event::EventType::MouseButtonReleased;
 							switch (questionNumber) {
 								case 2:
-									npcTextPtr->updateNextQuestion(question2, window, questionY);
-
-									leftAnswerPtr->setString_Origin_Position(response2A, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
-										, discussBannerSpritePtr->getSprite().getPosition().y));
-									rightAnswerPtr->setString_Origin_Position(response2B, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
-										, discussBannerSpritePtr->getSprite().getPosition().y));
+									npcTextPtr->updateNextQuestion(question2);
+									leftAnswerPtr->setString_Origin_Position(response2A, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25, discussBannerSpritePtr->getSprite().getPosition().y));
+									rightAnswerPtr->setString_Origin_Position(response2B, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25, discussBannerSpritePtr->getSprite().getPosition().y));
 									textBlockersVector = npcTextPtr->resetTextBlockers(textBlockersVector);
 								break;
 								case 3:
-									npcTextPtr->updateNextQuestion(question3, window, questionY);
+									npcTextPtr->updateNextQuestion(question3);
 									leftAnswerPtr->setString_Origin_Position(response3A, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
 										, discussBannerSpritePtr->getSprite().getPosition().y));
 									rightAnswerPtr->setString_Origin_Position(response3B, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
@@ -556,7 +550,7 @@ int main() {
 									textBlockersVector = npcTextPtr->resetTextBlockers(textBlockersVector);
 								break;
 								case 4:
-									npcTextPtr->updateNextQuestion(question4, window, questionY);
+									npcTextPtr->updateNextQuestion(question4);
 									leftAnswerPtr->setString_Origin_Position(response4A, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
 										, discussBannerSpritePtr->getSprite().getPosition().y));
 									rightAnswerPtr->setString_Origin_Position(response4B, sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25
@@ -611,9 +605,9 @@ int main() {
 							break;
 						case 2:		
 							if (playerTextPtr->getTextString().size() <= ignoreKeys[currentKey].size() - 1) {
-								acceptText = true;
+								acceptTextInput = true;
 							} else {
-								acceptText = false;
+								acceptTextInput = false;
 							}
 										
 							if (validSpriteClick(event, skipButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true || playerTextPtr->getTextString() == ignoreKeys[currentKey]) {
