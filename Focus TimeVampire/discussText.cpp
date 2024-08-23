@@ -57,23 +57,24 @@ sf::Color DiscussText::handleColor(sf::Color& color, int redInc, int blueInc, in
 	return color;
 }
 vector <sf::RectangleShape> DiscussText::resetTextBlockers(vector <sf::RectangleShape> textBlockersVector){
+	//the clear apparently gets rid of the old one once a choice has been clicked
 	textBlockersVector.clear();
 	for (int i = 0; i < getTextString().size(); i++) {
 		sf::RectangleShape textBlocker(sf::Vector2f(getCharWidthsVector()[i], getText().getCharacterSize() + 10));
 		textBlocker.setOrigin(textBlocker.getSize().x / 2, textBlocker.getSize().y / 2);
 		textBlocker.setPosition(sf::Vector2f(getText().findCharacterPos(i).x + textBlocker.getSize().x / 2
 			, getText().findCharacterPos(i).y + textBlocker.getSize().y / 2));
-		textBlocker.setFillColor(sf::Color::White);
-		textBlocker.setOutlineColor(sf::Color::Cyan);
+		//textBlocker.setFillColor(sf::Color::White);
+		//textBlocker.setOutlineColor(sf::Color::Cyan);
 		textBlocker.setOutlineThickness(3);
 		textBlockersVector.push_back(textBlocker);
 	}
 	return textBlockersVector;
 }
 
-void DiscussText::updateNextQuestion(string nextQuestion, sf::RenderWindow& window, float questionY){
+void DiscussText::updateNextQuestion(string nextQuestion){
 	clearCharWidthsVector();
 	setTextString(nextQuestion);
 	setCharWidthsVector(nextQuestion);
-	setTextPosition(sf::Vector2f(window.getSize().x / 2, questionY));
+	setTextPosition(getTextPosition());
 }

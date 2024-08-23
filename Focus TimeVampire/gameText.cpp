@@ -8,16 +8,18 @@ void loadFont(sf::Font& font) {
 	}
 }
 
-GameText::GameText(string string, sf::Font &font, int characterSize, sf::Color &color, sf::Vector2f position) {
+GameText::GameText(string string, sf::Font &font, int charSize, sf::Color &color, sf::Vector2f position) {
 	text.setString(string);
 	textString = string;
 	text.setFont(font);
+	characterSize = charSize;
 	text.setCharacterSize(characterSize);
 	textColor = color;
 	text.setFillColor(textColor);
 	text.setOutlineColor(textColor);
 	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2, characterSize / 2 + ((characterSize - text.getGlobalBounds().height) / 2)));
-	text.setPosition(position);
+	textPosition = position;
+	text.setPosition(textPosition);
 }
 sf::Text& GameText::getText() {
 	return text;
@@ -34,8 +36,7 @@ void GameText::appendTextString(sf::String newString){
 	text.setString(textString);
 }
 void GameText::centerTextOriginOnSprite(sf::Sprite sprite, float xOffset, float yOffset) {
-	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2
-	, (text.getCharacterSize() / 2 + ((text.getCharacterSize() - text.getGlobalBounds().height) / 2))));
+	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2, (characterSize / 2 + ((characterSize - text.getGlobalBounds().height) / 2))));
 	text.setPosition(sf::Vector2f(sprite.getPosition().x + xOffset, sprite.getPosition().y + yOffset));
 }
 bool GameText::getIsFull() {
@@ -46,8 +47,7 @@ void GameText::setIsFull(bool newBool) {
 }
 void GameText::deleteLastChar(){	
 	if (textString.size() > 0) {
-		textString.erase(textString.size() - 1, 1);
-		text.setString(textString);
+		text.setString(textString.erase(textString.size() - 1, 1));
 	}
 }
 void GameText::setTextToMoney(std::ostringstream& out) {
@@ -58,7 +58,7 @@ void GameText::setTextToMoney(std::ostringstream& out) {
 	out.str("");
 }
 void GameText::setTextOrigin(){
-	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2, text.getCharacterSize() / 2 + ((text.getCharacterSize() - text.getGlobalBounds().height) / 2)));
+	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2, characterSize / 2 + ((characterSize - text.getGlobalBounds().height) / 2)));
 }
 void GameText::setTextPosition(sf::Vector2f newPosition){
 	text.setOrigin(sf::Vector2f(text.getGlobalBounds().width / 2
@@ -90,4 +90,7 @@ void GameText::handleFallingText(sf::Vector2f mousePosition) {
 		fadeText();
 		moveText();
 	}
+}
+sf::Vector2f GameText::getTextPosition() {
+	return textPosition;
 }
