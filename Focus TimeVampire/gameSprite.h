@@ -6,8 +6,8 @@ class GameSprite {
 		sf::Texture texture;
 		bool isVisible = true, isComplete = false, canMove = false;
 		//COLLISION
-		float collision_xyOverlap = 30;
-		sf::RectangleShape overlap;
+		float hitboxSize = 0;
+		sf::RectangleShape hitbox;
 
 		//FORCE
 		float direction = 0;
@@ -25,7 +25,7 @@ class GameSprite {
 
 		friend class DataSpriteVector;
 	public:
-		GameSprite(string spritePNG, float x, float y, sf::Vector2f spritePos);
+		GameSprite(string spritePNG, float x, float y, sf::Vector2f spritePos, float hbSize);
 		void setNewTexture(string spritePNG); 
 		sf::Sprite getSprite();
 		void setRotation(float angle);
@@ -73,7 +73,7 @@ class DataSpriteVector {
 	public:
 		DataSpriteVector();
 		DataSpriteVector(int qty, DataSprite dataSprite);
-		void setPositions(sf::Vector2f center, int rows, int columns, float rowSpacing, float colSpacing);
+		void setGridPositions(sf::Vector2f center, int rows, int columns, float rowSpacing, float colSpacing);
 
 		vector <DataSprite> getDataSpriteVector();
 		DataSprite getSingleSprite(int index);

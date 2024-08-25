@@ -1,15 +1,15 @@
 #include "utils.h"
 #include "gameSprite.h"
 
-GameSprite::GameSprite(string spritePNG, float xScale, float yScale, sf::Vector2f spritePos) {
+GameSprite::GameSprite(string spritePNG, float xScale, float yScale, sf::Vector2f spritePos, float hbSize) {
 	texture.loadFromFile(spritePNG);
 	sprite.setTexture(texture);
 	sprite.setScale(xScale, yScale);
 	sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
-	overlap.setSize(sf::Vector2f(collision_xyOverlap, collision_xyOverlap));
-	overlap.setOrigin(sf::Vector2f(collision_xyOverlap / 2, collision_xyOverlap / 2));
+	hitbox.setSize(sf::Vector2f(hbSize, hbSize));
+	hitbox.setOrigin(sf::Vector2f(hbSize / 2, hbSize / 2));
 	sprite.setPosition(spritePos);
-	overlap.setFillColor(sf::Color::White);
+	//hitbox.setFillColor(sf::Color::White);
 }
 
 void GameSprite::setNewTexture(string spritePNG) {
@@ -24,7 +24,7 @@ void GameSprite::setRotation(float angle) {
 }
 void GameSprite::setPosition(sf::Vector2f newPosition) {
 	sprite.setPosition(newPosition);
-	overlap.setPosition(newPosition);
+	hitbox.setPosition(newPosition);
 }
 bool GameSprite::getIsVisible() {
 	return isVisible;
@@ -113,7 +113,7 @@ sf::Vector2f GameSprite::getForceOnPlayer() {
 }
 
 sf::RectangleShape GameSprite::getOverlap() {
-	return overlap;
+	return hitbox;
 }
 void GameSprite::setCanMovePlayer(bool movePlayer) {
 	canMovePlayer = movePlayer;

@@ -1,4 +1,4 @@
-#include"utils.h"
+#include "utils.h"
 #include "gameSprite.h"
 #include "randomizedData.h"
 
@@ -8,7 +8,7 @@ DataSpriteVector::DataSpriteVector(int qty, DataSprite dataSprite){
 		dataSpriteVector.push_back(dataSprite);
 	}
 }
-void DataSpriteVector::setPositions(sf::Vector2f center, int rows, int columns, float rowSpacing, float colSpacing) {
+void DataSpriteVector::setGridPositions(sf::Vector2f center, int rows, int columns, float rowSpacing, float colSpacing) {
 	auto xC2C = colSpacing + dataSpriteVector[0].getSprite().getGlobalBounds().width;
 	auto yC2C = rowSpacing + dataSpriteVector[0].getSprite().getGlobalBounds().height;
 
@@ -82,6 +82,8 @@ void DataSpriteVector::setSpriteToComplete(int index) {
 string DataSpriteVector::getLetter(int index) {
 	return dataSpriteVector.at(index).getLetter();
 }
+
+
 void DataSpriteVector::setLetters() {
 	string letters = randomizeStart_Alpha(dataSpriteVector.size());
 	for (int i = 0; i < dataSpriteVector.size(); i++) {
