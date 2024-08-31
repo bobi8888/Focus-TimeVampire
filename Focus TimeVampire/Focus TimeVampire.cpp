@@ -31,9 +31,10 @@ int main() {
 	window.setKeyRepeatEnabled(false);
 
 	//TIME
-	GameTimer* gameTimerPtr = new GameTimer(100);
+	//GAME TIMERS SHOULD HAVE THEIR OWN sf::Clock
+	GameTimer* gameTimer = new GameTimer(100);
 	sf::Clock gameTimerClock;
-	GameTimer* ignoreTimerPtr = new GameTimer(5);
+	GameTimer* ignoreTimer = new GameTimer(5);
 	sf::Clock ignoreTimerClock;
 
 	//STREAM
@@ -42,7 +43,7 @@ int main() {
 	//srand(time(NULL));
 
 	//POSITIONS
-	sf::Vector2f centerOfScreen(window.getSize().x / 2, window.getSize().y / 2);
+	//sf::Vector2f centerOfScreen(window.getSize().x / 2, window.getSize().y / 2);
 	sf::Vector2f miniGameTitlePosition(window.getSize().x / 2, 40);
 	sf::Vector2f discussQuesitonPosition(window.getSize().x / 2, 200);
 	sf::Vector2f timerPosition(5, 30);
@@ -155,7 +156,7 @@ int main() {
 		textBlocker.setOutlineThickness(3);
 		textBlockersVector.push_back(textBlocker);
 	}
-	GameSprite* discussBannerSpritePtr = new GameSprite("bannerSprite.png", 1.3, 1.1, partStart, 0);
+	GameSprite* discussBannerSpritePtr = new GameSprite("bannerSprite.png", 1.3f, 1.1f, partStart, 0);
 	discussBannerSpritePtr->setPosition(sf::Vector2f(window.getSize().x / 2, window.getSize().y - 150));
 	discussLeftAnswerPosition = sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x - discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25, discussBannerSpritePtr->getSprite().getPosition().y);
 	discussRightAnswerPosition = sf::Vector2f(discussBannerSpritePtr->getSprite().getPosition().x + discussBannerSpritePtr->getSprite().getGlobalBounds().width * 0.25, discussBannerSpritePtr->getSprite().getPosition().y);
@@ -184,7 +185,7 @@ int main() {
 	ignoreBeepPtr->setBuffer(ignoreSoundBuffer);
 	ignoreBeepPtr->setVolume(beepVolume);
 
-	beepCountdown = gameTimerPtr->getTimeRemaining() - randomInt(5, 1);
+	beepCountdown = gameTimer->getTimeRemaining() - randomInt(5, 1);
 
 	sf::Text tempText("", generalFont);
 	int randomIgnore_Int = randomInt(2, 15);
@@ -233,25 +234,26 @@ int main() {
 	Wall leftBlockerLeftVertical(110, 300, 70, 10, 90, playerCirclePtr);
 	AcceptWallsVector.push_back(leftBlockerLeftVertical);
 
-	vector <GameSprite> acceptVector;
+	vector <GameSprite> acceptGoalVector;
+	float acceptGoalHitBox = 30;
 	//PUSHING: Index 0
 	double pushingMass = 3500000;
-	GameSprite* finalAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2, sf::Vector2f(250, 70), 30);
+	GameSprite* finalAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2, sf::Vector2f(250, 70), acceptGoalHitBox);
 	finalAcceptGoal->setMass(pushingMass * 2);//3 500 000 after right is collected
-	acceptVector.push_back(*finalAcceptGoal);
+	acceptGoalVector.push_back(*finalAcceptGoal);
 
 	//PULLING
 	double pullingMass = 700000;
 	//Index 1
-	GameSprite* leftAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2, sf::Vector2f(100, 450), 30);
+	GameSprite* leftAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2, sf::Vector2f(100, 450), acceptGoalHitBox);
 	leftAcceptGoal->setGravitationalPull(false);
 	leftAcceptGoal ->setMass(pullingMass);//700 000
-	acceptVector.push_back(*leftAcceptGoal);
+	acceptGoalVector.push_back(*leftAcceptGoal);
 	//Index 2
-	GameSprite* rightAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2, sf::Vector2f(450, 110), 30);
+	GameSprite* rightAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2, sf::Vector2f(450, 110), acceptGoalHitBox);
 	rightAcceptGoal->setGravitationalPull(false);
 	rightAcceptGoal->setMass(pullingMass);//700 000
-	acceptVector.push_back(*rightAcceptGoal);
+	acceptGoalVector.push_back(*rightAcceptGoal);
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, screenTitlePosition);
@@ -329,14 +331,14 @@ int main() {
 
 			case gameMAIN://GAME SCREEN
 			window.draw(pauseButtonPtr->getSprite());
-			if (gameTimerPtr->getTimeRemaining() > 0) {//game timer
-				timerTextPtr->getText().setString(gameTimerPtr->getTimerString(out));
-				gameTimerPtr = gameTimerPtr->manageGameTimer(gameTimerClock, gameTimerPtr);
+			if (gameTimer->getTimeRemaining() > 0) {//game timer
+				timerTextPtr->getText().setString(gameTimer->getTimerString(out));
+				gameTimer = gameTimer->manageGameTimer(gameTimerClock, gameTimer);
 				
 				//PAUSE
 				if (validSpriteClick(event, pauseButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true) {
-					gameTimerPtr = gameTimerPtr->pause(gameTimerClock, gameTimerPtr);
-					ignoreTimerPtr = ignoreTimerPtr->pause(ignoreTimerClock, ignoreTimerPtr);
+					gameTimer = gameTimer->pause(gameTimerClock, gameTimer);
+					ignoreTimer = ignoreTimer->pause(ignoreTimerClock, ignoreTimer);
 					timerTextPtr->getText().setString(("::Paused::"));
 					mainScreensENUM = resumeMAIN;					
 				}		
@@ -365,14 +367,14 @@ int main() {
 								//REMEMBER
 								if (gameScreensENUM == rememberENUM) { 
 									//playerCirclePtr->setSpeed(5); 
-									playerCirclePtr->setPlayerPosition(getCenterOfWindow(window));
+									playerCirclePtr->setPlayerPosition(centerOfScreen);
 								}
 								//IGNORE 
 								if (gameScreensENUM == ignoreENUM) {
 									dullBedPtr->play();
 									convoPtr->play();
 									ignoreTimerClock.restart();
-									bannerSpritePtr->setPosition(getCenterOfWindow(window));
+									bannerSpritePtr->setPosition(centerOfScreen);
 									acceptTextInput = true;
 								}
 								//ACCEPT
@@ -511,10 +513,11 @@ int main() {
 
 					//check that ignore timer is stoping, pausing, restarting etc
 
-						if (discussTime == 0) discussTime = gameTimerPtr->getTimeRemaining();
-						npcTextPtr->charToShowIncrementor(discussTimePtr,gameTimerPtr->getTimeRemaining(), discussSpeedPtr, textBlockersVector);
-						if (gameTimerPtr->handleMinigamePace(discussTime, *discussSpeedPtr)) {
-							if (charToShow <= textBlockersVector.size()) discussTime = gameTimerPtr->getTimeRemaining();
+						if (discussTime == 0) discussTime = gameTimer->getTimeRemaining();
+						npcTextPtr->charToShowIncrementor(discussTimePtr,gameTimer->getTimeRemaining(), discussSpeedPtr, textBlockersVector);
+						//handleMinigamePace should be renamed
+						if (gameTimer->handleMinigamePace(discussTime, *discussSpeedPtr)) {
+							if (charToShow <= textBlockersVector.size()) discussTime = gameTimer->getTimeRemaining();
 							else discussTime = 0;
 
 							blockerFill = npcTextPtr->handleColor(blockerFill, redInc, blueInc, greenInc);
@@ -568,9 +571,9 @@ int main() {
 					break;
 					case ignoreENUM://IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE IGNORE 
 						//Sound not stopping when pressing pause
-						if (beepCountdown > gameTimerPtr->getTimeRemaining()) {
+						if (beepCountdown > gameTimer->getTimeRemaining()) {
 							ignoreBeepPtr->play();
-							beepCountdown = gameTimerPtr->getTimeRemaining() - randomInt(1, 10);
+							beepCountdown = gameTimer->getTimeRemaining() - randomInt(1, 10);
 						}
 
 						//win condition and result
@@ -584,9 +587,9 @@ int main() {
 						switch (ignoreScreen) {
 						case 1:
 							//timer for the prompt screen
-							if (ignoreTimerPtr->getTimeRemaining() > 0.02) {
-								tipTextPtr->setString_Origin_Position("Time Left: " + ignoreTimerPtr->getTimerString(out), sf::Vector2f(window.getSize().x / 2, 425));
-								ignoreTimerPtr = ignoreTimerPtr->manageGameTimer(ignoreTimerClock, ignoreTimerPtr);
+							if (ignoreTimer->getTimeRemaining() > 0.02) {
+								tipTextPtr->setString_Origin_Position("Time Left: " + ignoreTimer->getTimerString(out), sf::Vector2f(window.getSize().x / 2, 425));
+								ignoreTimer = ignoreTimer->manageGameTimer(ignoreTimerClock, ignoreTimer);
 							} else { 
 								ignoreScreen = 2;
 								tipTextPtr->setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
@@ -595,7 +598,7 @@ int main() {
 							if (validSpriteClick(event, questionButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true) {
 								ignoreScreen = 2;
 								tipTextPtr->setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
-								ignoreTimerPtr = ignoreTimerPtr->pause(ignoreTimerClock, ignoreTimerPtr);
+								ignoreTimer = ignoreTimer->pause(ignoreTimerClock, ignoreTimer);
 							}
 
 							ignorePromptScreenPtr->drawScreen(window, timerTextPtr->getText());
@@ -621,11 +624,11 @@ int main() {
 								if (currentPrompt < ignorePromptVectors.size()) {
 									ignorePromptTextPtr = loadPrompt("", tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
 								}
-								ignoreTimerPtr->resetTimer();
+								ignoreTimer->resetTimer();
 								ignoreTimerClock.restart();
 							}
 
-							if (validSpriteClick(event, gobackButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true && ignoreTimerPtr->getTimeRemaining() > 0.02) {
+							if (validSpriteClick(event, gobackButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true && ignoreTimer->getTimeRemaining() > 0.02) {
 								ignoreScreen = 1;
 								ignoreTimerClock.restart();								
 							}
@@ -648,46 +651,49 @@ int main() {
 							}
 						}
 						playerCirclePtr->handlePlayerMovementWithinScreen(window, false);
-						for (int i = 0; i < acceptVector.size(); i++) {
-							if (!acceptVector.at(0).getIsVisible()) {
+						for (int i = 0; i < acceptGoalVector.size(); i++) {
+							//move the hitboxes
+							window.draw(acceptGoalVector.at(i).getHitbox());
+
+							if (!acceptGoalVector.at(0).getIsVisible()) {
 								minigameDataSpriteVector.updateIndividualTexture(acceptENUM, "completedMinigameSprite.png");
 								minigameDataSpriteVector.setSpriteToComplete(acceptENUM);
 								gameScreensENUM = mainENUM;
 							}
-							if(acceptVector.at(i).getIsVisible()) window.draw(acceptVector.at(i).getSprite());
+							if(acceptGoalVector.at(i).getIsVisible()) window.draw(acceptGoalVector.at(i).getSprite());
 
-							window.draw(acceptVector.at(i).getOverlap());
-							acceptVector.at(i).setQuadrant(playerCirclePtr->getCircle());
-							acceptVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
-							playerCirclePtr->setPlayerPosition(acceptVector.at(i).getForceOnPlayer());	
+							window.draw(acceptGoalVector.at(i).getHitbox());
+							acceptGoalVector.at(i).setQuadrant(playerCirclePtr->getCircle());
+							acceptGoalVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
+							playerCirclePtr->setPlayerPosition(acceptGoalVector.at(i).getForceOnPlayer());	
 
-							if (acceptVector.at(2).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
-								if (acceptVector.at(2).getOverlap().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
-									acceptVector.at(2).setVisibilty(false);
-									acceptVector.at(2).setCanMovePlayer(false);
-									acceptVector.at(1).setMass(pullingMass * 2);
-									acceptVector.at(1).setMass(pullingMass * 2);
-									acceptVector.at(0).setMass(pushingMass / 2);
+							if (acceptGoalVector.at(2).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+								if (acceptGoalVector.at(2).getHitbox().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+									acceptGoalVector.at(2).setVisibilty(false);
+									acceptGoalVector.at(2).setCanMovePlayer(false);
+									acceptGoalVector.at(1).setMass(pullingMass * 2);
+									acceptGoalVector.at(1).setMass(pullingMass * 2);
+									acceptGoalVector.at(0).setMass(pushingMass / 2);
 									AcceptWallsVector.at(4).clearVertexArray();
 									AcceptWallsVector.at(6).clearVertexArray();
 									AcceptWallsVector.at(7).clearVertexArray();
 								}
 							}
-							if (acceptVector.at(1).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
-								if (acceptVector.at(1).getOverlap().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
-									acceptVector.at(1).setVisibilty(false);
-									acceptVector.at(1).setCanMovePlayer(false);	
-									acceptVector.at(0).setMass(-500000);
+							if (acceptGoalVector.at(1).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+								if (acceptGoalVector.at(1).getHitbox().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+									acceptGoalVector.at(1).setVisibilty(false);
+									acceptGoalVector.at(1).setCanMovePlayer(false);	
+									acceptGoalVector.at(0).setMass(-500000);
 									AcceptWallsVector.at(10).clearVertexArray();
 									AcceptWallsVector.at(11).clearVertexArray();
 									AcceptWallsVector.at(12).clearVertexArray();
 									AcceptWallsVector.at(13).clearVertexArray();
 								}
 							}
-							if (acceptVector.at(0).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
-								if (acceptVector.at(0).getOverlap().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
-									acceptVector.at(0).setVisibilty(false);
-									acceptVector.at(0).setCanMovePlayer(false);
+							if (acceptGoalVector.at(0).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+								if (acceptGoalVector.at(0).getHitbox().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+									acceptGoalVector.at(0).setVisibilty(false);
+									acceptGoalVector.at(0).setCanMovePlayer(false);
 								}
 							}
 						}
@@ -700,7 +706,9 @@ int main() {
 						//for_each(retainStrings.begin(), retainStrings.end(), void());
 						//std::for_each(retainStrings.begin(), retainStrings.end(), fadeAlpha->handleFallingText(translatedMousePosition));
 						for (int i = 0; i < retainStrings.size(); i++) {
-							fadeAlpha->handleFallingText(translatedMousePosition);
+							//add a function to GameTimerClock to return a bool when a float is passed through. The float is to be considered a fraction of a second.
+								//if 0.75 is passed, then it should return true when the timer miliseconds are between 0.00 and 0.75 
+							if (gameTimer->isWithinMillisecondBounds(gameTimerClock, 177)) fadeAlpha->handleFallingText(translatedMousePosition);
 							window.draw(fadeAlpha->getText());
 						}
 
@@ -714,17 +722,17 @@ int main() {
 					break;
 				}
 			}else{//TIME IS UP
-				gameTimerPtr = gameTimerPtr->timeUp(gameTimerPtr);
+				gameTimer = gameTimer->timeUp(gameTimer);
 				timerTextPtr->getText().setString("Time Up!");
 				startScreenPtr->setAndCenterTitle("GAME OVER!");
-				playerCirclePtr->setPlayerPosition(getCenterOfWindow(window));
+				playerCirclePtr->setPlayerPosition(centerOfScreen);
 				mainScreensENUM = startMAIN;
 				gameScreensENUM = mainENUM;
 			}
 			break;
 
 			case resumeMAIN://RESUME			
-			assert(gameTimerPtr->getTimeRemaining() > 0);
+			assert(gameTimer->getTimeRemaining() > 0);
 			if (validSpriteClick(event, resumeButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true) {
 				gameTimerClock.restart();
 				ignoreTimerClock.restart();

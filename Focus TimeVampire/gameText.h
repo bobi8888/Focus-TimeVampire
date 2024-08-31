@@ -5,7 +5,7 @@ class GameText{
 		sf::Text text;//used for display
 		string textString = "";//not to be mutated
 		int fade = 1, alpha = 255, characterSize = 10;
-		float moveX = 0, moveY = 0.75;
+		float moveX = 0, moveY = 0.075;
 		sf::Color textColor;
 		bool isFull = false;
 		sf::Vector2f textPosition;
@@ -47,5 +47,5 @@ class DiscussText: public GameText {
 		void charToShowIncrementor(float *discussTimePtr, float timeRemaining, float *discussSpeedPtr, vector <sf::RectangleShape> textBlockersVector);
 		sf::Color handleColor(sf::Color& color, int redInc, int blueInc, int greenInc);
 		void updateNextQuestion(string nextQuestion);
-		void setDiscussQuestions();
+		//void setDiscussQuestions();
 };

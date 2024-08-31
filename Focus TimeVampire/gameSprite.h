@@ -17,7 +17,8 @@ class GameSprite {
 		float gravConst = 0.00000000006;
 		//mass = 700 000 easy
 		//increase mass to effect the player more
-		float mass = 0, distance = 0;
+		double mass = 0;
+		float distance = 0;
 		float gravitationalForce = 0;
 		float forceX = 0, forceY = 0;
 		bool gravitationalPull = true;
@@ -41,9 +42,9 @@ class GameSprite {
 		void setQuadrant(sf::CircleShape circle);
 		sf::Vector2f getForceOnPlayer();
 		void setForceOnPlayer(sf::CircleShape circle, float playerMass);
-		sf::RectangleShape getOverlap();
+		sf::RectangleShape getHitbox();
 		void setCanMovePlayer(bool movePlayer);
-		void setMass(float nuMass);
+		void setMass(double nuMass);
 		//void setForceMagnetude(float charge, float velo);
 };
 
@@ -155,7 +156,7 @@ public:
 	//void handleAllCollisions(sf::RenderWindow& window, DataSpriteVector test, sf::Sprite acceptSprite);
 
 	//Velocity & Gravity
-	float getMass();
+	double getMass();
 
 	//Direction
 	void setQuadrant();
