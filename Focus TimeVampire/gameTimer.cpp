@@ -42,21 +42,21 @@ string GameTimer::getTimerString(std::ostringstream& out) {
 //	out.str("");
 //	return timerText;
 //}
-GameTimer* GameTimer::manageGameTimer(sf::Clock& clock, GameTimer* gameTimerPtr) {
-	gameTimerPtr->setPrecision();
-	gameTimerPtr->setTimeRemaining(clock);
-	return gameTimerPtr;
+GameTimer* GameTimer::manageGameTimer(sf::Clock& clock, GameTimer* gameTimer) {
+	gameTimer->setPrecision();
+	gameTimer->setTimeRemaining(clock);
+	return gameTimer;
 };
 
-GameTimer* GameTimer::pause(sf::Clock& clock, GameTimer* gameTimerPtr) {
-	gameTimerPtr->setTimeRemaining(clock);
-	gameTimerPtr->setTimeTaken();
-	return gameTimerPtr;
+GameTimer* GameTimer::pause(sf::Clock& clock, GameTimer* gameTimer) {
+	gameTimer->setTimeRemaining(clock);
+	gameTimer->setTimeTaken();
+	return gameTimer;
 }
 
-GameTimer* GameTimer::timeUp(GameTimer* gameTimerPtr) {
-	gameTimerPtr->resetTimer();
-	return gameTimerPtr;
+GameTimer* GameTimer::timeUp(GameTimer* gameTimer) {
+	gameTimer->resetTimer();
+	return gameTimer;
 }
 bool GameTimer::handleMinigamePace(float minigameTime, float minigameSpeed){
 	if (minigameTime - getTimeRemaining() > minigameSpeed) {
@@ -64,5 +64,12 @@ bool GameTimer::handleMinigamePace(float minigameTime, float minigameSpeed){
 	} else {
 		return false;
 	}
+}
+
+bool GameTimer::isWithinMillisecondBounds(sf::Clock& clock, int fractionOfSecond) {
+	bool testIsMilli;
+	testIsMilli = clock.getElapsedTime().asMilliseconds() % fractionOfSecond ? true : false;
+	cout << testIsMilli << "\n";
+	return testIsMilli;
 }
 

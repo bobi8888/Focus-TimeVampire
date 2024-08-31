@@ -114,7 +114,7 @@ bool Player::hasSpriteCollision(sf::Sprite sprite) {
 
 //Velocity
 
-float Player::getMass() {
+double Player::getMass() {
 	return mass;
 }
 

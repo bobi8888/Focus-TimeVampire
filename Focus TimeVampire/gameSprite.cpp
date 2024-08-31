@@ -9,7 +9,6 @@ GameSprite::GameSprite(string spritePNG, float xScale, float yScale, sf::Vector2
 	hitbox.setSize(sf::Vector2f(hbSize, hbSize));
 	hitbox.setOrigin(sf::Vector2f(hbSize / 2, hbSize / 2));
 	sprite.setPosition(spritePos);
-	//hitbox.setFillColor(sf::Color::White);
 }
 
 void GameSprite::setNewTexture(string spritePNG) {
@@ -112,12 +111,12 @@ sf::Vector2f GameSprite::getForceOnPlayer() {
 	return forceOnPlayer;
 }
 
-sf::RectangleShape GameSprite::getOverlap() {
+sf::RectangleShape GameSprite::getHitbox() {
 	return hitbox;
 }
 void GameSprite::setCanMovePlayer(bool movePlayer) {
 	canMovePlayer = movePlayer;
 }
-void GameSprite::setMass(float nuMass) {
+void GameSprite::setMass(double nuMass) {
 	mass = nuMass;
 }
