@@ -21,6 +21,8 @@
 #include <random>
 #include <time.h>
 
+# define M_PI 3.14159265358979323846 
+
 using std::cout;
 using std::stringstream;
 using std::string;
@@ -31,5 +33,4 @@ using std::rand;
 using std::time;
 using std::random_device;
 using std::for_each;
-# define M_PI 3.14159265358979323846 
-
+const float degreeToRadians = M_PI / 180;

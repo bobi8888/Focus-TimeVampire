@@ -74,7 +74,8 @@ int main() {
 
 	//TRANSFORMABLE SPRITES
 	float playerRotationSpeed = 7;
-	Player* playerCirclePtr = new Player("playerSprite.png",playerRotationSpeed, 0.2, centerOfScreen);
+	Player* player = new Player("playerSprite.png",playerRotationSpeed, 0.2, centerOfScreen);
+	const float playerR = player->getCircle().getRadius();
 
 	//DATA SPRITES
 	DataSprite* minigameSpritePtr = new DataSprite("minigameSprite.png", 0.3, 0.3, partStart, 0);
@@ -201,37 +202,37 @@ int main() {
 	//centerX, centerY, length(x), height(y), angle
 
 	//Main Chute: Index 0 - 3
-	Wall mainChuteLowerLeft(200, 370, 260, 10, 90, playerCirclePtr);
+	Wall mainChuteLowerLeft(200, 370, 260, 10, 90, playerR);
 	AcceptWallsVector.push_back(mainChuteLowerLeft);
-	Wall mainChuteUpperLeft(200, 40, 80, 10, 90, playerCirclePtr);
+	Wall mainChuteUpperLeft(200, 40, 80, 10, 90, playerR);
 	AcceptWallsVector.push_back(mainChuteUpperLeft);
-	Wall mainChutelowerRight(300, 470, 80, 10, 90, playerCirclePtr);
+	Wall mainChutelowerRight(300, 470, 80, 10, 90, playerR);
 	AcceptWallsVector.push_back(mainChutelowerRight);
-	Wall mainChuteUpperRight(300, 160, 310, 10, 90, playerCirclePtr);
+	Wall mainChuteUpperRight(300, 160, 310, 10, 90, playerR);
 	AcceptWallsVector.push_back(mainChuteUpperRight);
 	//Right Chute: Index 4 - 5
-	Wall rightChuteUpper(350, 290, 100, 10, 20, playerCirclePtr);
+	Wall rightChuteUpper(350, 290, 100, 10, 20, playerR);
 	AcceptWallsVector.push_back(rightChuteUpper);
-	Wall rightChuteLower(400, 400, 200, 10, 20, playerCirclePtr);
+	Wall rightChuteLower(400, 400, 200, 10, 20, playerR);
 	AcceptWallsVector.push_back(rightChuteLower);
 	////Right Blocker: Index 6 - 7
-	Wall rightBlockerVertical(440, 155, 30, 10, 90, playerCirclePtr);
+	Wall rightBlockerVertical(440, 155, 30, 10, 90, playerR);
 	AcceptWallsVector.push_back(rightBlockerVertical);
-	Wall rightBlockerHorizontal(480, 165, 60, 10, 0, playerCirclePtr);
+	Wall rightBlockerHorizontal(480, 165, 60, 10, 0, playerR);
 	AcceptWallsVector.push_back(rightBlockerHorizontal);
 	////Left Chute: Index 8 - 9
-	Wall leftChuteUpper(157, 35, 120, 10, 135, playerCirclePtr);
+	Wall leftChuteUpper(157, 35, 120, 10, 135, playerR);
 	AcceptWallsVector.push_back(leftChuteUpper);
-	Wall leftChuteLower(159, 205, 120, 10, 135, playerCirclePtr);
+	Wall leftChuteLower(159, 205, 120, 10, 135, playerR);
 	AcceptWallsVector.push_back(leftChuteLower);
 	////Left Blocker: Index 10 - 13 
-	Wall leftBlockerRightAngle(100, 250, 50, 10, 120, playerCirclePtr);
+	Wall leftBlockerRightAngle(100, 250, 50, 10, 120, playerR);
 	AcceptWallsVector.push_back(leftBlockerRightAngle);
-	Wall leftBlockerLeftAngle(80, 250, 50, 10, 60, playerCirclePtr);
+	Wall leftBlockerLeftAngle(80, 250, 50, 10, 60, playerR);
 	AcceptWallsVector.push_back(leftBlockerLeftAngle);
-	Wall leftBlockerRightVertical(70, 300, 70, 10, 90, playerCirclePtr);
+	Wall leftBlockerRightVertical(70, 300, 70, 10, 90, playerR);
 	AcceptWallsVector.push_back(leftBlockerRightVertical);
-	Wall leftBlockerLeftVertical(110, 300, 70, 10, 90, playerCirclePtr);
+	Wall leftBlockerLeftVertical(110, 300, 70, 10, 90, playerR);
 	AcceptWallsVector.push_back(leftBlockerLeftVertical);
 
 	vector <GameSprite> acceptGoalVector;
@@ -366,8 +367,8 @@ int main() {
 
 								//REMEMBER
 								if (gameScreensENUM == rememberENUM) { 
-									//playerCirclePtr->setSpeed(5); 
-									playerCirclePtr->setPlayerPosition(centerOfScreen);
+									//player->setSpeed(5); 
+									player->setPlayerPosition(centerOfScreen);
 								}
 								//IGNORE 
 								if (gameScreensENUM == ignoreENUM) {
@@ -379,7 +380,7 @@ int main() {
 								}
 								//ACCEPT
 								if (gameScreensENUM == acceptENUM) { 
-									playerCirclePtr->setPlayerPosition(sf::Vector2f(250,500));
+									player->setPlayerPosition(sf::Vector2f(250,500));
 								}
 								event.type = sf::Event::EventType::MouseButtonReleased;
 							}
@@ -388,15 +389,15 @@ int main() {
 					break;
 				case rememberENUM://REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER 
 					//swapping can be used to randomize vectors to increase difficulty
-					playerCirclePtr->handlePlayerMovementWithinScreen(window, false);
+					player->handlePlayerMovementWithinScreen(window, false);
 					window.draw(tipTextPtr->getText());
-					window.draw(playerCirclePtr->getCircle());
+					window.draw(player->getCircle());
 					rememberFullBubbles.drawSprites(window, -1);
 					rememberEmptyBubbles.drawSprites(window, -1);
 					rememberGameScreenPtr->drawScreen(window, timerTextPtr->getText());
 
 					for (int i = 0; i < rememberFullBubbles.getDataSpriteVector().size(); i++) {//contacting full sprites
-						if (playerCirclePtr->hasSpriteCollision(rememberFullBubbles.getDataSpriteVector()[i].getSprite()) == true) {
+						if (player->hasSpriteCollision(rememberFullBubbles.getDataSpriteVector()[i].getSprite()) == true) {
 							bannerTextPtr->setTextString(rememberFullBubbles.getFullDataStrings(i));
 							bannerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(), 0, -5);
 							window.draw(bannerSpritePtr->getSprite());
@@ -404,38 +405,38 @@ int main() {
 						}
 					}
 					
-					if (playerCirclePtr->getSpriteContactIndex() < 0) {
+					if (player->getSpriteContactIndex() < 0) {
 						for (int i = 0; i < rememberEmptyBubbles.getDataSpriteVector().size(); i++) {
-							if (playerCirclePtr->hasSpriteCollision(rememberEmptyBubbles.getDataSpriteVector()[i].getSprite()) == true) {
-								playerCirclePtr->setSpriteContactIndex(i);
+							if (player->hasSpriteCollision(rememberEmptyBubbles.getDataSpriteVector()[i].getSprite()) == true) {
+								player->setSpriteContactIndex(i);
 								break;
 							}
 						}
 					}
-					else if (playerCirclePtr->hasSpriteCollision(rememberEmptyBubbles.getDataSpriteVector()[playerCirclePtr->getSpriteContactIndex()].getSprite()) == false) {
-						playerCirclePtr->setSpriteContactIndex(-1);
+					else if (player->hasSpriteCollision(rememberEmptyBubbles.getDataSpriteVector()[player->getSpriteContactIndex()].getSprite()) == false) {
+						player->setSpriteContactIndex(-1);
 						playerTextPtr->setTextString("");
 						acceptTextInput = false;
 						
 					} else {	
-						if (!rememberEmptyBubbles.getSingleSprite(playerCirclePtr->getSpriteContactIndex()).getIsComplete()) {
-							bannerTextPtr->setTextString("Enter " + rememberFullBubbles.getSingleSprite(playerCirclePtr->getSpriteContactIndex()).getLetter());
+						if (!rememberEmptyBubbles.getSingleSprite(player->getSpriteContactIndex()).getIsComplete()) {
+							bannerTextPtr->setTextString("Enter " + rememberFullBubbles.getSingleSprite(player->getSpriteContactIndex()).getLetter());
 							bannerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(), 0, -20);
 							playerTextPtr->setTextToMoney(out);
 							playerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(), 0, +5);
 							window.draw(bannerSpritePtr->getSprite());
 							window.draw(bannerTextPtr->getText());
 							window.draw(playerTextPtr->getText());
-							if (playerTextPtr->getTextString().size() <= rememberFullBubbles.getSingleSprite(playerCirclePtr->getSpriteContactIndex()).getStringValue().size() - 1) {
+							if (playerTextPtr->getTextString().size() <= rememberFullBubbles.getSingleSprite(player->getSpriteContactIndex()).getStringValue().size() - 1) {
 								acceptTextInput = true; 
 							}
 							else {
 								acceptTextInput = false;
 							}
 						}
-						if (playerTextPtr->getTextString() == rememberFullBubbles.getSingleSprite(playerCirclePtr->getSpriteContactIndex()).getStringValue()) {
-							rememberEmptyBubbles.updateIndividualTexture(playerCirclePtr->getSpriteContactIndex(), "okBubbleSprite.png");
-							rememberEmptyBubbles.setSpriteToComplete(playerCirclePtr->getSpriteContactIndex());
+						if (playerTextPtr->getTextString() == rememberFullBubbles.getSingleSprite(player->getSpriteContactIndex()).getStringValue()) {
+							rememberEmptyBubbles.updateIndividualTexture(player->getSpriteContactIndex(), "okBubbleSprite.png");
+							rememberEmptyBubbles.setSpriteToComplete(player->getSpriteContactIndex());
 							rememberEmptyBubbles.checkForCompletion();
 						} 
 					}				
@@ -645,12 +646,12 @@ int main() {
 					case acceptENUM://ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT
 						for (int i = 0; i < AcceptWallsVector.size(); i++) {
 							window.draw(AcceptWallsVector.at(i).getVertexArray());
-							if (AcceptWallsVector.at(i).playerIsInBoundingBox(playerCirclePtr)) {
-								AcceptWallsVector.at(i).setPlayerRelativeMinMaxXY(playerCirclePtr);
-								playerCirclePtr->handleWallCollision(AcceptWallsVector.at(i).hasSATCollision(playerCirclePtr));
+							if (AcceptWallsVector.at(i).playerIsInBoundingBox(player)) {
+								AcceptWallsVector.at(i).setPlayerRelativeMinMaxXY(player);
+								player->handleWallCollision(AcceptWallsVector.at(i).hasSATCollision(player));
 							}
 						}
-						playerCirclePtr->handlePlayerMovementWithinScreen(window, false);
+						player->handlePlayerMovementWithinScreen(window, false);
 						for (int i = 0; i < acceptGoalVector.size(); i++) {
 							//move the hitboxes
 							window.draw(acceptGoalVector.at(i).getHitbox());
@@ -663,12 +664,12 @@ int main() {
 							if(acceptGoalVector.at(i).getIsVisible()) window.draw(acceptGoalVector.at(i).getSprite());
 
 							window.draw(acceptGoalVector.at(i).getHitbox());
-							acceptGoalVector.at(i).setQuadrant(playerCirclePtr->getCircle());
-							acceptGoalVector.at(i).setForceOnPlayer(playerCirclePtr->getCircle(), playerCirclePtr->getMass());
-							playerCirclePtr->setPlayerPosition(acceptGoalVector.at(i).getForceOnPlayer());	
+							acceptGoalVector.at(i).setQuadrant(player->getCircle());
+							acceptGoalVector.at(i).setForceOnPlayer(player->getCircle(), player->getMass());
+							player->setPlayerPosition(acceptGoalVector.at(i).getForceOnPlayer());	
 
-							if (acceptGoalVector.at(2).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
-								if (acceptGoalVector.at(2).getHitbox().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+							if (acceptGoalVector.at(2).getSprite().getGlobalBounds().contains(player->getCircle().getPosition())) {
+								if (acceptGoalVector.at(2).getHitbox().getGlobalBounds().contains(player->getCircle().getPosition())) {
 									acceptGoalVector.at(2).setVisibilty(false);
 									acceptGoalVector.at(2).setCanMovePlayer(false);
 									acceptGoalVector.at(1).setMass(pullingMass * 2);
@@ -679,8 +680,8 @@ int main() {
 									AcceptWallsVector.at(7).clearVertexArray();
 								}
 							}
-							if (acceptGoalVector.at(1).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
-								if (acceptGoalVector.at(1).getHitbox().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+							if (acceptGoalVector.at(1).getSprite().getGlobalBounds().contains(player->getCircle().getPosition())) {
+								if (acceptGoalVector.at(1).getHitbox().getGlobalBounds().contains(player->getCircle().getPosition())) {
 									acceptGoalVector.at(1).setVisibilty(false);
 									acceptGoalVector.at(1).setCanMovePlayer(false);	
 									acceptGoalVector.at(0).setMass(-500000);
@@ -690,14 +691,14 @@ int main() {
 									AcceptWallsVector.at(13).clearVertexArray();
 								}
 							}
-							if (acceptGoalVector.at(0).getSprite().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
-								if (acceptGoalVector.at(0).getHitbox().getGlobalBounds().contains(playerCirclePtr->getCircle().getPosition())) {
+							if (acceptGoalVector.at(0).getSprite().getGlobalBounds().contains(player->getCircle().getPosition())) {
+								if (acceptGoalVector.at(0).getHitbox().getGlobalBounds().contains(player->getCircle().getPosition())) {
 									acceptGoalVector.at(0).setVisibilty(false);
 									acceptGoalVector.at(0).setCanMovePlayer(false);
 								}
 							}
 						}
-						window.draw(playerCirclePtr->getCircle());
+						window.draw(player->getCircle());
 						drivePtr->drawScreen(window, timerTextPtr->getText());
 					break;
 					case retainENUM://RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
@@ -725,7 +726,7 @@ int main() {
 				gameTimer = gameTimer->timeUp(gameTimer);
 				timerTextPtr->getText().setString("Time Up!");
 				startScreenPtr->setAndCenterTitle("GAME OVER!");
-				playerCirclePtr->setPlayerPosition(centerOfScreen);
+				player->setPlayerPosition(centerOfScreen);
 				mainScreensENUM = startMAIN;
 				gameScreensENUM = mainENUM;
 			}

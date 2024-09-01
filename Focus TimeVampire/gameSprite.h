@@ -25,6 +25,7 @@ class GameSprite {
 		bool canMovePlayer = true;
 
 		friend class DataSpriteVector;
+		friend class Wall;
 	public:
 		GameSprite(string spritePNG, float x, float y, sf::Vector2f spritePos, float hbSize);
 		void setNewTexture(string spritePNG); 
