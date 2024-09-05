@@ -23,7 +23,7 @@
 //gameTimer = gameTimer.pause(gameTimerClock, gameTimer); so many game timers?
 //USE MULTI THREADING FOR MULTIPLE TIMERS?
 
-int main() {	
+int main() {
 	//WINDOW
 	antialiasing.antialiasingLevel = 8;
 	window.setVerticalSyncEnabled(true);
@@ -53,7 +53,7 @@ int main() {
 	GameSprite* startButtonPtr = new GameSprite("startSprite.png", 0.5, 0.5, centerOfScreen, 0);
 	GameSprite* questionButtonPtr = new GameSprite("questionButton.png", 0.4, 0.4, sf::Vector2f(window.getSize().x / 2, 300), 0);
 	GameSprite* gobackButtonPtr = new GameSprite("gobackButton.png", 0.35, 0.35, sf::Vector2f(window.getSize().x / 4, window.getSize().y - 100), 0);
-	GameSprite* skipButtonPtr = new GameSprite ("skipButton.png", 0.35, 0.35, sf::Vector2f(window.getSize().x / 4 * 3, window.getSize().y - 100), 0);
+	GameSprite* skipButtonPtr = new GameSprite("skipButton.png", 0.35, 0.35, sf::Vector2f(window.getSize().x / 4 * 3, window.getSize().y - 100), 0);
 	GameSprite* pauseButtonPtr = new GameSprite("pauseSprite.png", 0.25, 0.25, sf::Vector2f(window.getSize().x - 35, 40), 0);
 	GameSprite* resumeButtonPtr = new GameSprite("resumeSprite.png", 0.5, 0.5, centerOfScreen, 0);
 	GameSprite* solutionButtonPtr = new GameSprite("solutionSprite.png", 0.3, 0.3, sf::Vector2f(window.getSize().x / 2, window.getSize().y - 50), 0);
@@ -74,7 +74,7 @@ int main() {
 
 	//TRANSFORMABLE SPRITES
 	float playerRotationSpeed = 7;
-	Player* player = new Player("playerSprite.png",playerRotationSpeed, 0.2, centerOfScreen);
+	Player* player = new Player("playerSprite.png", playerRotationSpeed, 0.2, centerOfScreen);
 	const float playerR = player->getCircle().getRadius();
 
 	//DATA SPRITES
@@ -86,16 +86,16 @@ int main() {
 
 	//SPRITE VECTORS	
 	//add start position to datasprites and create their grid location at construction
-	DataSpriteVector minigameDataSpriteVector(9,*minigameSpritePtr);
+	DataSpriteVector minigameDataSpriteVector(9, *minigameSpritePtr);
 	minigameDataSpriteVector.setGridPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2), 3, 3, 1, 1);
 
 	int bubbleQTY = 3;
-	DataSpriteVector rememberFullBubbles(bubbleQTY,*fullBubblePtr);
+	DataSpriteVector rememberFullBubbles(bubbleQTY, *fullBubblePtr);
 	rememberFullBubbles.setGridPositions(sf::Vector2f(80, 250), bubbleQTY, 1, 25, 0);
 
 	DataSpriteVector rememberEmptyBubbles(bubbleQTY, *emptyBubblePtr);
 	rememberEmptyBubbles.setGridPositions(sf::Vector2f(420, 250), bubbleQTY, 1, 25, 0);
-	
+
 	//this needs alot of clarity
 	//add to constructor or make its own function?
 	//rememberFullBubbles.initializeStrings(stream, out);
@@ -110,8 +110,8 @@ int main() {
 
 	//MAIN GAME SCREENS
 	sf::Vector2f screenTitlePosition(centerOfScreen.x, 25);
-	GameScreen* startScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25,screenTitlePosition);
-	startScreenPtr->addSprite(startButtonPtr ->getSprite());
+	GameScreen* startScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25, screenTitlePosition);
+	startScreenPtr->addSprite(startButtonPtr->getSprite());
 	GameScreen* gameScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25, screenTitlePosition);
 	GameScreen* resumeScreenPtr = new GameScreen("FOCUS! Time Vampire", generalFont, 25, screenTitlePosition);
 	resumeScreenPtr->addSprite(resumeButtonPtr->getSprite());
@@ -120,7 +120,7 @@ int main() {
 	//REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER REMEMBER
 	GameScreen* rememberGameScreenPtr = new GameScreen("REMEMBER!", generalFont, 25, screenTitlePosition);
 	bannerTextPtr->setTextString("Enter #");
-	bannerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(),0,0);
+	bannerTextPtr->centerTextOriginOnSprite(bannerSpritePtr->getSprite(), 0, 0);
 
 	//COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT COUNT 
 	GameScreen* countGameScreenPtr = new GameScreen("COUNT!", generalFont, 25, screenTitlePosition);
@@ -133,10 +133,10 @@ int main() {
 	GameScreen* assembleSolutionGameScreenPtr = new GameScreen("ASSEMBLE Solution", generalFont, 25, screenTitlePosition);
 	pcbSolvedSprite.setPosition(centerOfScreen);
 	assembleSolutionGameScreenPtr->addSprite(pcbSolvedSprite.getSprite());
-	for (int i = 0; i < 9; i++) {assembleDataSpriteVector.addSprite(assemblePartsSpriteVector.at(i), 1); }
+	for (int i = 0; i < 9; i++) { assembleDataSpriteVector.addSprite(assemblePartsSpriteVector.at(i), 1); }
 	assembleDataSpriteVector.setGridPositions(sf::Vector2f(window.getSize().x / 2, window.getSize().y / 2 - 10), 3, 3, 90, 120);
 	assembleDataSpriteVector.setSpriteToComplete(4);
-	
+
 	//simplify this?
 	assembleGoal.setOrigin(sf::Vector2f(assembleGoal.getGlobalBounds().width / 2, assembleGoal.getGlobalBounds().height / 2));
 	for (int i = 0; i < assembleGoalPositions.size(); i++) {
@@ -150,7 +150,7 @@ int main() {
 	npcTextPtr->setCharWidthsVector(question1);
 	for (int i = 0; i < npcTextPtr->getTextString().size(); i++) {
 		sf::RectangleShape textBlocker(sf::Vector2f(npcTextPtr->getCharWidthsVector()[i], npcTextPtr->getText().getCharacterSize() + 10));
-		textBlocker.setOrigin(textBlocker.getSize().x/2, textBlocker.getSize().y/2);
+		textBlocker.setOrigin(textBlocker.getSize().x / 2, textBlocker.getSize().y / 2);
 		textBlocker.setPosition(sf::Vector2f(npcTextPtr->getText().findCharacterPos(i).x + textBlocker.getSize().x / 2, npcTextPtr->getText().findCharacterPos(i).y + textBlocker.getSize().y / 2));
 		textBlocker.setFillColor(sf::Color::White);
 		textBlocker.setOutlineColor(sf::Color::Cyan);
@@ -248,7 +248,7 @@ int main() {
 	//Index 1
 	GameSprite* leftAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2, sf::Vector2f(100, 450), acceptGoalHitBox);
 	leftAcceptGoal->setGravitationalPull(false);
-	leftAcceptGoal ->setMass(pullingMass);//700 000
+	leftAcceptGoal->setMass(pullingMass);//700 000
 	acceptGoalVector.push_back(*leftAcceptGoal);
 	//Index 2
 	GameSprite* rightAcceptGoal = new GameSprite("acceptSprite.png", 0.2, 0.2, sf::Vector2f(450, 110), acceptGoalHitBox);
@@ -259,12 +259,15 @@ int main() {
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, screenTitlePosition);
 	GameText* fadeAlpha = new GameText("A long time ago...", generalFont, 32, white, miniGameTitlePosition);
-	sf::Color nC(255, 75, 45,255);
+	sf::Color nC(255, 75, 45, 255);
 	fadeAlpha->setColor(nC);
-
-	//For_each needs to be of the same data type?
-	std::for_each(retainStrings.begin(), retainStrings.end(), [](string x) {
-		;});
+	vector <GameText*> retainTextVector;
+	//need to space out the words, check how this was done in the distracting sound minigame
+	//check why the text is falling and fading slower when in the vector
+	for (int i = 0; i < retainStrings.size(); i++) {
+		GameText* fadeAlpha = new GameText(retainStrings[i], generalFont, 25, white, miniGameTitlePosition);
+		retainTextVector.push_back(fadeAlpha);
+	}
 	
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
 	GameScreen* pushPtr  = new GameScreen("PUSH!", generalFont, 25, screenTitlePosition);
@@ -706,11 +709,10 @@ int main() {
 
 						//for_each(retainStrings.begin(), retainStrings.end(), void());
 						//std::for_each(retainStrings.begin(), retainStrings.end(), fadeAlpha->handleFallingText(translatedMousePosition));
-						for (int i = 0; i < retainStrings.size(); i++) {							
-							fadeAlpha->handleFallingText(translatedMousePosition);
-							window.draw(fadeAlpha->getText());
+						for (int i = 0; i < retainTextVector.size(); i++) {
+							retainTextVector[i]->handleFallingText(translatedMousePosition);
+							window.draw(retainTextVector[i]->getText());
 						}
-
 
 					break;
 					case pushENUM://PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH 
