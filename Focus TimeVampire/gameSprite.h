@@ -42,6 +42,7 @@ class GameSprite {
 		float returnQuadrantDirectionTowardsPlayerInDegrees(sf::CircleShape circle);
 		void setQuadrant(sf::CircleShape circle);
 		sf::Vector2f getForceOnPlayer();
+		//can I pass a template through setForceOnPlayer? want to pass player ptr
 		void setForceOnPlayer(sf::CircleShape circle, float playerMass);
 		sf::RectangleShape getHitbox();
 		void setCanMovePlayer(bool movePlayer);
@@ -108,14 +109,12 @@ private:
 	sf::CircleShape circle;
 	sf::Texture texture;
 	//Gravity
-	//1 000 000
-	float mass = 1000000;
+	float playerMass = 1000000;//1 000 000
 	//MOVEMENT
-	float rotationSpeed = 0, x = 0, y = 0;
 	//SPEED
-	sf::Clock clock;
 	float xSpeed = 0, ySpeed = 0, playerSpeed = 0.1, speedUnit = 0.03; //smaller speedUnit makes player faster? Huh...
 	float acceleration = 0;
+	float rotationSpeed = 0;
 	//VELOCITY
 	float calc_Dir_x = 0, calc_Dir_y = 0;
 	float direction = 0;
@@ -127,7 +126,6 @@ private:
 	sf::Vector2f normalAxisMinCoords = sf::Vector2f(0, 0);
 	sf::Vector2f normalAxisMaxCoords = sf::Vector2f(0, 0);
 	int spriteContactIndex = -1;
-	friend class Wall;
 public:
 	Player(string newTexture, float rotationSpeed, float scale, sf::Vector2f startingPosition);
 	sf::CircleShape getCircle();

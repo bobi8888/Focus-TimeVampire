@@ -4,7 +4,8 @@ class GameText{
 	private:
 		sf::Text text;//used for display
 		string textString = "";//not to be mutated
-		int fade = 1, alpha = 255, characterSize = 10;
+		int characterSize = 10;
+		float fade = 0.25, alpha = 255;
 		float moveX = 0, moveY = 0.075;
 		sf::Color textColor;
 		bool isFull = false;
