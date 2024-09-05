@@ -74,13 +74,10 @@ void GameText::setColor(sf::Color newColor) {
 	text.setFillColor(newColor);
 }
 void GameText::fadeText() {
-	if (text.getFillColor().a == 0) {
-		text.setFillColor(sf::Color::Transparent);
-		return;
+	if (text.getFillColor().a != 0) {
+		textColor.a = alpha -= fade;
+		text.setFillColor(textColor);
 	}
-	alpha = alpha - fade;
-	textColor.a = alpha;
-	text.setFillColor(textColor);
 }
 void GameText::moveText() {
 	text.setPosition(sf::Vector2f(text.getPosition().x + moveX, text.getPosition().y + moveY));

@@ -706,10 +706,8 @@ int main() {
 
 						//for_each(retainStrings.begin(), retainStrings.end(), void());
 						//std::for_each(retainStrings.begin(), retainStrings.end(), fadeAlpha->handleFallingText(translatedMousePosition));
-						for (int i = 0; i < retainStrings.size(); i++) {
-							//add a function to GameTimerClock to return a bool when a float is passed through. The float is to be considered a fraction of a second.
-								//if 0.75 is passed, then it should return true when the timer miliseconds are between 0.00 and 0.75 
-							if (gameTimer->isWithinMillisecondBounds(gameTimerClock, 177)) fadeAlpha->handleFallingText(translatedMousePosition);
+						for (int i = 0; i < retainStrings.size(); i++) {							
+							fadeAlpha->handleFallingText(translatedMousePosition);
 							window.draw(fadeAlpha->getText());
 						}
 

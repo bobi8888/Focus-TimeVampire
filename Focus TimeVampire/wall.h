@@ -18,14 +18,14 @@ public:
 	void setPlayerRelativeMinMaxXY(Player* player);
 	bool hasSATCollision(Player* player);
 	sf::VertexArray getVertexArray();
+	sf::Vector2f getWallCenter();
+	void clearVertexArray();
 	//sf::Vector2f getCornerCoords(int position);
 	//sf::Vector2f getPlayerRelativeMinCoords();
 	//sf::Vector2f getPlayerRelativeMaxCoords();
-	sf::Vector2f getWallCenter();
 	//float getLength();
 	//float getThickness();
 	//float getAngle();
-	void clearVertexArray();
 	//sf::Vector2f getZeroPosition();
 	//sf::Vector2f getFirstPosition();
 	//sf::Vector2f getSecondPosition();
