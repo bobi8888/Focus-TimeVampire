@@ -194,7 +194,7 @@ int main() {
 	ignoreKeys[0] = std::to_string(ignoreKey_Int);
 	string ignoreKey_String = std::to_string(ignoreKey_Int);
 	string randomInt_String = std::to_string(randomIgnore_Int);
-	ignorePromptTextPtr = loadPrompt(randomInt_String, tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
+	ignorePromptTextPtr = loadPrompts(tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window, randomInt_String);
 
 	//ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
 	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, screenTitlePosition);
@@ -258,16 +258,21 @@ int main() {
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, screenTitlePosition);
+	ignorePromptTextPtr = loadPrompts(tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window, randomInt_String);
+
 	GameText* fadeAlpha = new GameText("A long time ago...", generalFont, 32, white, miniGameTitlePosition);
 	sf::Color nC(255, 75, 45, 255);
 	fadeAlpha->setColor(nC);
 	vector <GameText*> retainTextVector;
 	//need to space out the words, check how this was done in the distracting sound minigame
 	//check why the text is falling and fading slower when in the vector
-	for (int i = 0; i < retainStrings.size(); i++) {
-		GameText* fadeAlpha = new GameText(retainStrings[i], generalFont, 25, white, miniGameTitlePosition);
+	for (int i = 0; i < retainPrompts.size(); i++) {
+		GameText* fadeAlpha = new GameText(retainPrompts[i][0], generalFont, 25, white, miniGameTitlePosition);
 		retainTextVector.push_back(fadeAlpha);
 	}
+
+	GameText* retainText = new GameText("", generalFont, 32, white, miniGameTitlePosition);
+	//retainText = loadPrompts()
 	
 	// PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH PUSH
 	GameScreen* pushPtr  = new GameScreen("PUSH!", generalFont, 25, screenTitlePosition);
@@ -626,7 +631,7 @@ int main() {
 								currentQuestion++;
 								currentPrompt++;
 								if (currentPrompt < ignorePromptVectors.size()) {
-									ignorePromptTextPtr = loadPrompt("", tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
+									ignorePromptTextPtr = loadPrompts(tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
 								}
 								ignoreTimer->resetTimer();
 								ignoreTimerClock.restart();
