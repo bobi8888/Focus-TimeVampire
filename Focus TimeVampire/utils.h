@@ -13,7 +13,7 @@
 #include <iomanip>
 #include <cassert>
 #include <sstream>
-
+#include <optional>
 #include <cstdlib>
 #include <ctime>
 #include <stdio.h>

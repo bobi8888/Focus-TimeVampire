@@ -5,8 +5,8 @@ class GameText{
 		sf::Text text;//used for display
 		string textString = "";//not to be mutated
 		int characterSize = 10;
-		float fade = 0.25, alpha = 255;
-		float moveX = 0, moveY = 0.075;
+		float fade = 1.25, alpha = 255;
+		float moveX = 0, moveY = 0.75;
 		sf::Color textColor;
 		bool isFull = false;
 		sf::Vector2f textPosition;
