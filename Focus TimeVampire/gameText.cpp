@@ -1,6 +1,8 @@
 #include "utils.h"
-#include "gameSprite.h"
+//#include "gameSprite.h"
 #include "gameText.h"
+#include "window.h"
+#include "ignoreUtils.h"
 
 void loadFont(sf::Font& font) {
 	if (!font.loadFromFile("RobotoCondensed-Regular.ttf")) {
@@ -8,9 +10,10 @@ void loadFont(sf::Font& font) {
 	}
 }
 
-GameText::GameText(string string, sf::Font &font, int charSize, sf::Color &color, sf::Vector2f position) {
+GameText::GameText(string string, sf::Font &f, int charSize, sf::Color &color, sf::Vector2f position) {
 	text.setString(string);
 	textString = string;
+	font = f;
 	text.setFont(font);
 	characterSize = charSize;
 	text.setCharacterSize(characterSize);
@@ -90,4 +93,34 @@ void GameText::handleFallingText(sf::Vector2f mousePosition) {
 }
 sf::Vector2f GameText::getTextPosition() {
 	return textPosition;
+}
+void GameText::loadPrompts(int currentPrompt) {
+	//i believe this is used for adding a random int to a prompt
+	// this is very hard coded and inflexible...
+	//, const std::optional<std::string>& randomInt_String = std::nullopt
+	//if (ignorePrompt.size() > 1)
+	//	ignorePrompt[1][0].insert(0, *randomInt_String + " ");
+	sf::Text tempText("", font);
+	tempText.setPosition(getText().getPosition());
+	float postAppend = getText().getPosition().x;
+	float preAppend = 0;
+	float stringLength = postAppend;
+	float displayLength = 0;
+
+	for (int i = 0; i < testStruct().ignorePromptVectors.size(); i++) {
+		for (int j = 0; j < testStruct().ignorePromptVectors[i].size(); j++) {
+			preAppend = tempText.getGlobalBounds().width + tempText.getPosition().x;
+			tempText.setString(tempText.getString() + testStruct().ignorePromptVectors[i][j][0]);
+			postAppend = tempText.getGlobalBounds().width + tempText.getPosition().x;
+			stringLength = postAppend - preAppend;
+			displayLength += stringLength;
+			if (displayLength < (screenWidth - tempText.getPosition().x * 1.3)) {
+				appendTextString(testStruct().ignorePromptVectors[currentPrompt][i][j]);
+			}
+			else {
+				appendTextString("\n" + testStruct().ignorePromptVectors[currentPrompt][i][j]);
+				displayLength = stringLength;
+			}
+		}
+	}
 }
