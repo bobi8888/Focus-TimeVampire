@@ -3,6 +3,7 @@ void loadFont(sf::Font& font);
 class GameText{
 	private:
 		sf::Text text;//used for display
+		sf::Font font;
 		string textString = "";//not to be mutated
 		int characterSize = 10;
 		float fade = 1.25, alpha = 255;
@@ -31,6 +32,7 @@ class GameText{
 		void moveText();
 		void handleFallingText(sf::Vector2f mousePosition);
 		sf::Vector2f getTextPosition();
+		void loadPrompts(int currentPrompt);
 };
 
 class DiscussText: public GameText {
@@ -48,5 +50,4 @@ class DiscussText: public GameText {
 		void charToShowIncrementor(float *discussTimePtr, float timeRemaining, float *discussSpeedPtr, vector <sf::RectangleShape> textBlockersVector);
 		sf::Color handleColor(sf::Color& color, int redInc, int blueInc, int greenInc);
 		void updateNextQuestion(string nextQuestion);
-		//void setDiscussQuestions();
 };

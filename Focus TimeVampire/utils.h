@@ -20,7 +20,6 @@
 #include <stdlib.h>
 #include <random>
 #include <time.h>
-
 # define M_PI 3.14159265358979323846 
 
 using std::cout;

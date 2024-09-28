@@ -153,6 +153,7 @@
     <ClCompile Include="randomizedData.cpp" />
     <ClCompile Include="gameText.cpp" />
     <ClCompile Include="dataSpriteVector.cpp" />
+    <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="movementVector.h" />

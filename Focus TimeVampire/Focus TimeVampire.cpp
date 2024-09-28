@@ -8,10 +8,10 @@
 #include "assembleUtils.h"
 #include "discussUtils.h"
 #include "gameScreen.h"
-#include "ignoreUtils.h"
 #include "retainUtils.h"
 #include "wall.h"
 #include "window.h"
+#include "ignoreUtils.h"
 
 //ISSUES
 //reset random numbers each playthrough for Remember
@@ -25,6 +25,12 @@
 
 int main() {
 	//WINDOW
+	//const int screenWidth = 500, screenHeight = 500;
+	sf::ContextSettings antialiasing;
+
+	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "FOCUS Time Vampire", sf::Style::Default, antialiasing);
+	//sf::RenderWindow window;
+	sf::Vector2f centerOfScreen(window.getSize().x / 2, window.getSize().y / 2);
 	antialiasing.antialiasingLevel = 8;
 	window.setVerticalSyncEnabled(true);
 	window.setPosition(sf::Vector2i(600, 300));
@@ -188,13 +194,13 @@ int main() {
 
 	beepCountdown = gameTimer->getTimeRemaining() - randomInt(5, 1);
 
-	sf::Text tempText("", generalFont);
+	//sf::Text tempText("", generalFont);
 	int randomIgnore_Int = randomInt(2, 15);
 	int ignoreKey_Int = randomIgnore_Int + 5;
 	ignoreKeys[0] = std::to_string(ignoreKey_Int);
 	string ignoreKey_String = std::to_string(ignoreKey_Int);
 	string randomInt_String = std::to_string(randomIgnore_Int);
-	ignorePromptTextPtr = loadPrompts(tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window, randomInt_String);
+	ignorePromptTextPtr->loadPrompts(currentPrompt);
 
 	//ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT ACCEPT 
 	GameScreen* drivePtr = new GameScreen("ACCEPT!", generalFont, 25, screenTitlePosition);
@@ -258,7 +264,7 @@ int main() {
 
 	// RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN RETAIN 
 	GameScreen* retainPtr = new GameScreen("RETAIN!", generalFont, 25, screenTitlePosition);
-	ignorePromptTextPtr = loadPrompts(tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window, randomInt_String);
+	ignorePromptTextPtr->loadPrompts(currentPrompt);
 
 	GameText* fadeAlpha = new GameText("A long time ago...", generalFont, 32, white, miniGameTitlePosition);
 	sf::Color nC(255, 75, 45, 255);
@@ -586,7 +592,7 @@ int main() {
 						}
 
 						//win condition and result
-						if (currentPrompt == ignorePromptVectors.size() && currentQuestion >= ignoreQuestions.size()) {
+						if (currentPrompt == testStruct().ignorePromptVectors.size() && currentQuestion >= ignoreQuestions.size()) {
 							minigameDataSpriteVector.updateIndividualTexture(ignoreENUM, "completedMinigameSprite.png");
 							minigameDataSpriteVector.setSpriteToComplete(ignoreENUM);
 							gameScreensENUM = mainENUM;
@@ -630,8 +636,8 @@ int main() {
 								currentKey++;
 								currentQuestion++;
 								currentPrompt++;
-								if (currentPrompt < ignorePromptVectors.size()) {
-									ignorePromptTextPtr = loadPrompts(tempText, ignorePromptVectors[currentPrompt], ignorePromptTextPtr, window);
+								if (currentPrompt < testStruct().ignorePromptVectors.size()) {
+									ignorePromptTextPtr->loadPrompts(currentPrompt);
 								}
 								ignoreTimer->resetTimer();
 								ignoreTimerClock.restart();
