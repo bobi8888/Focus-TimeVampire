@@ -107,20 +107,20 @@ void GameText::loadPrompts(int currentPrompt) {
 	float stringLength = postAppend;
 	float displayLength = 0;
 
-	for (int i = 0; i < testStruct().ignorePromptVectors.size(); i++) {
-		for (int j = 0; j < testStruct().ignorePromptVectors[i].size(); j++) {
-			preAppend = tempText.getGlobalBounds().width + tempText.getPosition().x;
-			tempText.setString(tempText.getString() + testStruct().ignorePromptVectors[i][j][0]);
-			postAppend = tempText.getGlobalBounds().width + tempText.getPosition().x;
-			stringLength = postAppend - preAppend;
-			displayLength += stringLength;
-			if (displayLength < (screenWidth - tempText.getPosition().x * 1.3)) {
-				appendTextString(testStruct().ignorePromptVectors[currentPrompt][i][j]);
-			}
-			else {
-				appendTextString("\n" + testStruct().ignorePromptVectors[currentPrompt][i][j]);
-				displayLength = stringLength;
-			}
-		}
-	}
+	//for (int i = 0; i < testStruct().ignorePromptVectors.size(); i++) {
+	//	for (int j = 0; j < testStruct().ignorePromptVectors[i].size(); j++) {
+	//		preAppend = tempText.getGlobalBounds().width + tempText.getPosition().x;
+	//		tempText.setString(tempText.getString() + testStruct().ignorePromptVectors[i][j][0]);
+	//		postAppend = tempText.getGlobalBounds().width + tempText.getPosition().x;
+	//		stringLength = postAppend - preAppend;
+	//		displayLength += stringLength;
+	//		if (displayLength < (screenWidth - tempText.getPosition().x * 1.3)) {
+	//			appendTextString(testStruct().ignorePromptVectors[currentPrompt][i][j]);
+	//		}
+	//		else {
+	//			appendTextString("\n" + testStruct().ignorePromptVectors[currentPrompt][i][j]);
+	//			displayLength = stringLength;
+	//		}
+	//	}
+	//}
 }

@@ -25,16 +25,21 @@
 
 int main() {
 	//WINDOW
-	//const int screenWidth = 500, screenHeight = 500;
+	int screenWidth = GetSystemMetrics(SM_CXSCREEN) - 100;
+	int screenHeight = GetSystemMetrics(SM_CYSCREEN) - 100;
+	int screenMinDim = std::min(screenWidth, screenHeight);
+	//std::cout << "height: " << screenHeight << " & width: " << screenWidth << "\n";
+	const int minWindowXY = 500;
+	int windowXY = 500;
 	sf::ContextSettings antialiasing;
-
-	sf::RenderWindow window(sf::VideoMode(screenWidth, screenHeight), "FOCUS Time Vampire", sf::Style::Default, antialiasing);
+	sf::RenderWindow window(sf::VideoMode(windowXY, windowXY), "FOCUS Time Vampire", sf::Style::Default, antialiasing);
 	//sf::RenderWindow window;
 	sf::Vector2f centerOfScreen(window.getSize().x / 2, window.getSize().y / 2);
 	antialiasing.antialiasingLevel = 8;
 	window.setVerticalSyncEnabled(true);
 	window.setPosition(sf::Vector2i(600, 300));
 	window.setKeyRepeatEnabled(false);
+
 
 	//TIME
 	//GAME TIMERS SHOULD HAVE THEIR OWN sf::Clock
@@ -197,7 +202,7 @@ int main() {
 	//sf::Text tempText("", generalFont);
 	int randomIgnore_Int = randomInt(2, 15);
 	int ignoreKey_Int = randomIgnore_Int + 5;
-	ignoreKeys[0] = std::to_string(ignoreKey_Int);
+	//ignoreKeys[0] = std::to_string(ignoreKey_Int);
 	string ignoreKey_String = std::to_string(ignoreKey_Int);
 	string randomInt_String = std::to_string(randomIgnore_Int);
 	ignorePromptTextPtr->loadPrompts(currentPrompt);
@@ -298,6 +303,16 @@ int main() {
 	while (window.isOpen()) {
 		window.display();
 		window.clear();
+
+		//turn this into a class?
+		if (window.getSize().x != windowXY || window.getSize().y != windowXY) {
+			if (window.getSize().x > screenMinDim || window.getSize().y > screenMinDim) windowXY = screenMinDim;
+			else if (window.getSize().x < minWindowXY || window.getSize().y < minWindowXY) windowXY = minWindowXY;
+			else if (window.getSize().x < windowXY || window.getSize().y < windowXY) windowXY = std::min(window.getSize().x, window.getSize().y);
+			else windowXY = std::max(window.getSize().x, window.getSize().y);
+			window.setSize(sf::Vector2u(windowXY, windowXY));
+		}
+
 		translatedMousePosition = setMousePosition(window);
 
 		while (window.pollEvent(event)) {//this includes the closed window event & entering text
@@ -592,12 +607,12 @@ int main() {
 						}
 
 						//win condition and result
-						if (currentPrompt == testStruct().ignorePromptVectors.size() && currentQuestion >= ignoreQuestions.size()) {
-							minigameDataSpriteVector.updateIndividualTexture(ignoreENUM, "completedMinigameSprite.png");
-							minigameDataSpriteVector.setSpriteToComplete(ignoreENUM);
-							gameScreensENUM = mainENUM;
-							break;
-						}
+						//if (currentPrompt == testStruct().ignorePromptVectors.size() && currentQuestion >= ignoreQuestions.size()) {
+						//	minigameDataSpriteVector.updateIndividualTexture(ignoreENUM, "completedMinigameSprite.png");
+						//	minigameDataSpriteVector.setSpriteToComplete(ignoreENUM);
+						//	gameScreensENUM = mainENUM;
+						//	break;
+						//}
 
 						switch (ignoreScreen) {
 						case 1:
@@ -607,12 +622,12 @@ int main() {
 								ignoreTimer = ignoreTimer->manageGameTimer(ignoreTimerClock, ignoreTimer);
 							} else { 
 								ignoreScreen = 2;
-								tipTextPtr->setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
+								//tipTextPtr->setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
 							}
 
 							if (validSpriteClick(event, questionButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true) {
 								ignoreScreen = 2;
-								tipTextPtr->setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
+								//tipTextPtr->setString_Origin_Position(ignoreQuestions[currentQuestion], sf::Vector2f(window.getSize().x / 2, 95));
 								ignoreTimer = ignoreTimer->pause(ignoreTimerClock, ignoreTimer);
 							}
 
@@ -622,26 +637,26 @@ int main() {
 							event.type = sf::Event::EventType::MouseButtonReleased;
 							break;
 						case 2:		
-							if (playerTextPtr->getTextString().size() <= ignoreKeys[currentKey].size() - 1) {
-								acceptTextInput = true;
-							} else {
-								acceptTextInput = false;
-							}
+							//if (playerTextPtr->getTextString().size() <= ignoreKeys[currentKey].size() - 1) {
+							//	acceptTextInput = true;
+							//} else {
+							//	acceptTextInput = false;
+							//}
 										
-							if (validSpriteClick(event, skipButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true || playerTextPtr->getTextString() == ignoreKeys[currentKey]) {
-								//for the last prompt, should it progress even if the answer is wrong?
-								ignoreScreen = 1;
-								ignorePromptTextPtr->setTextString("");
-								playerTextPtr->setTextString("");
-								currentKey++;
-								currentQuestion++;
-								currentPrompt++;
-								if (currentPrompt < testStruct().ignorePromptVectors.size()) {
-									ignorePromptTextPtr->loadPrompts(currentPrompt);
-								}
-								ignoreTimer->resetTimer();
-								ignoreTimerClock.restart();
-							}
+							//if (validSpriteClick(event, skipButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true || playerTextPtr->getTextString() == ignoreKeys[currentKey]) {
+							//	//for the last prompt, should it progress even if the answer is wrong?
+							//	ignoreScreen = 1;
+							//	ignorePromptTextPtr->setTextString("");
+							//	playerTextPtr->setTextString("");
+							//	currentKey++;
+							//	currentQuestion++;
+							//	currentPrompt++;
+							//	//if (currentPrompt < testStruct().ignorePromptVectors.size()) {
+							//	//	ignorePromptTextPtr->loadPrompts(currentPrompt);
+							//	//}
+							//	ignoreTimer->resetTimer();
+							//	ignoreTimerClock.restart();
+							//}
 
 							if (validSpriteClick(event, gobackButtonPtr->getSprite().getGlobalBounds(), translatedMousePosition) == true && ignoreTimer->getTimeRemaining() > 0.02) {
 								ignoreScreen = 1;

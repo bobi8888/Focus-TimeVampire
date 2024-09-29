@@ -5,6 +5,7 @@
 #include <SFML/OpenGL.hpp>
 #include <SFML/Audio.hpp>
 
+#include <windows.h>
 #include <vector>
 #include <algorithm>
 #include <iostream>

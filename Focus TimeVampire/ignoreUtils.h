@@ -12,19 +12,19 @@ static float beepVolume = 40;
 static float dullBedVolume = 20;
 static float convoVolume = 85;
 
-string question_2_color = "pink ";
+//string question_2_color = "pink ";
 
-struct testStruct {
-	vector <vector <string>> ignoreP1{ { "A ", "sedan ", "stops ", "next ", "to ", "a ", "motorcyle. "}, {"bicycles ", "approach ", "from ", "the ", "north. "}
-	,{"A ", "football ", "player ", "on ", "a ", "unicycle ", "just ", "left. "} };
-	vector <vector <string>> ignoreP2{ {"In ", "a ", "pile ", "of ", "Legos ", "you ", "see ", "4 ", "black ", "plates, ", "5 ", "dark ", "green " , "tiles, ", "8 ", "light ", "blue ", "bricks, ", "7 ", "tan  ", "plates, ", "1 ", "dark ", "blue ", "tiles, ", "and ", "11 ", "black ", "bricks."} };
-	vector <vector <string>> ignoreP3{ {"Please ", "add ", "2 ", "values ", "of ", "-2 ", "to ", "2 ", "X ", "12 ", "then ", "divide ", "by ", "5."} };
+//struct testStruct {
+//	vector <vector <string>> ignoreP1{ { "A ", "sedan ", "stops ", "next ", "to ", "a ", "motorcyle. "}, {"bicycles ", "approach ", "from ", "the ", "north. "}
+//	,{"A ", "football ", "player ", "on ", "a ", "unicycle ", "just ", "left. "} };
+//	vector <vector <string>> ignoreP2{ {"In ", "a ", "pile ", "of ", "Legos ", "you ", "see ", "4 ", "black ", "plates, ", "5 ", "dark ", "green " , "tiles, ", "8 ", "light ", "blue ", "bricks, ", "7 ", "tan  ", "plates, ", "1 ", "dark ", "blue ", "tiles, ", "and ", "11 ", "black ", "bricks."} };
+//	vector <vector <string>> ignoreP3{ {"Please ", "add ", "2 ", "values ", "of ", "-2 ", "to ", "2 ", "X ", "12 ", "then ", "divide ", "by ", "5."} };
+//
+//	vector <vector <vector <string>>> ignorePromptVectors{ ignoreP1, ignoreP2, ignoreP3 };
+//};
 
-	vector <vector <vector <string>>> ignorePromptVectors{ ignoreP1, ignoreP2, ignoreP3 };
-};
-
-vector <string> ignoreQuestions = { "How many wheels were there?", "How many bricks where there?", "What is your answer?"};
-vector <string> ignoreKeys = { "", "19", "4"};
+//vector <string> ignoreQuestions = { "How many wheels were there?", "How many bricks where there?", "What is your answer?"};
+//vector <string> ignoreKeys = { "", "19", "4"};
 
 //GameText* loadPrompts(vector <vector <string>> ignorePrompt, GameText* ignorePromptTextPtr, sf::RenderWindow& window, const std::optional<std::string>& randomInt_String = std::nullopt) {
 //	//i believe this is used for adding a random int to a prompt
